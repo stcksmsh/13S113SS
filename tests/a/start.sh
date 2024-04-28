@@ -1,6 +1,7 @@
-ASSEMBLER=assembler
-LINKER=linker
-EMULATOR=emulator
+#!/bin/bash
+ASSEMBLER=..//bin/assembler
+LINKER=..//bin/linker
+EMULATOR=..//bin/emulator
 
 ${ASSEMBLER} -o main.o main.s
 ${ASSEMBLER} -o math.o math.s

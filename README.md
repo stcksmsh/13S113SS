@@ -356,11 +356,11 @@ handler:          push %r1
                   beq %r1, %r2, my_isr_timer
                   ld $3, %r2
                   beq %r1, %r2, my_isr_terminal
-# obrada prekida od tajmera
+# timer interrupt handling
 my_isr_timer:     ld $ascii_code , %r1
                   st %r1, term_out
                   jmp finish
-# obrada prekida od terminala
+# terminal interrupt handling
 my_isr_terminal:  ld term_in, %r1
                   st %r1, term_out
                   ld my_counter, %r1

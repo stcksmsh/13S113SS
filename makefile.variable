@@ -1,0 +1,13 @@
+ASSEMBLER=assembler
+LINKER=linker
+EMULATOR=emulator
+TESTS=tests
+
+SRC_DIR=src
+INC_DIR=inc
+OBJ_DIR=obj
+
+CXX=g++
+CXXFLAGS=-I$(INC_DIR) -std=c++11 -Wall -Wextra -Werror -pedantic -g
+
+FORCE: ;
