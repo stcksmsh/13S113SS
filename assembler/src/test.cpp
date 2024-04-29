@@ -1,6 +1,9 @@
-#include <iostream>
+#include <bits/stdc++.h>
 
-int main() {
-    std::cout << "PLACEHOLDER" << std::endl;
-    return 0;
+extern "C" int parse(int argc, char **argv);
+
+int main(int argc, char **argv) {
+
+   parse(argc, argv);
+   return 0;
 }

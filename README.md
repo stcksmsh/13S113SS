@@ -7,15 +7,21 @@ Course link: [13SS113SS](https://www.etf.bg.ac.rs/en/fis/karton_predmeta/13S113S
 - [Table of contents](#table-of-contents)
 - [Tasks](#tasks)
   - [Assembler](#assembler)
-  - [Usage:](#usage)
-    - [Options:](#options)
-  - [Source code syntax](#source-code-syntax)
-    - [General information](#general-information)
-    - [Assembler directives](#assembler-directives)
-    - [Assembler instructions](#assembler-instructions)
-    - [Registers and operands](#registers-and-operands)
+    - [Usage](#usage)
+      - [Options](#options)
+    - [Source code syntax](#source-code-syntax)
+      - [General information](#general-information)
+      - [Assembler directives](#assembler-directives)
+      - [Assembler instructions](#assembler-instructions)
+      - [Registers and operands](#registers-and-operands)
   - [Linker](#linker)
+    - [Usage](#usage-1)
+      - [Options](#options-1)
+    - [Example](#example)
   - [Emulator](#emulator)
+    - [Usage](#usage-2)
+    - [Input](#input)
+    - [Output](#output)
 - [Computer system description](#computer-system-description)
   - [Introduction](#introduction)
   - [The processor](#the-processor)
@@ -54,17 +60,17 @@ The use of non-standard libraries (if they are not closely linked to the core of
 
 ## Assembler
 
-## Usage:
+### Usage
 
 `asembler [options] <input_file>`
 
-### Options:
+#### Options
 
 - `-o <output_file>` - specifies output name and destination
 
-## Source code syntax
+### Source code syntax
 
-### General information
+#### General information
 
 - One line of source code shall contain at most one instruction or directive
 - Comments are completely ignored during the assembly process
@@ -72,7 +78,7 @@ The use of non-standard libraries (if they are not closely linked to the core of
 - A label, which ends with `:`, must be located at the very beginning of a line of source code
 - A label may exist 'as its own line', without a following assembler instruction or directive, in this case it is equivalent as being at the beginning of the next line of source code which contains an instruction/directive
 
-### Assembler directives
+#### Assembler directives
 
 - `.global <symbol_list>` - Exports all symbols within `<symbol_list>`. The list may contain one, or more comma separated symbols
 - `.extern <symbol_list>` - Imports all symbols within `<symbol_list>`. The list may contain one, or more comma separated symbols
@@ -83,7 +89,7 @@ The use of non-standard libraries (if they are not closely linked to the core of
 - `.equ <new_symbol>, <expression>` - Defines a new symbol whose value is equal to the supplied expression
 - `.end` - Ends the process of assembling the input file. The contents of the file following this directive are discarded and are not assembled
 
-### Assembler instructions
+#### Assembler instructions
 
 - `halt` - Ceases the execution of instructions
 - `int` - Causes a software interrupt
@@ -111,7 +117,7 @@ The use of non-standard libraries (if they are not closely linked to the core of
 - `st %gpr, operand ` - `operand <= gpr`
 - `csrrd %csr, %gpr ` - `gpr <= csrAcsrwr %gpr, %csrcsr <= gpr`
 
-### Registers and operands
+#### Registers and operands
 
 Above, the label `gprX` represents one of the programmatically available general purpose registers, which are: `r0`, `r1`, `r2`, `r3`, `r4`, `r5`, `r6`, `r7`, `r8`, `r9`, `r10`, `r11`, `r12`, `r13`, `r14/sp`, `r15/pc`
 The label `csrX` represents one of the programmatically available control and status registers, which are: `status`, `handler`, `cause`
@@ -132,7 +138,64 @@ Data notations:
 
 ## Linker
 
+### Usage
+
+`linker [options] <input_file> ...`
+
+
+#### Options
+
+ONE and ONLY ONE of the `-relocatable`,`-hex` options must be specified when using the linker.
+
+- `-o <output_file>` - Specifies output file of the command.
+- `-place=<name_of_section>@<address>` - Explicitly defines the start address of a section. Can be used multiple times to set the addresses of multiple sections. All sections for which this option is not used are placed using the default placement method.
+- `-hex` - Tells the linker to generate a hex representation of the program, for purposes of memory initialization. The contents of this hex dump represent the machine code paired to its address in the program. Data is only generated for addresses with defined starting values. The format is as follows:
+  ```bash
+  0000: 00 01 02 03 04 05 06 07
+  0008: 08 09 0A 0B 0C 0D 0E 0F
+  0010: 10 11 12 13 14 15 16 17
+  ```
+-`relocatable` - Tells the linker to output a relocatable object file, of the same format as the output of the [assembler](#assembler) in which all sections are placed at the `NULL` address and all `-place` options are completely ignored. The resulting relocatable program may later be used as input for the linker. 
+
+
+Linking is only possible when:
+1) There exists no symbol with multiple definitions
+2) Unresolved symbols
+3) Overlap between sections (when `-place` options are taken into consideration)
+
+### Example
+
+An example of the command used to link object files `in1.o` and `in2.o`, with the sections `data` and `text` placed at addresses `0x4000F000` and `0x40000000` respectively, with the output of the command being hex code for memory initialization purposes.
+
+```bash
+  ./linker -hex
+  -place=data@0x4000F000 -place=text@40000000
+  -o mem_content.hex
+  in1.o in2.o
+```
+
 ## Emulator
+
+### Usage
+
+`./emulator <input_file>`
+
+### Input
+
+The input file is a hex file used for memory initialization, the output of the [linker](#linker) with the `-hex` option set (see [linker options](#options-1) for more details).
+
+### Output
+
+The emulator does not output anything while the user program is working, that is to say until the `halt` command is executed. After the `halt` command the emulated processors state is printed to standard output in the following format:
+```bash
+-----------------------------------------------------------------
+Emulated processor executed halt instruction
+Emulated processor state:
+ r0=0x00000000    r1=0x00000000    r2=0x00000000    r3=0x00000000
+ r4=0x00000000    r5=0x00000000    r6=0x00000000    r7=0x00000000
+ r8=0x00000000    r9=0x00000000   r10=0x00000000   r11=0x00000000
+r12=0x00000000   r13=0x00000000   r14=0x00000000   r15=0x00000000
+```
 
 # Computer system description
 

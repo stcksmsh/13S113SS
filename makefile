@@ -8,19 +8,19 @@ build: $(ASSEMBLER) $(LINKER) $(EMULATOR)
 
 $(ASSEMBLER): FORCE | $(BIN)
 	@echo "Building assembler..."
-	@$(MAKE) --no-print-directory -C $(ASSEMBLER)
+	@$(MAKE) --no-print-directory -C $(ASSEMBLER) build
 	@cp $(ASSEMBLER)/$(ASSEMBLER) $(BIN)/$(ASSEMBLER)
 	@echo "Done building assembler."
 
 $(LINKER): FORCE | $(BIN)
 	@echo "Building linker..."
-	@$(MAKE) --no-print-directory -C $(LINKER)
+	@$(MAKE) --no-print-directory -C $(LINKER) build
 	@cp $(LINKER)/$(LINKER) $(BIN)/$(LINKER)
 	@echo "Done building linker."
 
 $(EMULATOR): FORCE | $(BIN)
 	@echo "Building emulator..."
-	@$(MAKE) --no-print-directory -C $(EMULATOR)
+	@$(MAKE) --no-print-directory -C $(EMULATOR) build
 	@cp $(EMULATOR)/$(EMULATOR) $(BIN)/$(EMULATOR)
 	@echo "Done building emulator."
 
