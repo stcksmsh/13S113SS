@@ -142,7 +142,6 @@ Data notations:
 
 `linker [options] <input_file> ...`
 
-
 #### Options
 
 ONE and ONLY ONE of the `-relocatable`,`-hex` options must be specified when using the linker.
@@ -155,10 +154,11 @@ ONE and ONLY ONE of the `-relocatable`,`-hex` options must be specified when usi
   0008: 08 09 0A 0B 0C 0D 0E 0F
   0010: 10 11 12 13 14 15 16 17
   ```
--`relocatable` - Tells the linker to output a relocatable object file, of the same format as the output of the [assembler](#assembler) in which all sections are placed at the `NULL` address and all `-place` options are completely ignored. The resulting relocatable program may later be used as input for the linker. 
 
+-`relocatable` - Tells the linker to output a relocatable object file, of the same format as the output of the [assembler](#assembler) in which all sections are placed at the `NULL` address and all `-place` options are completely ignored. The resulting relocatable program may later be used as input for the linker.
 
 Linking is only possible when:
+
 1) There exists no symbol with multiple definitions
 2) Unresolved symbols
 3) Overlap between sections (when `-place` options are taken into consideration)
@@ -187,6 +187,7 @@ The input file is a hex file used for memory initialization, the output of the [
 ### Output
 
 The emulator does not output anything while the user program is working, that is to say until the `halt` command is executed. After the `halt` command the emulated processors state is printed to standard output in the following format:
+
 ```bash
 -----------------------------------------------------------------
 Emulated processor executed halt instruction
@@ -224,186 +225,229 @@ The processor possesses sixteen 32-bit general purpose registers named `r<num>` 
 The `r0` register is wired to zero, `r14` is used as the stack pointer (`sp`), and `r15` is the program counter register (`pc`).
 The stack pointer (`sp` or `r14`) contains the address of the taken address at the top of the stack (the stack grows down towards lower addresses).
 Besides the sixteen mentioned general purpose registers, the processor also has the following status and control 32-bit registers:
+
 - `status` - the processor status word
 - `handler` - the address of the interrupt routine
 - `cause` - the cause of the interrupt
-The `status` register contains flags which provide the ability to configure the interrupt mechanism, these flags are:
+  The `status` register contains flags which provide the ability to configure the interrupt mechanism, these flags are:
 - `status[0]` $=>$ `Tr` - Timer, masks the timer interrupts ($0$ - enabled, $1$ - masked)
 - `status[1]` $=>$ `Tl` - Terminal, masks the terminal interrupts ($0$ - enabled, $1$ - masked)
 - `status[2]` $=>$ `I` - Interrupt, globally masks external interrupts ($0$ - enabled, $1$ - masked)
+
 ### Memory mapped registers
+
 Memory mapped registers are registers which are accessed via memory instructions.
 Starting at address `0xFFFFFF00` of the physical address space there exists a space of $256$ bytes reserved for memory mapped registers.
 These registers are used for work with peripherals in the computer system.
+
 ### Interrupt mechanism
+
 The system possesses only one interrupt routine whose address is defined by the value of the `handler` register.
 The cause for entering the given interrupt routine is defined by the value of the `cause` register.
 The possible values of `cause` are:
+
 - $1$ - Incorrect instruction
 - $2$ - Timer interrupt
 - $3$ - Terminal interrupt
 - $4$ - Software interrupt
-Each instruction is atomic. The interrupt request is handled only after the current instruction is atomically finished.
-When the processor enters the interrupt handler, it saves the `status` and `pc` registers to the stack and then masks all interrupts globally.
+  Each instruction is atomic. The interrupt request is handled only after the current instruction is atomically finished.
+  When the processor enters the interrupt handler, it saves the `status` and `pc` registers to the stack and then masks all interrupts globally.
+
 ### Instruction format
+
 Each instruction is 4 bytes long. The format of each instruction is as follows:
+
 | 31...28 | 27...24 | 23...20 | 19...16 | 15...12 | 11...8 | 7...4 | 3...0 |
 | ------- | ------- | ------- | ------- | ------- | ------ | ----- | ----- |
-| OC | MOD | RegA | RegB | RegC | Disp | Disp | Disp |
+| OC      | MOD     | RegA    | RegB    | RegC    | Disp   | Disp  | Disp  |
 
 The `OC` field represents the opcode of the instruction.
 The `MOD` field represents the instruction modifier, it says exactly what the `OC[3..0]` instruction ought to do.
 The field `RegX` represents one used register. For general purpose registers the value of `X`is self explanatory, $X=0$ for `r0`, $X=1$ for `r1`, ... The status and control registers have the following values:
 
 | `status` | `handler` | `cause` |
-| -------- | --------- | ------- |
-| 0 | 1 | 2 |
+| ---------- | ----------- | --------- |
+| 0          | 1           | 2         |
 
-The `Disp` field represents a signed displacement value. 
+The `Disp` field represents a signed displacement value.
+
 ### Processor instruction overview
+
 All combinations of instructions and operands for which there does not exist a reasonable interpretation are treated as errors.
+
 #### halt
+
 | 31...28 | 27...24 | 23...20 | 19...16 | 15...12 | 11...8 | 7...4 | 3...0 |
 | ------- | ------- | ------- | ------- | ------- | ------ | ----- | ----- |
-|  0000   |  0000   |  0000   |  0000   |  0000   |  0000  | 0000  | 0000  |
+| 0000    | 0000    | 0000    | 0000    | 0000    | 0000   | 0000  | 0000  |
 
   Stops the processor as well as further instruction execution
 
 #### interrupt
+
 | 31...28 | 27...24 | 23...20 | 19...16 | 15...12 | 11...8 | 7...4 | 3...0 |
 | ------- | ------- | ------- | ------- | ------- | ------ | ----- | ----- |
-|  0001   |  0000   |  0000   |  0000   |  0000   |  0000  | 0000  | 0000  |
+| 0001    | 0000    | 0000    | 0000    | 0000    | 0000   | 0000  | 0000  |
 
   Generates a software interrupt.
-  > `push status; push pc; cause <= 4; status <= status & (~ 0x1); pc <= handle;`
+
+> `push status; push pc; cause <= 4; status <= status & (~ 0x1); pc <= handle;`
 
 #### subroutine calls
+
 | 31...28 | 27...24 | 23...20 | 19...16 | 15...12 | 11...8 | 7...4 | 3...0 |
 | ------- | ------- | ------- | ------- | ------- | ------ | ----- | ----- |
-|  0010   |  MMMM   |  AAAA   |  BBBB   |  0000   |  DDDD  | DDDD  | DDDD  |
+| 0010    | MMMM    | AAAA    | BBBB    | 0000    | DDDD   | DDDD  | DDDD  |
 
   Calls the subroutine, before which it saves the return address on the stack. Dependent on the modifier the jump address is calculated in the following way
-  > `MMMM` $==$ `0b0000` : `push pc; pc <= gpr[A] + gpr[B] + D`
-  > `MMMM` $==$ `0b0001` : `push pc; pc <= mem32[gpr[A] + gpr[B] + D]`
 
+> `MMMM` $==$ `0b0000` : `push pc; pc <= gpr[A] + gpr[B] + D`
+> `MMMM` $==$ `0b0001` : `push pc; pc <= mem32[gpr[A] + gpr[B] + D]`
 
 #### jump instructions
-| 31...28 | 27...24 | 23...20 | 19...16 | 15...12 | 11...8 | 7...4 | 3...0 |
-| ------- | ------- | ------- | ------- | ------- | ------ | ----- | ----- |
-|  0011   |  MMMM   |  AAAA   |  BBBB   |  0000   |  DDDD  | DDDD  | DDDD  |
 
-  > `MMMM` $==$ `0b0000` : `pc <= gpr[A] + D`
-  > `MMMM` $==$ `0b0001` : `if(gpr[B] == gpr[C]) pc <= gpr[A] + D`
-  > `MMMM` $==$ `0b0010` : `if(gpr[B] != gpr[C]) pc <= gpr[A] + D`
-  > `MMMM` $==$ `0b0011` : `if(gpr[B] signed> gpr[C]) pc <= gpr[A] + D`
-  > `MMMM` $==$ `0b1000` : `pc <= mem32[gpr[A] + D]`
-  > `MMMM` $==$ `0b1001` : `if(gpr[B] == gpr[C]) pc <= mem32[gpr[A] + D]`
-  > `MMMM` $==$ `0b1010` : `if(gpr[B] != gpr[C]) pc <= mem32[gpr[A] + D]`
-  > `MMMM` $==$ `0b1011` : `if(gpr[B] signed> gpr[C]) pc <= mem32[gpr[A] + D]`
-#### atomic swap
 | 31...28 | 27...24 | 23...20 | 19...16 | 15...12 | 11...8 | 7...4 | 3...0 |
 | ------- | ------- | ------- | ------- | ------- | ------ | ----- | ----- |
-|  0100   |  0000   |  0000   |  BBBB   |  CCCC   |  0000  | 0000  | 0000  |
+| 0011    | MMMM    | AAAA    | BBBB    | 0000    | DDDD   | DDDD  | DDDD  |
+
+> `MMMM` $==$ `0b0000` : `pc <= gpr[A] + D`
+> `MMMM` $==$ `0b0001` : `if(gpr[B] == gpr[C]) pc <= gpr[A] + D`
+> `MMMM` $==$ `0b0010` : `if(gpr[B] != gpr[C]) pc <= gpr[A] + D`
+> `MMMM` $==$ `0b0011` : `if(gpr[B] signed> gpr[C]) pc <= gpr[A] + D`
+> `MMMM` $==$ `0b1000` : `pc <= mem32[gpr[A] + D]`
+> `MMMM` $==$ `0b1001` : `if(gpr[B] == gpr[C]) pc <= mem32[gpr[A] + D]`
+> `MMMM` $==$ `0b1010` : `if(gpr[B] != gpr[C]) pc <= mem32[gpr[A] + D]`
+> `MMMM` $==$ `0b1011` : `if(gpr[B] signed> gpr[C]) pc <= mem32[gpr[A] + D]`
+
+#### atomic swap
+
+| 31...28 | 27...24 | 23...20 | 19...16 | 15...12 | 11...8 | 7...4 | 3...0 |
+| ------- | ------- | ------- | ------- | ------- | ------ | ----- | ----- |
+| 0100    | 0000    | 0000    | BBBB    | CCCC    | 0000   | 0000  | 0000  |
 
   Atomically swaps the values of two registers atomically (cannot be interrupted by asynchronous interrupt requests)
-  > `temp <= gpr[B]; gpr[B] <= gpr[A]; gpr[A] <= tmp`
+
+> `temp <= gpr[B]; gpr[B] <= gpr[A]; gpr[A] <= tmp`
 
 #### arithmetic operations
+
 | 31...28 | 27...24 | 23...20 | 19...16 | 15...12 | 11...8 | 7...4 | 3...0 |
 | ------- | ------- | ------- | ------- | ------- | ------ | ----- | ----- |
-|  0101   |  MMMM   |  AAAA   |  BBBB   |  CCCC   |  0000  | 0000  | 0000  |
+| 0101    | MMMM    | AAAA    | BBBB    | CCCC    | 0000   | 0000  | 0000  |
 
   Executes the specified arithmetic operation, in accordance to the instruction modifier, on values contained within the given registers.
-  > `MMMM` $==$ `0b0000` : `gpr[A] <= gpr[B] + gpr[C]`
-  > `MMMM` $==$ `0b0001` : `gpr[A] <= gpr[B] - gpr[C]`
-  > `MMMM` $==$ `0b0010` : `gpr[A] <= gpr[B] * gpr[C]`
-  > `MMMM` $==$ `0b0011` : `gpr[A] <= gpr[B] / gpr[C]`
+
+> `MMMM` $==$ `0b0000` : `gpr[A] <= gpr[B] + gpr[C]`
+> `MMMM` $==$ `0b0001` : `gpr[A] <= gpr[B] - gpr[C]`
+> `MMMM` $==$ `0b0010` : `gpr[A] <= gpr[B] * gpr[C]`
+> `MMMM` $==$ `0b0011` : `gpr[A] <= gpr[B] / gpr[C]`
 
 #### logic instructions
+
 | 31...28 | 27...24 | 23...20 | 19...16 | 15...12 | 11...8 | 7...4 | 3...0 |
 | ------- | ------- | ------- | ------- | ------- | ------ | ----- | ----- |
-|  0110   |  MMMM   |  AAAA   |  BBBB   |  CCCC   |  0000  | 0000  | 0000  |
+| 0110    | MMMM    | AAAA    | BBBB    | CCCC    | 0000   | 0000  | 0000  |
 
   Executes the specified logic operation, in accordance to the instruction modifier, on values contained within the given registers.
-  > `MMMM` $==$ `0b0000` : `gpr[A] <= ~gpr[B]`
-  > `MMMM` $==$ `0b0001` : `gpr[A] <= gpr[B] & gpr[C]`
-  > `MMMM` $==$ `0b0010` : `gpr[A] <= gpr[B] | gpr[C]`
-  > `MMMM` $==$ `0b0011` : `gpr[A] <= gpr[B] ^ gpr[C]`
+
+> `MMMM` $==$ `0b0000` : `gpr[A] <= ~gpr[B]`
+> `MMMM` $==$ `0b0001` : `gpr[A] <= gpr[B] & gpr[C]`
+> `MMMM` $==$ `0b0010` : `gpr[A] <= gpr[B] | gpr[C]`
+> `MMMM` $==$ `0b0011` : `gpr[A] <= gpr[B] ^ gpr[C]`
 
 #### shift instructions
+
 | 31...28 | 27...24 | 23...20 | 19...16 | 15...12 | 11...8 | 7...4 | 3...0 |
 | ------- | ------- | ------- | ------- | ------- | ------ | ----- | ----- |
-|  0111   |  MMMM   |  AAAA   |  BBBB   |  CCCC   |  0000  | 0000  | 0000  |
+| 0111    | MMMM    | AAAA    | BBBB    | CCCC    | 0000   | 0000  | 0000  |
 
   Executes the specified shifting operation, in accordance to the instruction modifier, on values contained within the given registers.
     > `MMMM` $==$ `0b0000` : `gpr[A] <= gpr[B] << gpr[C]`
     > `MMMM` $==$ `0b0001` : `gpr[A] <= gpr[B] >> gpr[C]`
 
 #### data storing instructions
+
 | 31...28 | 27...24 | 23...20 | 19...16 | 15...12 | 11...8 | 7...4 | 3...0 |
 | ------- | ------- | ------- | ------- | ------- | ------ | ----- | ----- |
-|  1000   |  MMMM   |  AAAA   |  BBBB   |  CCCC   |  DDDD  | DDDD  | DDDD  |
+| 1000    | MMMM    | AAAA    | BBBB    | CCCC    | DDDD   | DDDD  | DDDD  |
 
   Stores data into memory.
-  > `MMMM` $==$ `0b0000` : `mem32[gpr[A] + gpr[B] + D] = gpr[C]`
-  > `MMMM` $==$ `0b0010` : `mem32[mem32[gpr[A] + gpr[B] + D]] = gpr[C]`
-  > `MMMM` $==$ `0b0001` : `gpr[A] <= gpr[A] + D; mem32[gpr[A]] <= gpr[C]`
+
+> `MMMM` $==$ `0b0000` : `mem32[gpr[A] + gpr[B] + D] = gpr[C]`
+> `MMMM` $==$ `0b0010` : `mem32[mem32[gpr[A] + gpr[B] + D]] = gpr[C]`
+> `MMMM` $==$ `0b0001` : `gpr[A] <= gpr[A] + D; mem32[gpr[A]] <= gpr[C]`
 
 #### data loading instructions
+
 | 31...28 | 27...24 | 23...20 | 19...16 | 15...12 | 11...8 | 7...4 | 3...0 |
 | ------- | ------- | ------- | ------- | ------- | ------ | ----- | ----- |
-|  1001   |  MMMM   |  AAAA   |  BBBB   |  CCCC   |  DDDD  | DDDD  | DDDD  |
+| 1001    | MMMM    | AAAA    | BBBB    | CCCC    | DDDD   | DDDD  | DDDD  |
 
   Loads data into a register.
-  > `MMMM` $==$ `0b0000` : `gpr[A] <= csr[B]`
-  > `MMMM` $==$ `0b0001` : `gpr[A] <= gpr[B] + D`
-  > `MMMM` $==$ `0b0010` : `gpr[A] <= mem32[gpr[B] + gpr[C] + D]`
-  > `MMMM` $==$ `0b0011` : `gpr[A] <= mem32[gpr[B]]; gpr[B] <= gpr[B] + D]`
-  > `MMMM` $==$ `0b0100` : `csr[A] <= csr[B]`
-  > `MMMM` $==$ `0b0101` : `csr[A] <= gpr[B] + D`
-  > `MMMM` $==$ `0b0110` : `csr[A] <= mem32[gpr[B] + gpr[C] + D]`
-  > `MMMM` $==$ `0b0111` : `csr[A] <= mem32[gpr[B]]; gpr[B] <= gpr[B] + D]`
+
+> `MMMM` $==$ `0b0000` : `gpr[A] <= csr[B]`
+> `MMMM` $==$ `0b0001` : `gpr[A] <= gpr[B] + D`
+> `MMMM` $==$ `0b0010` : `gpr[A] <= mem32[gpr[B] + gpr[C] + D]`
+> `MMMM` $==$ `0b0011` : `gpr[A] <= mem32[gpr[B]]; gpr[B] <= gpr[B] + D]`
+> `MMMM` $==$ `0b0100` : `csr[A] <= csr[B]`
+> `MMMM` $==$ `0b0101` : `csr[A] <= gpr[B] + D`
+> `MMMM` $==$ `0b0110` : `csr[A] <= mem32[gpr[B] + gpr[C] + D]`
+> `MMMM` $==$ `0b0111` : `csr[A] <= mem32[gpr[B]]; gpr[B] <= gpr[B] + D]`
 
 ## The peripherals
+
 The system contains two peripherals, namely the terminal and the timer.
+
 ### The terminal
+
 The terminal represents an input/output peripheral which consists of a display (output) and a keyboard (output). The terminal possesses two programmatically accessible registers `term_out` and `term_int` which are [memory mapped](#memory-mapped-registers). They are mapped in the following way:
-| Register | Address range |
-| -------- | ------------- |
+
+| Register     | Address range                 |
+| ------------ | ----------------------------- |
 | `term_out` | `0xFFFFFF00 ... 0xFFFFFF03` |
 | `term_int` | `0xFFFFFF04 ... 0xFFFFFF07` |
 
 #### `term_out`
+
 This register represents the output register. The terminal keeps track of writes to this register and whenever it detects one, it writes the character on the display. The shown character is determined by the contents of the [ASCII table](https://www.asciitable.com/) for the value written to the `term_out` register.
 
 #### `term_in`
+
 This register represents the input register. The terminal performs two actions on every keystroke:
-  1. Writes the ASCII code of the pressed key to the `term_in` register so that bz reading its value the pressed key may be inferred.
-  2. Generates an interrupt request.
-The two actions described are executed by the terminal whenever any key is pressed.
-The terminal does not *echo* the pressed key, which means that it is not shown on the display.
-If the *user program* does not read the value of `term_in` on time (before the next key press is detected) the previous value of `term_in` is irreversibly lost. 
-Buffering of the input stream is not to be done. The processor is to be considered fast enough to guarantee (if the *user program* is well written) the ability to read the value of `term_in` on time in the interrupt handler before it is overwritten.
+
+1. Writes the ASCII code of the pressed key to the `term_in` register so that bz reading its value the pressed key may be inferred.
+2. Generates an interrupt request.
+   The two actions described are executed by the terminal whenever any key is pressed.
+   The terminal does not *echo* the pressed key, which means that it is not shown on the display.
+   If the *user program* does not read the value of `term_in` on time (before the next key press is detected) the previous value of `term_in` is irreversibly lost.
+   Buffering of the input stream is not to be done. The processor is to be considered fast enough to guarantee (if the *user program* is well written) the ability to read the value of `term_in` on time in the interrupt handler before it is overwritten.
+
 ### The timer
+
 The timer represents a peripheral which will periodically generate an interrupt request.
 The timer possesses one memory mapped register `timer_cfg` which is used to configure the timer.
-| Register | Address range |
-| -------- | ------------- |
+
+| Register      | Address range                 |
+| ------------- | ----------------------------- |
 | `timer_cfg` | `0xFFFFFF10 ... 0xFFFFFF13` |
+
 #### `timer_cfg`
+
 This register represents the configuration register of the timer peripheral. The timer period is defined using the value of `timer_cfg` in the following way:
-  - `timer_cfg` $==$ `0x0` $=>$ $500ms$
-  - `timer_cfg` $==$ `0x1` $=>$ $1000ms$
-  - `timer_cfg` $==$ `0x2` $=>$ $1500ms$
-  - `timer_cfg` $==$ `0x3` $=>$ $2000ms$
-  - `timer_cfg` $==$ `0x4` $=>$ $5000ms$
-  - `timer_cfg` $==$ `0x5` $=>$ $10s$
-  - `timer_cfg` $==$ `0x6` $=>$ $30s$
-  - `timer_cfg` $==$ `0x7` $=>$ $60s$
+
+- `timer_cfg` $==$ `0x0` $=>$ $500ms$
+- `timer_cfg` $==$ `0x1` $=>$ $1000ms$
+- `timer_cfg` $==$ `0x2` $=>$ $1500ms$
+- `timer_cfg` $==$ `0x3` $=>$ $2000ms$
+- `timer_cfg` $==$ `0x4` $=>$ $5000ms$
+- `timer_cfg` $==$ `0x5` $=>$ $10s$
+- `timer_cfg` $==$ `0x6` $=>$ $30s$
+- `timer_cfg` $==$ `0x7` $=>$ $60s$
 
 The default value of `timer_cfg`, that is to say its value after power-on / reset is `0x0`
 
 ## Example of a *user program*
+
 ```
 # file: handler.s
 .equ term_out, 0xFFFFFF00
@@ -435,6 +479,7 @@ my_isr_terminal:  ld term_in, %r1
                   iret
 .end
 ```
+
 ```
 # file: main.s
 .equ tim_cfg, 0xFFFFFF10
@@ -456,13 +501,16 @@ my_counter:
                   .word 0
 .end
 ```
+
 Commands to assemble, link and emulate this example are:
 `./asembler -o handler.o handler.s`
 `./asembler -o main.o main.s`
+
 ```
 ./linker -hex
       -place=my_code_main@0x40000000
       -place=my_code_handler@0xC0000000
       -o program.hex handler.o main.o
 ```
+
 `./emulator program.hex`
