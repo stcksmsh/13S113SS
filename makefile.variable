@@ -11,7 +11,7 @@ CXX=g++
 CXXFLAGS=-I$(INC_DIR) -std=c++11 -Wall -Wextra -Werror -pedantic -g
 
 GCC=gcc
-CFLAGS=-I$(INC_DIR) -std=c11 -Wall -Wextra -Werror -pedantic -g
+CFLAGS=-I$(INC_DIR) -Wall -Wextra
 
 LD=gcc
 LDFLAGS=-lm
