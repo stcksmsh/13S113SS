@@ -15,6 +15,9 @@
 #include <stddef.h>
 
 #include "driver.hpp"
+#include "elf.hpp"
+
+#include "colors.h"
 
 Assembler::Driver::~Driver()
 {
@@ -25,9 +28,9 @@ Assembler::Driver::~Driver()
 }
 
 void 
-Assembler::Driver::parse( const char * const filename )
+Assembler::Driver::parse( const std::string &filename)
 {
-   assert( filename != nullptr );
+   assert( filename.empty() == false );
    std::ifstream in_file( filename );
    if( ! in_file.good() )
    {
@@ -35,13 +38,16 @@ Assembler::Driver::parse( const char * const filename )
       exit( EXIT_FAILURE );
    }
    parse_helper( in_file );
+   logger.print();
+   if(logger.errorExists()){
+      exit(EXIT_FAILURE);
+   }
    return;
 }
 
 void 
 Assembler::Driver::parse_helper( std::istream &stream )
 {
-   
    delete(scanner);
    try
    {
@@ -71,18 +77,39 @@ Assembler::Driver::parse_helper( std::istream &stream )
    {
       std::cerr << "Parse failed!!\n";
    }
+
+   for(std::string symbol :  global_list){
+      STentry *entry = get_symbol(symbol);
+      if(!entry || !entry->is_defined){
+         logger.logError("Symbol '" + symbol + "' which is declared as global is not defined");
+      }
+      if(entry){
+         entry->local = false;
+      }
+   }
+
+   for(std::string symbol : extern_list){
+      STentry *entry = get_symbol(symbol);
+      if(!entry){
+         logger.logWarning("Symbol '" + symbol + "' which is declared as extern is not defined");
+      }else{
+         entry->local = false;
+      }
+   }
+
    return;
 }
 
 Assembler::Driver::STentry *
-Assembler::Driver::insert_symbol( const std::string name, const std::string section, const uint32_t offset, const bool is_defined ){
+Assembler::Driver::insert_symbol( const std::string name, const bool is_defined, const bool is_section){
+   std::string section = current_section_ref.get().name;
+   uint32_t offset = current_section_ref.get().size;
    /// First check if the symbol is already in the table
    for(int i = 0; i < symbol_table.size(); i ++){
       if(symbol_table[i].name == name){
          /// If it is defined, throw an error
          if(symbol_table[i].is_defined){
-            std::cerr << "Symbol " << name << " is already defined in section " << symbol_table[i].section << " at offset " << symbol_table[i].offset << std::endl;
-            exit(EXIT_FAILURE);
+            logger.logError("Symbol '" + name + "' is already defined in section '" + symbol_table[i].section + "' at offset " + std::to_string(symbol_table[i].offset));
          }
          /// Otherwise complete the entry
          symbol_table[i].section = section;
@@ -93,7 +120,6 @@ Assembler::Driver::insert_symbol( const std::string name, const std::string sect
             STentry::STforward_ref *current = symbol_table[i].forward_refs;
             symbol_table[i].forward_refs = nullptr;
             while(current){
-               std::cout << "Resolving forward reference for symbol '" << name << "' at offset " << current->offset << std::endl;
                set_TEXT(symbol_table[i].offset, current->offset);            
                STentry::STforward_ref *next = current->next;
                delete current;
@@ -110,13 +136,14 @@ Assembler::Driver::insert_symbol( const std::string name, const std::string sect
    new_entry.offset = offset;
    new_entry.local = true;
    new_entry.is_defined = is_defined;
+   new_entry.is_section = is_section;
    new_entry.forward_refs = nullptr;
    symbol_table.push_back(new_entry);
    return &symbol_table[symbol_table.size() - 1];
 }
 
 Assembler::Driver::STentry *
-Assembler::Driver::get_symbol( const std::string name, const uint32_t offset, bool do_reference ){
+Assembler::Driver::get_symbol( const std::string name ){
    for(int i = 0; i < symbol_table.size(); i++){
       if(symbol_table[i].name == name){
          return &symbol_table[i];
@@ -127,11 +154,14 @@ Assembler::Driver::get_symbol( const std::string name, const uint32_t offset, bo
 }
 
 void
-Assembler::Driver::forward_reference( const std::string name, const std::string section, const uint32_t offset ){
+Assembler::Driver::forward_reference( const std::string name){
+   std::string section = current_section_ref.get().name;
+   std::size_t offset = current_section_ref.get().size;
    for(int i = 0; i < symbol_table.size(); i++){
       if(symbol_table[i].name == name){
          STentry::STforward_ref *current = symbol_table[i].forward_refs;
          symbol_table[i].forward_refs = new STentry::STforward_ref;
+         symbol_table[i].forward_refs->section = section;
          symbol_table[i].forward_refs->offset = offset;
          symbol_table[i].forward_refs->next = current;
          return;
@@ -146,16 +176,80 @@ Assembler::Driver::forward_reference( const std::string name, const std::string 
    new_entry.is_defined = false;
    new_entry.forward_refs = new STentry::STforward_ref;
    new_entry.forward_refs->offset = offset;
+   new_entry.forward_refs->section = section;
    new_entry.forward_refs->next = nullptr;
    symbol_table.push_back(new_entry);
 }
 
 void
 Assembler::Driver::add_extern( const std::vector<std::string> &externs ){
-      for(int i = 0; i < externs.size(); i++){
-         extern_list.push_back(externs[i]);
+   for(int i = 0; i < externs.size(); i++){
+      extern_list.push_back(externs[i]);
+   }
+}
+
+void
+Assembler::Driver::add_global( const std::vector<std::string> &globals ){
+   for(int i = 0; i < globals.size(); i++){
+      global_list.push_back(globals[i]);
+   }
+}
+
+void
+Assembler::Driver::create_shared_file( const std::string &filename ){
+   std::ofstream out_file;
+   out_file.open(filename);
+   if( ! out_file.good() )
+   {
+      std::cerr << "Unable to open file: " << filename << "\n";
+      exit( EXIT_FAILURE );
+   }
+   ELF elf;
+   for(int i = 0; i < section_list.size(); i++){
+      std::string name = section_list[i].name;
+      std::size_t offset = section_list[i].offset;
+      std::size_t size = section_list[i].size;
+      std::vector<uint8_t> data = std::vector<uint8_t>(TEXT.begin() + offset, TEXT.begin() + offset + size);
+
+      uint32_t flags = Section_Header_Flags::SHF_ALLOC | Section_Header_Flags::SHF_EXECINSTR;      
+      elf.add_section(name, data, Section_Header::Section_Type::SHT_PROGBITS, flags, 1);
+
+      for(int j = 0; j < symbol_table.size(); j++){
+         if(symbol_table[j].section == name){
+            elf.add_symbol(symbol_table[j].name, name, symbol_table[j].offset, symbol_table[j].local, symbol_table[j].is_section);
+         }
+      }
+
+      for(int j = 0; j < symbol_table.size(); j++){
+         if(symbol_table[j].section == name && !symbol_table[j].is_defined){
+            STentry::STforward_ref *current = symbol_table[j].forward_refs;
+            while(current){
+               elf.add_relocation(symbol_table[j].name, current->section, current->offset);
+               current = current->next;
+            }
+         }
+      }
+
+   }
+
+   elf.createShared(out_file);
+}
+
+void
+Assembler::Driver::add_section(std::string section_name){
+   for(int i = 0; i < section_list.size(); i++){
+      if(section_list[i].name == section_name){
+         logger.logError("Section '" + section_name + "' already exists");
       }
    }
+   Section new_section;
+   new_section.name = section_name;
+   new_section.offset = TEXT.size();
+   new_section.size = 0;
+   section_list.push_back(new_section);
+   current_section_ref = std::ref(section_list[section_list.size() - 1]);
+   insert_symbol(section_name, true, true);
+}
 
 void
 Assembler::Driver::append_TEXT( const uint32_t text ){
@@ -163,6 +257,7 @@ Assembler::Driver::append_TEXT( const uint32_t text ){
       /// TODO: check if this is correct
       TEXT.push_back((text >> (i * 8)) & 0xFF);
    }
+   current_section_ref.get().size += 4;
 }
 
 void
@@ -171,190 +266,4 @@ Assembler::Driver::set_TEXT( const uint32_t text, uint32_t offset ){
       /// TODO: check if this is correct
       TEXT[offset + i] = (text >> (i * 8)) & 0xFF;
    }
-}
-
-
-
-/// @brief helper function to write raw binary data to the stream
-std::ostream &write(std::ostream& stream, const void *data, size_t size){
-   unsigned char *ptr = (unsigned char *)data;
-   while(size--){
-      stream.put(*ptr++);
-   }
-   return stream;
-}
-
-/// @brief Print the ELF binary file to the stream
-/// @param stream The stream to write to
-/// @return The stream after writing
-std::ostream&
-Assembler::Driver::output(std::ostream &stream){
-   struct ELF_Header{
-      /// @brief The magic number of the ELF file
-      uint8_t magic[4] = { 0x7F, 'E', 'L', 'F' };
-      /// @brief The class of the ELF file ( 1 for 32-bit )
-      uint8_t class_ = 1;
-      /// @brief The data encoding of the ELF file ( 1 for little-endian )
-      uint8_t data = 1;
-      /// @brief The version of the ELF file ( 1 for original )
-      uint8_t version = 1;
-      /// @brief The OS ABI of the ELF file ( 0 for System V )
-      uint8_t os_abi = 0;
-      /// @brief The ABI version of the ELF file ( undefined here, so basically extra padding )
-      uint8_t abi_version = 0;
-      /// @brief 7 padding bytes
-      uint8_t padding[7] = {0};
-      /// @brief The type of the ELF file ( 1 - relocatable, 2 - exec, 3 - shared )
-      enum ELF_Type: uint16_t{
-         /// @brief Relocatable file
-         ET_REL = 0x1,
-         /// @brief Executable file
-         ET_EXEC = 0x2,
-         /// @brief Shared object file
-         ET_DYN = 0x3,
-         /// @brief Core file
-         ET_CORE = 0x4,
-         /// @brief Processor-specific
-         ET_LOPROC = 0xFF00,
-         /// @brief Processor-specific
-         ET_HIPROC = 0xFFFF
-      } type = ELF_Type::ET_EXEC;
-      /// @brief The machine architecture of the ELF file ( 3e for AMD x86-64 )
-      uint16_t machine = 0x3e;
-      /// @brief The version of the ELF file ( 1 for original )
-      uint32_t version2 = 0x1;
-      /// @brief The entry point of the ELF file
-      uint32_t entry = 0x0;
-      /// @brief The offset of the program header table (right after this one)
-      uint32_t ph_offset = sizeof(ELF_Header);
-      /// @brief The offset of the section header table
-      uint32_t sh_offset = 0x0;
-      /// @brief The flags of the ELF file (unused here, so 0x0)
-      uint32_t flags = 0x0;
-      /// @brief The size of this header
-      uint16_t eh_size = sizeof(ELF_Header);
-      /// @brief The size of a program header
-      uint16_t ph_size = 0x20;
-      /// @brief The number of program headers
-      uint16_t ph_num = 0x1;
-      /// @brief The size of a section header
-      uint16_t sh_size = 0x0;
-      /// @brief The number of section headers
-      uint16_t sh_num = 0x0;
-      /// @brief The index of the section header string table
-      uint16_t sh_str_index = 0x0;
-   } file_header;
-
-   struct Program_Header{
-      /// @brief The type of the program header ( 1 for loadable segment )
-      enum Program_Type: uint32_t{
-         /// @brief Unused program header
-         PT_NULL = 0x0,
-         /// @brief Loadable segment
-         PT_LOAD = 0x1,
-         /// @brief Dynamic linking information
-         PT_DYNAMIC = 0x2,
-         /// @brief Program interpreter
-         PT_INTERP = 0x3,
-         /// @brief Auxiliary information
-         PT_NOTE = 0x4,
-         /// @brief Reserved
-         PT_SHLIB = 0x5,
-         /// @brief Program header table
-         PT_PHDR = 0x6,
-         /// @brief Reserved
-         PT_LOPROC = 0x70000000,
-         /// @brief Reserved
-         PT_HIPROC = 0x7FFFFFFF
-      } type = Program_Type::PT_LOAD;
-      /// @brief The offset of the segment in the file
-      uint32_t offset = 0x0;
-      /// @brief The virtual address of the segment in memory
-      uint32_t vaddr = 0x0;
-      /// @brief The physical address of the segment in memory (can be left as 0?)
-      uint32_t paddr = 0x0;
-      /// @brief The size of the segment in the file
-      uint32_t filesz = 0x0;
-      /// @brief The size of the segment in memory
-      uint32_t memsz = 0x0;
-      /// @brief The flags of the segment (1,2,4 are executable, writable, readable, ORed together)
-      uint32_t flags = 0x5;
-      /// @brief The alignment of the segment (0 or 1 for no alignment)
-      uint32_t align = 0x0;
-   } program_header;
-
-   struct Section_Header{
-      /// @brief The name of the section (index in the string table)
-      uint32_t name = 0x0;
-      /// @brief The type of the section
-      enum Section_Type: uint32_t{
-         /// @brief Unused section
-         SHT_NULL = 0x0,
-         /// @brief Section with data
-         SHT_PROGBITS = 0x1,
-         /// @brief Section containing symbol table
-         SHT_SYMTAB = 0x2,
-         /// @brief Section containing string table
-         SHT_STRTAB = 0x3,
-         /// @brief Section containing relocation entries
-         SHT_RELA = 0x4,
-         /// @brief Section containing hash table
-         SHT_HASH = 0x5,
-         /// @brief Section containing dynamic linking information
-         SHT_DYNAMIC = 0x6,
-         /// @brief Section containing notes
-         SHT_NOTE = 0x7,
-         /// @brief Section containing uninitialized data
-         SHT_NOBITS = 0x8,
-         /// @brief Section containing relocation entries with explicit addends
-         SHT_REL = 0x9,
-         /// @brief Section containing reserved range
-         SHT_SHLIB = 0x0A,
-         /// @brief Section containing dynamic linker symbol table
-         SHT_DYNSYM = 0x0B,
-         /// @brief Section containing array of constructors
-         SHT_INIT_ARRAY = 0x0E,
-         /// @brief Section containing array of destructors
-         SHT_FINI_ARRAY = 0x0F,
-         /// @brief Section containing pre-init values
-         SHT_PREINIT_ARRAY = 0x10,
-         /// @brief Section containing section group
-         SHT_GROUP = 0x11,
-         /// @brief Section containing extended section indices
-         SHT_SYMTAB_SHNDX = 0x12,
-         /// @brief Section containing number of reserved types
-         SHT_NUM = 0x13,
-         /// @brief Section with unknown type
-         SHT_UNKNOWN = 0xFFFFFFFF
-      } type = Section_Type::SHT_PROGBITS;
-      /// @brief The flags of the section
-      uint32_t flags = 0x0;
-      /// @brief The virtual address of the section in memory
-      uint32_t addr = 0x0;
-      /// @brief The offset of the section in the file
-      uint32_t offset = 0x0;
-      /// @brief The size of the section in the file
-      uint32_t size = 0x0;
-      /// @brief The index of the section header table entry
-      uint32_t link = 0x0;
-      /// @brief The extra information about the section
-      uint32_t info = 0x0;
-      /// @brief The alignment of the section
-      uint32_t addralign = 0x0;
-      /// @brief The size of each entry in the section
-      uint32_t entsize = 0x0;
-   } section_header;
-
-   /// First set the relevant data in the headers, then write everything to the stream
-
-   /*  TODO: set headers  */
-
-   /// Now write the file and program headers to the stream
-   write(stream, (const void*)&file_header, sizeof(file_header));
-   write(stream, (const void*)&program_header, sizeof(program_header));
-   /// Then we write the entries
-   /*  TODO: write data  */
-   /// Lastly we write the section header to the stream
-   write(stream, &section_header, sizeof(section_header));
-   return stream;
 }

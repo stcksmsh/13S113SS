@@ -52,10 +52,10 @@
    namespace Assembler {
       class Driver;
       class Scanner;
-      enum csr_type{
-         STATUS,
-         HANDLER,
-         CAUSE
+      enum csr_type: uint8_t{
+         STATUS = 0,
+         HANDLER = 1,
+         CAUSE = 2
       };
       union instruction{
          struct{
@@ -440,26 +440,33 @@ namespace Assembler {
     /// An auxiliary type to compute the largest semantic type.
     union union_type
     {
+      // "control and status register"
+      char dummy1[sizeof (Assembler::csr_type)];
+
       // "operand"
       // operand
-      char dummy1[sizeof ( Assembler::instruction )];
-
-      // "symbol_list"
-      // symbol_list
-      char dummy2[sizeof ( std::vector<std::string> )];
-
-      // "control and status register"
-      char dummy3[sizeof (Assembler::csr_type)];
+      char dummy2[sizeof (Assembler::instruction)];
 
       // "general purpose register"
-      char dummy4[sizeof (int)];
+      char dummy3[sizeof (int)];
 
       // "symbol"
       // "label"
-      char dummy5[sizeof (std::string)];
+      // "ascii"
+      char dummy4[sizeof (std::string)];
+
+      // "symbol_list"
+      // symbol_list
+      char dummy5[sizeof (std::vector<std::string>)];
+
+      // "symbol_or_literal_list"
+      // symbol_or_literal_list
+      char dummy6[sizeof (std::vector<uint32_t>)];
 
       // "literal"
-      char dummy6[sizeof (uint32_t)];
+      // "expression"
+      // expression
+      char dummy7[sizeof (uint32_t)];
     };
 
     /// The size of the largest semantic type.
@@ -551,12 +558,14 @@ namespace Assembler {
     LBRACKET = 294,                // "["
     RBRACKET = 295,                // "]"
     PLUS = 296,                    // "+"
-    DOLLAR = 297,                  // "$"
-    NUMBER = 298,                  // "literal"
-    GPR = 299,                     // "general purpose register"
-    CSR = 300,                     // "control and status register"
-    SYMBOL = 301,                  // "symbol"
-    LABEL = 302                    // "label"
+    MINUS = 297,                   // "-"
+    DOLLAR = 298,                  // "$"
+    NUMBER = 299,                  // "literal"
+    GPR = 300,                     // "general purpose register"
+    CSR = 301,                     // "control and status register"
+    SYMBOL = 302,                  // "symbol"
+    LABEL = 303,                   // "label"
+    STRING = 304                   // "ascii"
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -573,7 +582,7 @@ namespace Assembler {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 50, ///< Number of tokens.
+        YYNTOKENS = 54, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
@@ -617,22 +626,28 @@ namespace Assembler {
         S_LBRACKET = 39,                         // "["
         S_RBRACKET = 40,                         // "]"
         S_PLUS = 41,                             // "+"
-        S_DOLLAR = 42,                           // "$"
-        S_NUMBER = 43,                           // "literal"
-        S_GPR = 44,                              // "general purpose register"
-        S_CSR = 45,                              // "control and status register"
-        S_SYMBOL = 46,                           // "symbol"
-        S_LABEL = 47,                            // "label"
-        S_48_symbol_list_ = 48,                  // "symbol_list"
-        S_49_operand_ = 49,                      // "operand"
-        S_YYACCEPT = 50,                         // $accept
-        S_program = 51,                          // program
-        S_line = 52,                             // line
-        S_instruction = 53,                      // instruction
-        S_operand = 54,                          // operand
-        S_directive = 55,                        // directive
-        S_symbol_list = 56,                      // symbol_list
-        S_label = 57                             // label
+        S_MINUS = 42,                            // "-"
+        S_DOLLAR = 43,                           // "$"
+        S_NUMBER = 44,                           // "literal"
+        S_GPR = 45,                              // "general purpose register"
+        S_CSR = 46,                              // "control and status register"
+        S_SYMBOL = 47,                           // "symbol"
+        S_LABEL = 48,                            // "label"
+        S_STRING = 49,                           // "ascii"
+        S_50_symbol_list_ = 50,                  // "symbol_list"
+        S_51_symbol_or_literal_list_ = 51,       // "symbol_or_literal_list"
+        S_52_operand_ = 52,                      // "operand"
+        S_53_expression_ = 53,                   // "expression"
+        S_YYACCEPT = 54,                         // $accept
+        S_program = 55,                          // program
+        S_line = 56,                             // line
+        S_instruction = 57,                      // instruction
+        S_operand = 58,                          // operand
+        S_directive = 59,                        // directive
+        S_symbol_list = 60,                      // symbol_list
+        S_symbol_or_literal_list = 61,           // symbol_or_literal_list
+        S_label = 62,                            // label
+        S_expression = 63                        // expression
       };
     };
 
@@ -669,18 +684,13 @@ namespace Assembler {
       {
         switch (this->kind ())
     {
-      case symbol_kind::S_49_operand_: // "operand"
-      case symbol_kind::S_operand: // operand
-        value.move<  Assembler::instruction  > (std::move (that.value));
-        break;
-
-      case symbol_kind::S_48_symbol_list_: // "symbol_list"
-      case symbol_kind::S_symbol_list: // symbol_list
-        value.move<  std::vector<std::string>  > (std::move (that.value));
-        break;
-
       case symbol_kind::S_CSR: // "control and status register"
         value.move< Assembler::csr_type > (std::move (that.value));
+        break;
+
+      case symbol_kind::S_52_operand_: // "operand"
+      case symbol_kind::S_operand: // operand
+        value.move< Assembler::instruction > (std::move (that.value));
         break;
 
       case symbol_kind::S_GPR: // "general purpose register"
@@ -689,10 +699,23 @@ namespace Assembler {
 
       case symbol_kind::S_SYMBOL: // "symbol"
       case symbol_kind::S_LABEL: // "label"
+      case symbol_kind::S_STRING: // "ascii"
         value.move< std::string > (std::move (that.value));
         break;
 
+      case symbol_kind::S_50_symbol_list_: // "symbol_list"
+      case symbol_kind::S_symbol_list: // symbol_list
+        value.move< std::vector<std::string> > (std::move (that.value));
+        break;
+
+      case symbol_kind::S_51_symbol_or_literal_list_: // "symbol_or_literal_list"
+      case symbol_kind::S_symbol_or_literal_list: // symbol_or_literal_list
+        value.move< std::vector<uint32_t> > (std::move (that.value));
+        break;
+
       case symbol_kind::S_NUMBER: // "literal"
+      case symbol_kind::S_53_expression_: // "expression"
+      case symbol_kind::S_expression: // expression
         value.move< uint32_t > (std::move (that.value));
         break;
 
@@ -720,34 +743,6 @@ namespace Assembler {
 #endif
 
 #if 201103L <= YY_CPLUSPLUS
-      basic_symbol (typename Base::kind_type t,  Assembler::instruction && v, location_type&& l)
-        : Base (t)
-        , value (std::move (v))
-        , location (std::move (l))
-      {}
-#else
-      basic_symbol (typename Base::kind_type t, const  Assembler::instruction & v, const location_type& l)
-        : Base (t)
-        , value (v)
-        , location (l)
-      {}
-#endif
-
-#if 201103L <= YY_CPLUSPLUS
-      basic_symbol (typename Base::kind_type t,  std::vector<std::string> && v, location_type&& l)
-        : Base (t)
-        , value (std::move (v))
-        , location (std::move (l))
-      {}
-#else
-      basic_symbol (typename Base::kind_type t, const  std::vector<std::string> & v, const location_type& l)
-        : Base (t)
-        , value (v)
-        , location (l)
-      {}
-#endif
-
-#if 201103L <= YY_CPLUSPLUS
       basic_symbol (typename Base::kind_type t, Assembler::csr_type&& v, location_type&& l)
         : Base (t)
         , value (std::move (v))
@@ -755,6 +750,20 @@ namespace Assembler {
       {}
 #else
       basic_symbol (typename Base::kind_type t, const Assembler::csr_type& v, const location_type& l)
+        : Base (t)
+        , value (v)
+        , location (l)
+      {}
+#endif
+
+#if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, Assembler::instruction&& v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const Assembler::instruction& v, const location_type& l)
         : Base (t)
         , value (v)
         , location (l)
@@ -783,6 +792,34 @@ namespace Assembler {
       {}
 #else
       basic_symbol (typename Base::kind_type t, const std::string& v, const location_type& l)
+        : Base (t)
+        , value (v)
+        , location (l)
+      {}
+#endif
+
+#if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, std::vector<std::string>&& v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const std::vector<std::string>& v, const location_type& l)
+        : Base (t)
+        , value (v)
+        , location (l)
+      {}
+#endif
+
+#if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, std::vector<uint32_t>&& v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const std::vector<uint32_t>& v, const location_type& l)
         : Base (t)
         , value (v)
         , location (l)
@@ -827,18 +864,13 @@ namespace Assembler {
         // Value type destructor.
 switch (yykind)
     {
-      case symbol_kind::S_49_operand_: // "operand"
-      case symbol_kind::S_operand: // operand
-        value.template destroy<  Assembler::instruction  > ();
-        break;
-
-      case symbol_kind::S_48_symbol_list_: // "symbol_list"
-      case symbol_kind::S_symbol_list: // symbol_list
-        value.template destroy<  std::vector<std::string>  > ();
-        break;
-
       case symbol_kind::S_CSR: // "control and status register"
         value.template destroy< Assembler::csr_type > ();
+        break;
+
+      case symbol_kind::S_52_operand_: // "operand"
+      case symbol_kind::S_operand: // operand
+        value.template destroy< Assembler::instruction > ();
         break;
 
       case symbol_kind::S_GPR: // "general purpose register"
@@ -847,10 +879,23 @@ switch (yykind)
 
       case symbol_kind::S_SYMBOL: // "symbol"
       case symbol_kind::S_LABEL: // "label"
+      case symbol_kind::S_STRING: // "ascii"
         value.template destroy< std::string > ();
         break;
 
+      case symbol_kind::S_50_symbol_list_: // "symbol_list"
+      case symbol_kind::S_symbol_list: // symbol_list
+        value.template destroy< std::vector<std::string> > ();
+        break;
+
+      case symbol_kind::S_51_symbol_or_literal_list_: // "symbol_or_literal_list"
+      case symbol_kind::S_symbol_or_literal_list: // symbol_or_literal_list
+        value.template destroy< std::vector<uint32_t> > ();
+        break;
+
       case symbol_kind::S_NUMBER: // "literal"
+      case symbol_kind::S_53_expression_: // "expression"
+      case symbol_kind::S_expression: // expression
         value.template destroy< uint32_t > ();
         break;
 
@@ -959,30 +1004,6 @@ switch (yykind)
 #endif
       }
 #if 201103L <= YY_CPLUSPLUS
-      symbol_type (int tok,  Assembler::instruction  v, location_type l)
-        : super_type (token_kind_type (tok), std::move (v), std::move (l))
-#else
-      symbol_type (int tok, const  Assembler::instruction & v, const location_type& l)
-        : super_type (token_kind_type (tok), v, l)
-#endif
-      {
-#if !defined _MSC_VER || defined __clang__
-        YY_ASSERT (tok == 304);
-#endif
-      }
-#if 201103L <= YY_CPLUSPLUS
-      symbol_type (int tok,  std::vector<std::string>  v, location_type l)
-        : super_type (token_kind_type (tok), std::move (v), std::move (l))
-#else
-      symbol_type (int tok, const  std::vector<std::string> & v, const location_type& l)
-        : super_type (token_kind_type (tok), v, l)
-#endif
-      {
-#if !defined _MSC_VER || defined __clang__
-        YY_ASSERT (tok == 303);
-#endif
-      }
-#if 201103L <= YY_CPLUSPLUS
       symbol_type (int tok, Assembler::csr_type v, location_type l)
         : super_type (token_kind_type (tok), std::move (v), std::move (l))
 #else
@@ -992,6 +1013,18 @@ switch (yykind)
       {
 #if !defined _MSC_VER || defined __clang__
         YY_ASSERT (tok == token::CSR);
+#endif
+      }
+#if 201103L <= YY_CPLUSPLUS
+      symbol_type (int tok, Assembler::instruction v, location_type l)
+        : super_type (token_kind_type (tok), std::move (v), std::move (l))
+#else
+      symbol_type (int tok, const Assembler::instruction& v, const location_type& l)
+        : super_type (token_kind_type (tok), v, l)
+#endif
+      {
+#if !defined _MSC_VER || defined __clang__
+        YY_ASSERT (tok == 307);
 #endif
       }
 #if 201103L <= YY_CPLUSPLUS
@@ -1015,7 +1048,31 @@ switch (yykind)
 #endif
       {
 #if !defined _MSC_VER || defined __clang__
-        YY_ASSERT ((token::SYMBOL <= tok && tok <= token::LABEL));
+        YY_ASSERT ((token::SYMBOL <= tok && tok <= token::STRING));
+#endif
+      }
+#if 201103L <= YY_CPLUSPLUS
+      symbol_type (int tok, std::vector<std::string> v, location_type l)
+        : super_type (token_kind_type (tok), std::move (v), std::move (l))
+#else
+      symbol_type (int tok, const std::vector<std::string>& v, const location_type& l)
+        : super_type (token_kind_type (tok), v, l)
+#endif
+      {
+#if !defined _MSC_VER || defined __clang__
+        YY_ASSERT (tok == 305);
+#endif
+      }
+#if 201103L <= YY_CPLUSPLUS
+      symbol_type (int tok, std::vector<uint32_t> v, location_type l)
+        : super_type (token_kind_type (tok), std::move (v), std::move (l))
+#else
+      symbol_type (int tok, const std::vector<uint32_t>& v, const location_type& l)
+        : super_type (token_kind_type (tok), v, l)
+#endif
+      {
+#if !defined _MSC_VER || defined __clang__
+        YY_ASSERT (tok == 306);
 #endif
       }
 #if 201103L <= YY_CPLUSPLUS
@@ -1027,7 +1084,8 @@ switch (yykind)
 #endif
       {
 #if !defined _MSC_VER || defined __clang__
-        YY_ASSERT (tok == token::NUMBER);
+        YY_ASSERT (tok == token::NUMBER
+                   || tok == 308);
 #endif
       }
     };
@@ -1714,6 +1772,21 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
+      make_MINUS (location_type l)
+      {
+        return symbol_type (token::MINUS, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_MINUS (const location_type& l)
+      {
+        return symbol_type (token::MINUS, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
       make_DOLLAR (location_type l)
       {
         return symbol_type (token::DOLLAR, std::move (l));
@@ -1801,6 +1874,21 @@ switch (yykind)
         return symbol_type (token::LABEL, v, l);
       }
 #endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_STRING (std::string v, location_type l)
+      {
+        return symbol_type (token::STRING, std::move (v), std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_STRING (const std::string& v, const location_type& l)
+      {
+        return symbol_type (token::STRING, v, l);
+      }
+#endif
 
 
   private:
@@ -1845,7 +1933,7 @@ switch (yykind)
     // Tables.
     // YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
     // STATE-NUM.
-    static const signed char yypact_[];
+    static const short yypact_[];
 
     // YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
     // Performed when YYTABLE does not specify something else to do.  Zero
@@ -1853,7 +1941,7 @@ switch (yykind)
     static const signed char yydefact_[];
 
     // YYPGOTO[NTERM-NUM].
-    static const signed char yypgoto_[];
+    static const short yypgoto_[];
 
     // YYDEFGOTO[NTERM-NUM].
     static const signed char yydefgoto_[];
@@ -1863,7 +1951,7 @@ switch (yykind)
     // number is the opposite.  If YYTABLE_NINF, syntax error.
     static const unsigned char yytable_[];
 
-    static const signed char yycheck_[];
+    static const short yycheck_[];
 
     // YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
     // state STATE-NUM.
@@ -1878,7 +1966,7 @@ switch (yykind)
 
 #if YYDEBUG
     // YYRLINE[YYN] -- Source line where rule number YYN was defined.
-    static const unsigned char yyrline_[];
+    static const short yyrline_[];
     /// Report on the debug stream that the rule \a r is going to be reduced.
     virtual void yy_reduce_print_ (int r) const;
     /// Print the state stack on the debug stream.
@@ -2105,8 +2193,8 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 159,     ///< Last index in yytable_.
-      yynnts_ = 8,  ///< Number of nonterminal symbols.
+      yylast_ = 180,     ///< Last index in yytable_.
+      yynnts_ = 10,  ///< Number of nonterminal symbols.
       yyfinal_ = 2 ///< Termination state number.
     };
 
@@ -2120,7 +2208,7 @@ switch (yykind)
 
 #line 4 "src/parser.y"
 } // Assembler
-#line 2124 "src/parser.hh"
+#line 2212 "src/parser.hh"
 
 
 

@@ -2,16 +2,21 @@ ASSEMBLER=assembler
 LINKER=linker
 EMULATOR=emulator
 TESTS=tests
+COMMON=common
 
+INDENTONE=" \ \ "
+INDENTTWO=" \ \ \ \ \ "
+
+BIN_DIR = bin
 SRC_DIR=src
 INC_DIR=inc
 OBJ_DIR=obj
 
 CXX=g++
-CXXFLAGS=-I$(INC_DIR) -std=c++11 -Wall -Wextra -Werror -pedantic -g
+CXXFLAGS= -I${INC_DIR} -std=c++11 -Wall -Wextra -Werror -pedantic -g
 
 GCC=gcc
-CFLAGS=-I$(INC_DIR) -Wall -Wextra
+CFLAGS=-I${INC_DIR} -Wall -Wextra
 
 LD=gcc
 LDFLAGS=-lm

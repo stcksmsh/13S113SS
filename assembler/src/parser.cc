@@ -180,18 +180,13 @@ namespace Assembler {
   {
     switch (this->kind ())
     {
-      case symbol_kind::S_49_operand_: // "operand"
-      case symbol_kind::S_operand: // operand
-        value.copy<  Assembler::instruction  > (YY_MOVE (that.value));
-        break;
-
-      case symbol_kind::S_48_symbol_list_: // "symbol_list"
-      case symbol_kind::S_symbol_list: // symbol_list
-        value.copy<  std::vector<std::string>  > (YY_MOVE (that.value));
-        break;
-
       case symbol_kind::S_CSR: // "control and status register"
         value.copy< Assembler::csr_type > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_52_operand_: // "operand"
+      case symbol_kind::S_operand: // operand
+        value.copy< Assembler::instruction > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_GPR: // "general purpose register"
@@ -200,10 +195,23 @@ namespace Assembler {
 
       case symbol_kind::S_SYMBOL: // "symbol"
       case symbol_kind::S_LABEL: // "label"
+      case symbol_kind::S_STRING: // "ascii"
         value.copy< std::string > (YY_MOVE (that.value));
         break;
 
+      case symbol_kind::S_50_symbol_list_: // "symbol_list"
+      case symbol_kind::S_symbol_list: // symbol_list
+        value.copy< std::vector<std::string> > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_51_symbol_or_literal_list_: // "symbol_or_literal_list"
+      case symbol_kind::S_symbol_or_literal_list: // symbol_or_literal_list
+        value.copy< std::vector<uint32_t> > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_NUMBER: // "literal"
+      case symbol_kind::S_53_expression_: // "expression"
+      case symbol_kind::S_expression: // expression
         value.copy< uint32_t > (YY_MOVE (that.value));
         break;
 
@@ -238,18 +246,13 @@ namespace Assembler {
     super_type::move (s);
     switch (this->kind ())
     {
-      case symbol_kind::S_49_operand_: // "operand"
-      case symbol_kind::S_operand: // operand
-        value.move<  Assembler::instruction  > (YY_MOVE (s.value));
-        break;
-
-      case symbol_kind::S_48_symbol_list_: // "symbol_list"
-      case symbol_kind::S_symbol_list: // symbol_list
-        value.move<  std::vector<std::string>  > (YY_MOVE (s.value));
-        break;
-
       case symbol_kind::S_CSR: // "control and status register"
         value.move< Assembler::csr_type > (YY_MOVE (s.value));
+        break;
+
+      case symbol_kind::S_52_operand_: // "operand"
+      case symbol_kind::S_operand: // operand
+        value.move< Assembler::instruction > (YY_MOVE (s.value));
         break;
 
       case symbol_kind::S_GPR: // "general purpose register"
@@ -258,10 +261,23 @@ namespace Assembler {
 
       case symbol_kind::S_SYMBOL: // "symbol"
       case symbol_kind::S_LABEL: // "label"
+      case symbol_kind::S_STRING: // "ascii"
         value.move< std::string > (YY_MOVE (s.value));
         break;
 
+      case symbol_kind::S_50_symbol_list_: // "symbol_list"
+      case symbol_kind::S_symbol_list: // symbol_list
+        value.move< std::vector<std::string> > (YY_MOVE (s.value));
+        break;
+
+      case symbol_kind::S_51_symbol_or_literal_list_: // "symbol_or_literal_list"
+      case symbol_kind::S_symbol_or_literal_list: // symbol_or_literal_list
+        value.move< std::vector<uint32_t> > (YY_MOVE (s.value));
+        break;
+
       case symbol_kind::S_NUMBER: // "literal"
+      case symbol_kind::S_53_expression_: // "expression"
+      case symbol_kind::S_expression: // expression
         value.move< uint32_t > (YY_MOVE (s.value));
         break;
 
@@ -366,18 +382,13 @@ namespace Assembler {
   {
     switch (that.kind ())
     {
-      case symbol_kind::S_49_operand_: // "operand"
-      case symbol_kind::S_operand: // operand
-        value.YY_MOVE_OR_COPY<  Assembler::instruction  > (YY_MOVE (that.value));
-        break;
-
-      case symbol_kind::S_48_symbol_list_: // "symbol_list"
-      case symbol_kind::S_symbol_list: // symbol_list
-        value.YY_MOVE_OR_COPY<  std::vector<std::string>  > (YY_MOVE (that.value));
-        break;
-
       case symbol_kind::S_CSR: // "control and status register"
         value.YY_MOVE_OR_COPY< Assembler::csr_type > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_52_operand_: // "operand"
+      case symbol_kind::S_operand: // operand
+        value.YY_MOVE_OR_COPY< Assembler::instruction > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_GPR: // "general purpose register"
@@ -386,10 +397,23 @@ namespace Assembler {
 
       case symbol_kind::S_SYMBOL: // "symbol"
       case symbol_kind::S_LABEL: // "label"
+      case symbol_kind::S_STRING: // "ascii"
         value.YY_MOVE_OR_COPY< std::string > (YY_MOVE (that.value));
         break;
 
+      case symbol_kind::S_50_symbol_list_: // "symbol_list"
+      case symbol_kind::S_symbol_list: // symbol_list
+        value.YY_MOVE_OR_COPY< std::vector<std::string> > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_51_symbol_or_literal_list_: // "symbol_or_literal_list"
+      case symbol_kind::S_symbol_or_literal_list: // symbol_or_literal_list
+        value.YY_MOVE_OR_COPY< std::vector<uint32_t> > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_NUMBER: // "literal"
+      case symbol_kind::S_53_expression_: // "expression"
+      case symbol_kind::S_expression: // expression
         value.YY_MOVE_OR_COPY< uint32_t > (YY_MOVE (that.value));
         break;
 
@@ -408,18 +432,13 @@ namespace Assembler {
   {
     switch (that.kind ())
     {
-      case symbol_kind::S_49_operand_: // "operand"
-      case symbol_kind::S_operand: // operand
-        value.move<  Assembler::instruction  > (YY_MOVE (that.value));
-        break;
-
-      case symbol_kind::S_48_symbol_list_: // "symbol_list"
-      case symbol_kind::S_symbol_list: // symbol_list
-        value.move<  std::vector<std::string>  > (YY_MOVE (that.value));
-        break;
-
       case symbol_kind::S_CSR: // "control and status register"
         value.move< Assembler::csr_type > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_52_operand_: // "operand"
+      case symbol_kind::S_operand: // operand
+        value.move< Assembler::instruction > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_GPR: // "general purpose register"
@@ -428,10 +447,23 @@ namespace Assembler {
 
       case symbol_kind::S_SYMBOL: // "symbol"
       case symbol_kind::S_LABEL: // "label"
+      case symbol_kind::S_STRING: // "ascii"
         value.move< std::string > (YY_MOVE (that.value));
         break;
 
+      case symbol_kind::S_50_symbol_list_: // "symbol_list"
+      case symbol_kind::S_symbol_list: // symbol_list
+        value.move< std::vector<std::string> > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_51_symbol_or_literal_list_: // "symbol_or_literal_list"
+      case symbol_kind::S_symbol_or_literal_list: // symbol_or_literal_list
+        value.move< std::vector<uint32_t> > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_NUMBER: // "literal"
+      case symbol_kind::S_53_expression_: // "expression"
+      case symbol_kind::S_expression: // expression
         value.move< uint32_t > (YY_MOVE (that.value));
         break;
 
@@ -450,18 +482,13 @@ namespace Assembler {
     state = that.state;
     switch (that.kind ())
     {
-      case symbol_kind::S_49_operand_: // "operand"
-      case symbol_kind::S_operand: // operand
-        value.copy<  Assembler::instruction  > (that.value);
-        break;
-
-      case symbol_kind::S_48_symbol_list_: // "symbol_list"
-      case symbol_kind::S_symbol_list: // symbol_list
-        value.copy<  std::vector<std::string>  > (that.value);
-        break;
-
       case symbol_kind::S_CSR: // "control and status register"
         value.copy< Assembler::csr_type > (that.value);
+        break;
+
+      case symbol_kind::S_52_operand_: // "operand"
+      case symbol_kind::S_operand: // operand
+        value.copy< Assembler::instruction > (that.value);
         break;
 
       case symbol_kind::S_GPR: // "general purpose register"
@@ -470,10 +497,23 @@ namespace Assembler {
 
       case symbol_kind::S_SYMBOL: // "symbol"
       case symbol_kind::S_LABEL: // "label"
+      case symbol_kind::S_STRING: // "ascii"
         value.copy< std::string > (that.value);
         break;
 
+      case symbol_kind::S_50_symbol_list_: // "symbol_list"
+      case symbol_kind::S_symbol_list: // symbol_list
+        value.copy< std::vector<std::string> > (that.value);
+        break;
+
+      case symbol_kind::S_51_symbol_or_literal_list_: // "symbol_or_literal_list"
+      case symbol_kind::S_symbol_or_literal_list: // symbol_or_literal_list
+        value.copy< std::vector<uint32_t> > (that.value);
+        break;
+
       case symbol_kind::S_NUMBER: // "literal"
+      case symbol_kind::S_53_expression_: // "expression"
+      case symbol_kind::S_expression: // expression
         value.copy< uint32_t > (that.value);
         break;
 
@@ -491,18 +531,13 @@ namespace Assembler {
     state = that.state;
     switch (that.kind ())
     {
-      case symbol_kind::S_49_operand_: // "operand"
-      case symbol_kind::S_operand: // operand
-        value.move<  Assembler::instruction  > (that.value);
-        break;
-
-      case symbol_kind::S_48_symbol_list_: // "symbol_list"
-      case symbol_kind::S_symbol_list: // symbol_list
-        value.move<  std::vector<std::string>  > (that.value);
-        break;
-
       case symbol_kind::S_CSR: // "control and status register"
         value.move< Assembler::csr_type > (that.value);
+        break;
+
+      case symbol_kind::S_52_operand_: // "operand"
+      case symbol_kind::S_operand: // operand
+        value.move< Assembler::instruction > (that.value);
         break;
 
       case symbol_kind::S_GPR: // "general purpose register"
@@ -511,10 +546,23 @@ namespace Assembler {
 
       case symbol_kind::S_SYMBOL: // "symbol"
       case symbol_kind::S_LABEL: // "label"
+      case symbol_kind::S_STRING: // "ascii"
         value.move< std::string > (that.value);
         break;
 
+      case symbol_kind::S_50_symbol_list_: // "symbol_list"
+      case symbol_kind::S_symbol_list: // symbol_list
+        value.move< std::vector<std::string> > (that.value);
+        break;
+
+      case symbol_kind::S_51_symbol_or_literal_list_: // "symbol_or_literal_list"
+      case symbol_kind::S_symbol_or_literal_list: // symbol_or_literal_list
+        value.move< std::vector<uint32_t> > (that.value);
+        break;
+
       case symbol_kind::S_NUMBER: // "literal"
+      case symbol_kind::S_53_expression_: // "expression"
+      case symbol_kind::S_expression: // expression
         value.move< uint32_t > (that.value);
         break;
 
@@ -776,18 +824,13 @@ namespace Assembler {
          when using variants.  */
       switch (yyr1_[yyn])
     {
-      case symbol_kind::S_49_operand_: // "operand"
-      case symbol_kind::S_operand: // operand
-        yylhs.value.emplace<  Assembler::instruction  > ();
-        break;
-
-      case symbol_kind::S_48_symbol_list_: // "symbol_list"
-      case symbol_kind::S_symbol_list: // symbol_list
-        yylhs.value.emplace<  std::vector<std::string>  > ();
-        break;
-
       case symbol_kind::S_CSR: // "control and status register"
         yylhs.value.emplace< Assembler::csr_type > ();
+        break;
+
+      case symbol_kind::S_52_operand_: // "operand"
+      case symbol_kind::S_operand: // operand
+        yylhs.value.emplace< Assembler::instruction > ();
         break;
 
       case symbol_kind::S_GPR: // "general purpose register"
@@ -796,10 +839,23 @@ namespace Assembler {
 
       case symbol_kind::S_SYMBOL: // "symbol"
       case symbol_kind::S_LABEL: // "label"
+      case symbol_kind::S_STRING: // "ascii"
         yylhs.value.emplace< std::string > ();
         break;
 
+      case symbol_kind::S_50_symbol_list_: // "symbol_list"
+      case symbol_kind::S_symbol_list: // symbol_list
+        yylhs.value.emplace< std::vector<std::string> > ();
+        break;
+
+      case symbol_kind::S_51_symbol_or_literal_list_: // "symbol_or_literal_list"
+      case symbol_kind::S_symbol_or_literal_list: // symbol_or_literal_list
+        yylhs.value.emplace< std::vector<uint32_t> > ();
+        break;
+
       case symbol_kind::S_NUMBER: // "literal"
+      case symbol_kind::S_53_expression_: // "expression"
+      case symbol_kind::S_expression: // expression
         yylhs.value.emplace< uint32_t > ();
         break;
 
@@ -824,268 +880,351 @@ namespace Assembler {
           switch (yyn)
             {
   case 4: // program: program "end_drct"
-#line 138 "src/parser.y"
+#line 144 "src/parser.y"
                      { return 0; }
-#line 830 "src/parser.cc"
+#line 886 "src/parser.cc"
     break;
 
   case 11: // instruction: "halt_inst"
-#line 151 "src/parser.y"
+#line 157 "src/parser.y"
                                         { Assembler::instruction inst; inst.fields.OC = 0b00000; driver.append_TEXT(inst.raw); }
-#line 836 "src/parser.cc"
+#line 892 "src/parser.cc"
     break;
 
   case 12: // instruction: "int_inst"
-#line 152 "src/parser.y"
+#line 158 "src/parser.y"
                                         { Assembler::instruction inst; inst.fields.OC = 0b00001; driver.append_TEXT(inst.raw); }
-#line 842 "src/parser.cc"
+#line 898 "src/parser.cc"
     break;
 
   case 13: // instruction: "iret_inst"
-#line 153 "src/parser.y"
+#line 159 "src/parser.y"
                                         { Assembler::instruction inst; inst.fields.OC = 0b00010; driver.append_TEXT(inst.raw); }
-#line 848 "src/parser.cc"
+#line 904 "src/parser.cc"
     break;
 
   case 14: // instruction: "call_inst" operand
-#line 154 "src/parser.y"
-                                        { yystack_[0].value.as <  Assembler::instruction  > ().fields.OC = 0b00011; driver.append_TEXT(yystack_[0].value.as <  Assembler::instruction  > ().raw); std::cout << std::hex << yystack_[0].value.as <  Assembler::instruction  > ().raw << std::endl; }
-#line 854 "src/parser.cc"
+#line 160 "src/parser.y"
+                                        { yystack_[0].value.as < Assembler::instruction > ().fields.OC = 0b00011; driver.append_TEXT(yystack_[0].value.as < Assembler::instruction > ().raw); }
+#line 910 "src/parser.cc"
     break;
 
   case 15: // instruction: "ret_inst"
-#line 155 "src/parser.y"
+#line 161 "src/parser.y"
                                         { Assembler::instruction inst; inst.fields.OC = 0b00100; driver.append_TEXT(inst.raw); }
-#line 860 "src/parser.cc"
+#line 916 "src/parser.cc"
     break;
 
   case 16: // instruction: "jmp_inst" operand
-#line 156 "src/parser.y"
-                                        { yystack_[0].value.as <  Assembler::instruction  > ().fields.OC = 0b00101; driver.append_TEXT(yystack_[0].value.as <  Assembler::instruction  > ().raw); }
-#line 866 "src/parser.cc"
+#line 162 "src/parser.y"
+                                        { yystack_[0].value.as < Assembler::instruction > ().fields.OC = 0b00101; driver.append_TEXT(yystack_[0].value.as < Assembler::instruction > ().raw); }
+#line 922 "src/parser.cc"
     break;
 
   case 17: // instruction: "beq_inst" "general purpose register" "," "general purpose register" "," operand
-#line 157 "src/parser.y"
-                                        { yystack_[0].value.as <  Assembler::instruction  > ().fields.OC = 0b00110; yystack_[0].value.as <  Assembler::instruction  > ().fields.RegA = yystack_[4].value.as < int > (); yystack_[0].value.as <  Assembler::instruction  > ().fields.RegB = yystack_[2].value.as < int > (); driver.append_TEXT(yystack_[0].value.as <  Assembler::instruction  > ().raw); }
-#line 872 "src/parser.cc"
+#line 163 "src/parser.y"
+                                        { yystack_[0].value.as < Assembler::instruction > ().fields.OC = 0b00110; yystack_[0].value.as < Assembler::instruction > ().fields.RegA = yystack_[4].value.as < int > (); yystack_[0].value.as < Assembler::instruction > ().fields.RegB = yystack_[2].value.as < int > (); driver.append_TEXT(yystack_[0].value.as < Assembler::instruction > ().raw); }
+#line 928 "src/parser.cc"
     break;
 
   case 18: // instruction: "bne_inst" "general purpose register" "," "general purpose register" "," operand
-#line 158 "src/parser.y"
-                                        { yystack_[0].value.as <  Assembler::instruction  > ().fields.OC = 0b00111; yystack_[0].value.as <  Assembler::instruction  > ().fields.RegA = yystack_[4].value.as < int > (); yystack_[0].value.as <  Assembler::instruction  > ().fields.RegB = yystack_[2].value.as < int > (); driver.append_TEXT(yystack_[0].value.as <  Assembler::instruction  > ().raw); }
-#line 878 "src/parser.cc"
+#line 164 "src/parser.y"
+                                        { yystack_[0].value.as < Assembler::instruction > ().fields.OC = 0b00111; yystack_[0].value.as < Assembler::instruction > ().fields.RegA = yystack_[4].value.as < int > (); yystack_[0].value.as < Assembler::instruction > ().fields.RegB = yystack_[2].value.as < int > (); driver.append_TEXT(yystack_[0].value.as < Assembler::instruction > ().raw); }
+#line 934 "src/parser.cc"
     break;
 
   case 19: // instruction: "bgt_inst" "general purpose register" "," "general purpose register" "," operand
-#line 159 "src/parser.y"
-                                        { yystack_[0].value.as <  Assembler::instruction  > ().fields.OC = 0b01000; yystack_[0].value.as <  Assembler::instruction  > ().fields.RegA = yystack_[4].value.as < int > (); yystack_[0].value.as <  Assembler::instruction  > ().fields.RegB = yystack_[2].value.as < int > (); driver.append_TEXT(yystack_[0].value.as <  Assembler::instruction  > ().raw); }
-#line 884 "src/parser.cc"
+#line 165 "src/parser.y"
+                                        { yystack_[0].value.as < Assembler::instruction > ().fields.OC = 0b01000; yystack_[0].value.as < Assembler::instruction > ().fields.RegA = yystack_[4].value.as < int > (); yystack_[0].value.as < Assembler::instruction > ().fields.RegB = yystack_[2].value.as < int > (); driver.append_TEXT(yystack_[0].value.as < Assembler::instruction > ().raw); }
+#line 940 "src/parser.cc"
     break;
 
   case 20: // instruction: "push_inst" "general purpose register"
-#line 160 "src/parser.y"
+#line 166 "src/parser.y"
                                         { Assembler::instruction inst; inst.fields.OC = 0b01001; inst.fields.RegA = yystack_[0].value.as < int > (); driver.append_TEXT(inst.raw); }
-#line 890 "src/parser.cc"
+#line 946 "src/parser.cc"
     break;
 
   case 21: // instruction: "pop_inst" "general purpose register"
-#line 161 "src/parser.y"
+#line 167 "src/parser.y"
                                         { Assembler::instruction inst; inst.fields.OC = 0b01010; inst.fields.RegA = yystack_[0].value.as < int > (); driver.append_TEXT(inst.raw); }
-#line 896 "src/parser.cc"
+#line 952 "src/parser.cc"
     break;
 
   case 22: // instruction: "xchg_inst" "general purpose register" "," "general purpose register"
-#line 162 "src/parser.y"
+#line 168 "src/parser.y"
                                         { Assembler::instruction inst; inst.fields.OC = 0b01011; inst.fields.RegA = yystack_[2].value.as < int > (); inst.fields.RegB = yystack_[0].value.as < int > (); driver.append_TEXT(inst.raw); }
-#line 902 "src/parser.cc"
+#line 958 "src/parser.cc"
     break;
 
   case 23: // instruction: "add_inst" "general purpose register" "," "general purpose register"
-#line 163 "src/parser.y"
+#line 169 "src/parser.y"
                                         { Assembler::instruction inst; inst.fields.OC = 0b01100; inst.fields.RegA = yystack_[2].value.as < int > (); inst.fields.RegB = yystack_[0].value.as < int > (); driver.append_TEXT(inst.raw); }
-#line 908 "src/parser.cc"
+#line 964 "src/parser.cc"
     break;
 
   case 24: // instruction: "sub_inst" "general purpose register" "," "general purpose register"
-#line 164 "src/parser.y"
+#line 170 "src/parser.y"
                                         { Assembler::instruction inst; inst.fields.OC = 0b01101; inst.fields.RegA = yystack_[2].value.as < int > (); inst.fields.RegB = yystack_[0].value.as < int > (); driver.append_TEXT(inst.raw); }
-#line 914 "src/parser.cc"
+#line 970 "src/parser.cc"
     break;
 
   case 25: // instruction: "mul_inst" "general purpose register" "," "general purpose register"
-#line 165 "src/parser.y"
+#line 171 "src/parser.y"
                                         { Assembler::instruction inst; inst.fields.OC = 0b01110; inst.fields.RegA = yystack_[2].value.as < int > (); inst.fields.RegB = yystack_[0].value.as < int > (); driver.append_TEXT(inst.raw); }
-#line 920 "src/parser.cc"
+#line 976 "src/parser.cc"
     break;
 
   case 26: // instruction: "div_inst" "general purpose register" "," "general purpose register"
-#line 166 "src/parser.y"
+#line 172 "src/parser.y"
                                         { Assembler::instruction inst; inst.fields.OC = 0b01111; inst.fields.RegA = yystack_[2].value.as < int > (); inst.fields.RegB = yystack_[0].value.as < int > (); driver.append_TEXT(inst.raw); }
-#line 926 "src/parser.cc"
+#line 982 "src/parser.cc"
     break;
 
   case 27: // instruction: "not_inst" "general purpose register"
-#line 167 "src/parser.y"
+#line 173 "src/parser.y"
                                         { Assembler::instruction inst; inst.fields.OC = 0b10000; inst.fields.RegA = yystack_[0].value.as < int > (); driver.append_TEXT(inst.raw); }
-#line 932 "src/parser.cc"
+#line 988 "src/parser.cc"
     break;
 
   case 28: // instruction: "and_inst" "general purpose register" "," "general purpose register"
-#line 168 "src/parser.y"
+#line 174 "src/parser.y"
                                         { Assembler::instruction inst; inst.fields.OC = 0b10001; inst.fields.RegA = yystack_[2].value.as < int > (); inst.fields.RegB = yystack_[0].value.as < int > (); driver.append_TEXT(inst.raw); }
-#line 938 "src/parser.cc"
+#line 994 "src/parser.cc"
     break;
 
   case 29: // instruction: "or_inst" "general purpose register" "," "general purpose register"
-#line 169 "src/parser.y"
+#line 175 "src/parser.y"
                                         { Assembler::instruction inst; inst.fields.OC = 0b10010; inst.fields.RegA = yystack_[2].value.as < int > (); inst.fields.RegB = yystack_[0].value.as < int > (); driver.append_TEXT(inst.raw); }
-#line 944 "src/parser.cc"
+#line 1000 "src/parser.cc"
     break;
 
   case 30: // instruction: "xor_inst" "general purpose register" "," "general purpose register"
-#line 170 "src/parser.y"
+#line 176 "src/parser.y"
                                         { Assembler::instruction inst; inst.fields.OC = 0b10011; inst.fields.RegA = yystack_[2].value.as < int > (); inst.fields.RegB = yystack_[0].value.as < int > (); driver.append_TEXT(inst.raw); }
-#line 950 "src/parser.cc"
+#line 1006 "src/parser.cc"
     break;
 
   case 31: // instruction: "shl_inst" "general purpose register" "," "general purpose register"
-#line 171 "src/parser.y"
+#line 177 "src/parser.y"
                                         { Assembler::instruction inst; inst.fields.OC = 0b10100; inst.fields.RegA = yystack_[2].value.as < int > (); inst.fields.RegB = yystack_[0].value.as < int > (); driver.append_TEXT(inst.raw); }
-#line 956 "src/parser.cc"
+#line 1012 "src/parser.cc"
     break;
 
   case 32: // instruction: "shr_inst" "general purpose register" "," "general purpose register"
-#line 172 "src/parser.y"
+#line 178 "src/parser.y"
                                         { Assembler::instruction inst; inst.fields.OC = 0b10101; inst.fields.RegA = yystack_[2].value.as < int > (); inst.fields.RegB = yystack_[0].value.as < int > (); driver.append_TEXT(inst.raw); }
-#line 962 "src/parser.cc"
+#line 1018 "src/parser.cc"
     break;
 
   case 33: // instruction: "ld_inst" operand "," "general purpose register"
-#line 173 "src/parser.y"
-                                        { yystack_[2].value.as <  Assembler::instruction  > ().fields.OC = 0b10110; yystack_[2].value.as <  Assembler::instruction  > ().fields.RegA = yystack_[0].value.as < int > (); driver.append_TEXT(yystack_[2].value.as <  Assembler::instruction  > ().raw); }
-#line 968 "src/parser.cc"
+#line 179 "src/parser.y"
+                                        { yystack_[2].value.as < Assembler::instruction > ().fields.OC = 0b10110; yystack_[2].value.as < Assembler::instruction > ().fields.RegA = yystack_[0].value.as < int > (); driver.append_TEXT(yystack_[2].value.as < Assembler::instruction > ().raw); }
+#line 1024 "src/parser.cc"
     break;
 
   case 34: // instruction: "st_inst" "general purpose register" "," operand
-#line 174 "src/parser.y"
-                                        { yystack_[0].value.as <  Assembler::instruction  > ().fields.OC = 0b10111; yystack_[0].value.as <  Assembler::instruction  > ().fields.RegA = yystack_[2].value.as < int > (); driver.append_TEXT(yystack_[0].value.as <  Assembler::instruction  > ().raw); }
-#line 974 "src/parser.cc"
+#line 180 "src/parser.y"
+                                        { yystack_[0].value.as < Assembler::instruction > ().fields.OC = 0b10111; yystack_[0].value.as < Assembler::instruction > ().fields.RegA = yystack_[2].value.as < int > (); driver.append_TEXT(yystack_[0].value.as < Assembler::instruction > ().raw); }
+#line 1030 "src/parser.cc"
     break;
 
   case 35: // instruction: "csrrd_inst" "control and status register" "," "general purpose register"
-#line 175 "src/parser.y"
-                                        { Assembler::instruction inst; inst.fields.OC = 0b11000; inst.fields.RegA = yystack_[2].value.as < Assembler::csr_type > (); driver.append_TEXT(inst.raw); }
-#line 980 "src/parser.cc"
+#line 181 "src/parser.y"
+                                        { Assembler::instruction inst; inst.fields.OC = 0b11000; inst.fields.RegA = yystack_[2].value.as < Assembler::csr_type > (); inst.fields.RegB = yystack_[0].value.as < int > (); driver.append_TEXT(inst.raw); }
+#line 1036 "src/parser.cc"
     break;
 
   case 36: // instruction: "csrwr_inst" "general purpose register" "," "control and status register"
-#line 176 "src/parser.y"
-                                        { Assembler::instruction inst; inst.fields.OC = 0b11001; inst.fields.RegA = yystack_[2].value.as < int > (); driver.append_TEXT(inst.raw); }
-#line 986 "src/parser.cc"
+#line 182 "src/parser.y"
+                                        { Assembler::instruction inst; inst.fields.OC = 0b11001; inst.fields.RegA = yystack_[2].value.as < int > (); inst.fields.RegB = yystack_[0].value.as < Assembler::csr_type > (); driver.append_TEXT(inst.raw); }
+#line 1042 "src/parser.cc"
     break;
 
   case 37: // operand: "$" "literal"
-#line 180 "src/parser.y"
-                                        { yylhs.value.as <  Assembler::instruction  > ().fields.MOD = 0b000; yylhs.value.as <  Assembler::instruction  > ().fields.Disp = yystack_[0].value.as < uint32_t > (); }
-#line 992 "src/parser.cc"
+#line 186 "src/parser.y"
+                                        { yylhs.value.as < Assembler::instruction > ().fields.MOD = 0b000; yylhs.value.as < Assembler::instruction > ().fields.Disp = yystack_[0].value.as < uint32_t > (); }
+#line 1048 "src/parser.cc"
     break;
 
   case 38: // operand: "literal"
-#line 181 "src/parser.y"
-                                        { yylhs.value.as <  Assembler::instruction  > ().fields.MOD = 0b001; yylhs.value.as <  Assembler::instruction  > ().fields.Disp = yystack_[0].value.as < uint32_t > (); }
-#line 998 "src/parser.cc"
+#line 187 "src/parser.y"
+                                        { yylhs.value.as < Assembler::instruction > ().fields.MOD = 0b001; yylhs.value.as < Assembler::instruction > ().fields.Disp = yystack_[0].value.as < uint32_t > (); }
+#line 1054 "src/parser.cc"
     break;
 
   case 39: // operand: "$" "symbol"
-#line 182 "src/parser.y"
-                                        { yylhs.value.as <  Assembler::instruction  > ().fields.MOD = 0b010; /* TODO: check if symbol is defined etc. */yylhs.value.as <  Assembler::instruction  > ().fields.Disp = driver.get_symbol(yystack_[0].value.as < std::string > (), driver.TEXT.size(), true)->offset; }
-#line 1004 "src/parser.cc"
+#line 188 "src/parser.y"
+                                        { yylhs.value.as < Assembler::instruction > ().fields.MOD = 0b010;
+                                          Driver::STentry *entry = driver.get_symbol(yystack_[0].value.as < std::string > ());
+                                          if(!entry){
+                                             driver.forward_reference(yystack_[0].value.as < std::string > ());
+                                             yylhs.value.as < Assembler::instruction > ().fields.Disp = 0;
+                                          }else{
+                                             yylhs.value.as < Assembler::instruction > ().fields.Disp = entry->offset;
+                                          }
+                                        }
+#line 1068 "src/parser.cc"
     break;
 
   case 40: // operand: "symbol"
-#line 183 "src/parser.y"
-                                        { yylhs.value.as <  Assembler::instruction  > ().fields.MOD = 0b011; /* TODO: check if symbol is defined etc. */yylhs.value.as <  Assembler::instruction  > ().fields.Disp = driver.get_symbol(yystack_[0].value.as < std::string > (), driver.TEXT.size(), true)->offset;}
-#line 1010 "src/parser.cc"
+#line 197 "src/parser.y"
+                                        { yylhs.value.as < Assembler::instruction > ().fields.MOD = 0b011;
+                                          Driver::STentry *entry = driver.get_symbol(yystack_[0].value.as < std::string > ());
+                                          if(!entry){
+                                             driver.forward_reference(yystack_[0].value.as < std::string > ());
+                                             yylhs.value.as < Assembler::instruction > ().fields.Disp = 0;
+                                          }else{
+                                             yylhs.value.as < Assembler::instruction > ().fields.Disp = entry->offset;
+                                          }
+                                        }
+#line 1082 "src/parser.cc"
     break;
 
   case 41: // operand: "general purpose register"
-#line 184 "src/parser.y"
-                                        { yylhs.value.as <  Assembler::instruction  > ().fields.MOD = 0b100; yylhs.value.as <  Assembler::instruction  > ().fields.RegC = yystack_[0].value.as < int > (); }
-#line 1016 "src/parser.cc"
+#line 206 "src/parser.y"
+                                        { yylhs.value.as < Assembler::instruction > ().fields.MOD = 0b100; yylhs.value.as < Assembler::instruction > ().fields.RegC = yystack_[0].value.as < int > (); }
+#line 1088 "src/parser.cc"
     break;
 
   case 42: // operand: "[" "general purpose register" "]"
-#line 185 "src/parser.y"
-                                        { yylhs.value.as <  Assembler::instruction  > ().fields.MOD = 0b101; yylhs.value.as <  Assembler::instruction  > ().fields.RegC = yystack_[1].value.as < int > (); }
-#line 1022 "src/parser.cc"
+#line 207 "src/parser.y"
+                                        { yylhs.value.as < Assembler::instruction > ().fields.MOD = 0b101; yylhs.value.as < Assembler::instruction > ().fields.RegC = yystack_[1].value.as < int > (); }
+#line 1094 "src/parser.cc"
     break;
 
   case 43: // operand: "[" "general purpose register" "+" "literal" "]"
-#line 186 "src/parser.y"
-                                        { yylhs.value.as <  Assembler::instruction  > ().fields.MOD = 0b110; yylhs.value.as <  Assembler::instruction  > ().fields.RegC = yystack_[3].value.as < int > (); yylhs.value.as <  Assembler::instruction  > ().fields.Disp = yystack_[1].value.as < uint32_t > (); }
-#line 1028 "src/parser.cc"
+#line 208 "src/parser.y"
+                                        { yylhs.value.as < Assembler::instruction > ().fields.MOD = 0b110; yylhs.value.as < Assembler::instruction > ().fields.RegC = yystack_[3].value.as < int > (); yylhs.value.as < Assembler::instruction > ().fields.Disp = yystack_[1].value.as < uint32_t > (); }
+#line 1100 "src/parser.cc"
     break;
 
   case 44: // operand: "[" "general purpose register" "+" "symbol" "]"
-#line 187 "src/parser.y"
-                                        { yylhs.value.as <  Assembler::instruction  > ().fields.MOD = 0b111; yylhs.value.as <  Assembler::instruction  > ().fields.RegC = yystack_[3].value.as < int > (); /* TODO: check if symbol is defined etc. */yylhs.value.as <  Assembler::instruction  > ().fields.Disp = driver.get_symbol(yystack_[1].value.as < std::string > (), driver.TEXT.size(), true)->offset;}
-#line 1034 "src/parser.cc"
+#line 209 "src/parser.y"
+                                        { yylhs.value.as < Assembler::instruction > ().fields.MOD = 0b111; yylhs.value.as < Assembler::instruction > ().fields.RegC = yystack_[3].value.as < int > ();
+                                          Driver::STentry *entry = driver.get_symbol(yystack_[1].value.as < std::string > ());
+                                          if(!entry){
+                                             driver.forward_reference(yystack_[1].value.as < std::string > ());
+                                             yylhs.value.as < Assembler::instruction > ().fields.Disp = 0;
+                                          }else{
+                                             yylhs.value.as < Assembler::instruction > ().fields.Disp = entry->offset;
+                                          }
+                                        }
+#line 1114 "src/parser.cc"
     break;
 
   case 45: // directive: "global_drct" symbol_list
-#line 192 "src/parser.y"
-                                        {  for(std::string s : yystack_[0].value.as <  std::vector<std::string>  > ()){
-                                              Assembler::Driver::STentry *entry = driver.get_symbol(s, driver.TEXT.size(), false);
-                                              if(!entry){
-                                                 entry = driver.insert_symbol(s, driver.current_section, driver.TEXT.size(), false);
-                                              }
-                                              entry->local = false;
-                                           }
-                                        }
-#line 1047 "src/parser.cc"
+#line 222 "src/parser.y"
+                                        { driver.add_global(yystack_[0].value.as < std::vector<std::string> > ()); }
+#line 1120 "src/parser.cc"
     break;
 
   case 46: // directive: "extern_drct" symbol_list
-#line 200 "src/parser.y"
-                                        { driver.add_extern(yystack_[0].value.as <  std::vector<std::string>  > ()); }
-#line 1053 "src/parser.cc"
+#line 223 "src/parser.y"
+                                        { driver.add_extern(yystack_[0].value.as < std::vector<std::string> > ()); }
+#line 1126 "src/parser.cc"
     break;
 
   case 47: // directive: "section_drct" "symbol"
-#line 201 "src/parser.y"
-                                        { driver.current_section = yystack_[0].value.as < std::string > ();
-                                          driver.insert_symbol(yystack_[0].value.as < std::string > (), driver.current_section, driver.TEXT.size());
+#line 224 "src/parser.y"
+                                        { driver.add_section(yystack_[0].value.as < std::string > ()); }
+#line 1132 "src/parser.cc"
+    break;
+
+  case 48: // directive: "word_drct" symbol_or_literal_list
+#line 225 "src/parser.y"
+                                        { for(uint32_t val : yystack_[0].value.as < std::vector<uint32_t> > ()) driver.append_TEXT(val); }
+#line 1138 "src/parser.cc"
+    break;
+
+  case 49: // directive: "skip_drct" "literal"
+#line 226 "src/parser.y"
+                                        { driver.TEXT.resize(driver.TEXT.size() + yystack_[0].value.as < uint32_t > ());
+                                          driver.current_section_ref.get().size += yystack_[0].value.as < uint32_t > ();
                                         }
-#line 1061 "src/parser.cc"
+#line 1146 "src/parser.cc"
     break;
 
-  case 48: // directive: "skip_drct" "literal"
-#line 204 "src/parser.y"
-                                        { for(int i = 0; i < yystack_[0].value.as < uint32_t > (); i++) driver.TEXT.push_back(0); }
-#line 1067 "src/parser.cc"
+  case 50: // directive: "ascii_drct" "ascii"
+#line 229 "src/parser.y"
+                                        { for(char c : yystack_[0].value.as < std::string > ()) driver.TEXT.push_back(c);
+                                          driver.current_section_ref.get().size += yystack_[0].value.as < std::string > ().size();
+                                        }
+#line 1154 "src/parser.cc"
     break;
 
-  case 49: // symbol_list: "symbol"
-#line 208 "src/parser.y"
-                                        { yylhs.value.as <  std::vector<std::string>  > () = std::vector<std::string>(); yylhs.value.as <  std::vector<std::string>  > ().push_back(yystack_[0].value.as < std::string > ()); }
-#line 1073 "src/parser.cc"
+  case 51: // directive: "equ_drct" "symbol" "," expression
+#line 232 "src/parser.y"
+                                        { driver.insert_symbol(yystack_[2].value.as < std::string > ());
+                                          driver.get_symbol(yystack_[2].value.as < std::string > ())->offset = yystack_[0].value.as < uint32_t > ();
+                                        }
+#line 1162 "src/parser.cc"
     break;
 
-  case 50: // symbol_list: symbol_list "," "symbol"
-#line 209 "src/parser.y"
-                                        { yylhs.value.as <  std::vector<std::string>  > () = yystack_[2].value.as <  std::vector<std::string>  > (); yylhs.value.as <  std::vector<std::string>  > ().push_back(yystack_[0].value.as < std::string > ()); }
-#line 1079 "src/parser.cc"
+  case 52: // symbol_list: "symbol"
+#line 238 "src/parser.y"
+                                        { yylhs.value.as < std::vector<std::string> > () = std::vector<std::string>(); yylhs.value.as < std::vector<std::string> > ().push_back(yystack_[0].value.as < std::string > ()); }
+#line 1168 "src/parser.cc"
     break;
 
-  case 51: // label: "label"
-#line 213 "src/parser.y"
-                                        { /* TODO: change offset to section offset */driver.insert_symbol(yystack_[0].value.as < std::string > (), driver.current_section, driver.TEXT.size()); }
-#line 1085 "src/parser.cc"
+  case 53: // symbol_list: symbol_list "," "symbol"
+#line 239 "src/parser.y"
+                                        { yylhs.value.as < std::vector<std::string> > () = yystack_[2].value.as < std::vector<std::string> > (); yylhs.value.as < std::vector<std::string> > ().push_back(yystack_[0].value.as < std::string > ()); }
+#line 1174 "src/parser.cc"
+    break;
+
+  case 54: // symbol_or_literal_list: "literal"
+#line 243 "src/parser.y"
+                                        { yylhs.value.as < std::vector<uint32_t> > () = std::vector<uint32_t>(); yylhs.value.as < std::vector<uint32_t> > ().push_back(yystack_[0].value.as < uint32_t > ()); }
+#line 1180 "src/parser.cc"
+    break;
+
+  case 55: // symbol_or_literal_list: "symbol"
+#line 244 "src/parser.y"
+                                        { yylhs.value.as < std::vector<uint32_t> > () = std::vector<uint32_t>();
+                                          Driver::STentry *entry = driver.get_symbol(yystack_[0].value.as < std::string > ());
+                                          yylhs.value.as < std::vector<uint32_t> > ().push_back(driver.get_symbol(yystack_[0].value.as < std::string > ())->offset); }
+#line 1188 "src/parser.cc"
+    break;
+
+  case 56: // symbol_or_literal_list: symbol_or_literal_list "," "literal"
+#line 247 "src/parser.y"
+                                        { yylhs.value.as < std::vector<uint32_t> > () = yystack_[2].value.as < std::vector<uint32_t> > (); yylhs.value.as < std::vector<uint32_t> > ().push_back(yystack_[0].value.as < uint32_t > ()); }
+#line 1194 "src/parser.cc"
+    break;
+
+  case 57: // symbol_or_literal_list: symbol_or_literal_list "," "symbol"
+#line 248 "src/parser.y"
+                                        { yylhs.value.as < std::vector<uint32_t> > () = yystack_[2].value.as < std::vector<uint32_t> > (); /* TODO: check if symbol is defined etc. */yylhs.value.as < std::vector<uint32_t> > ().push_back(driver.get_symbol(yystack_[0].value.as < std::string > ())->offset); }
+#line 1200 "src/parser.cc"
+    break;
+
+  case 58: // label: "label"
+#line 251 "src/parser.y"
+                                        { driver.insert_symbol(yystack_[0].value.as < std::string > ()); }
+#line 1206 "src/parser.cc"
+    break;
+
+  case 59: // expression: "literal"
+#line 255 "src/parser.y"
+                                        { yylhs.value.as < uint32_t > () = yystack_[0].value.as < uint32_t > (); }
+#line 1212 "src/parser.cc"
+    break;
+
+  case 60: // expression: expression "+" "literal"
+#line 256 "src/parser.y"
+                                        { yylhs.value.as < uint32_t > () = yystack_[2].value.as < uint32_t > () + yystack_[0].value.as < uint32_t > (); if(yylhs.value.as < uint32_t > () < yystack_[2].value.as < uint32_t > ()) Parser::error(yystack_[1].location, "Overflow occured"); }
+#line 1218 "src/parser.cc"
+    break;
+
+  case 61: // expression: expression "-" "literal"
+#line 257 "src/parser.y"
+                                        { yylhs.value.as < uint32_t > () = yystack_[2].value.as < uint32_t > () - yystack_[0].value.as < uint32_t > (); if(yylhs.value.as < uint32_t > () > yystack_[2].value.as < uint32_t > ()) Parser::error(yystack_[1].location, "Underflow occured"); }
+#line 1224 "src/parser.cc"
     break;
 
 
-#line 1089 "src/parser.cc"
+#line 1228 "src/parser.cc"
 
             default:
               break;
@@ -1278,127 +1417,140 @@ namespace Assembler {
 
 
 
-  const signed char Parser::yypact_ninf_ = -44;
+  const signed char Parser::yypact_ninf_ = -46;
 
   const signed char Parser::yytable_ninf_ = -1;
 
-  const signed char
+  const short
   Parser::yypact_[] =
   {
-     -44,     8,   -44,   -43,   -43,   -36,   -29,   -44,   -44,   -44,
-     -44,   -37,   -44,   -37,   -28,     1,     3,     7,    42,    44,
-      46,    47,    48,    49,    50,    51,    52,    53,    54,    55,
-     -37,    56,    40,    57,   -44,   -44,   -44,    64,    65,    45,
-     -44,    67,    67,   -44,   -44,    61,   -42,   -44,   -44,   -44,
-     -44,   -44,    69,    70,    71,   -44,   -44,    75,    76,    77,
-      78,    79,   -44,    80,    81,    82,    83,    84,    85,    86,
-      87,    88,   -44,   -44,   -44,    89,    90,    43,    13,   -44,
-     -44,    91,    92,    93,    94,    95,    96,    97,    98,    99,
-     100,   101,   102,   103,   104,   -37,   105,   106,   -44,   -44,
-     -44,   -44,    41,   113,   115,   116,   -44,   -44,   -44,   -44,
-     -44,   -44,   -44,   -44,   -44,   -44,   -44,   -44,   -44,   -44,
-     114,   117,   -37,   -37,   -37,   -44,   -44,   -44,   -44,   -44
+     -46,    15,   -46,   -45,   -45,   -35,   -36,   -30,   -33,     9,
+     -46,   -46,   -46,   -46,   -38,   -46,   -38,    16,    19,    20,
+      21,    22,    23,    24,    25,    26,    27,    28,    29,    30,
+      31,    32,    33,   -38,    34,    14,    35,   -46,   -46,   -46,
+      43,    78,    79,   -46,    81,    81,   -46,   -46,   -46,    82,
+     -46,   -46,    83,    76,   -34,   -46,   -46,   -46,   -46,   -46,
+      88,    89,    90,   -46,   -46,    91,    92,    93,    94,    95,
+     -46,    96,    97,    98,    99,   100,   101,   102,   103,   104,
+     -46,   -46,   -46,   105,   106,   107,     8,    18,   -37,   -46,
+     -46,   108,   110,   111,   112,   113,   114,   115,   116,   117,
+     118,   119,   120,   121,   122,   -38,   123,   124,   -46,   -46,
+     -46,   -46,   -46,   -46,    17,   -46,    10,   109,   132,   134,
+     -46,   -46,   -46,   -46,   -46,   -46,   -46,   -46,   -46,   -46,
+     -46,   -46,   -46,   -46,   128,   129,   135,   136,   -38,   -38,
+     -38,   -46,   -46,   -46,   -46,   -46,   -46,   -46
   };
 
   const signed char
   Parser::yydefact_[] =
   {
-       2,     0,     1,     0,     0,     0,     0,     4,    11,    12,
-      13,     0,    15,     0,     0,     0,     0,     0,     0,     0,
+       2,     0,     1,     0,     0,     0,     0,     0,     0,     0,
+       4,    11,    12,    13,     0,    15,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     5,    51,     3,     0,     0,     0,
-      49,    45,    46,    47,    48,     0,     0,    38,    41,    40,
-      14,    16,     0,     0,     0,    20,    21,     0,     0,     0,
-       0,     0,    27,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     9,     7,     6,     0,     0,     0,     0,    37,
+       0,     0,     0,     0,     0,     0,     0,     5,    58,     3,
+       0,     0,     0,    52,    45,    46,    47,    54,    55,    48,
+      49,    50,     0,     0,     0,    38,    41,    40,    14,    16,
+       0,     0,     0,    20,    21,     0,     0,     0,     0,     0,
+      27,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       9,     7,     6,     0,     0,     0,     0,     0,     0,    37,
       39,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,    10,     8,
-      50,    42,     0,     0,     0,     0,    22,    23,    24,    25,
-      26,    28,    29,    30,    31,    32,    33,    34,    35,    36,
-       0,     0,     0,     0,     0,    43,    44,    17,    18,    19
+      53,    56,    57,    59,    51,    42,     0,     0,     0,     0,
+      22,    23,    24,    25,    26,    28,    29,    30,    31,    32,
+      33,    34,    35,    36,     0,     0,     0,     0,     0,     0,
+       0,    60,    61,    43,    44,    17,    18,    19
   };
 
-  const signed char
+  const short
   Parser::yypgoto_[] =
   {
-     -44,   -44,   -44,   119,   -13,   120,   122,   -44
+     -46,   -46,   -46,   137,   -16,   138,   141,   -46,   -46,   -46
   };
 
   const signed char
   Parser::yydefgoto_[] =
   {
-       0,     1,    36,    37,    50,    38,    41,    39
+       0,     1,    39,    40,    58,    41,    44,    49,    42,   114
   };
 
   const unsigned char
   Parser::yytable_[] =
   {
-      51,    79,    45,    40,    80,    46,    47,    48,     2,    49,
-      43,     3,     4,     5,    44,     6,    52,    68,     7,     8,
-       9,    10,    11,    12,    13,    14,    15,    16,    17,    18,
-      19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
-      29,    30,    31,    32,    33,    53,    34,    54,     3,     4,
-       5,    55,     6,   101,   102,    35,     8,     9,    10,    11,
-      12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
-      22,    23,    24,    25,    26,    27,    28,    29,    30,    31,
-      32,    33,   117,    74,   120,    70,    56,   121,    57,   100,
-      58,    59,    60,    61,    62,    63,    64,    65,    66,    67,
-      69,    71,    72,    73,    77,    78,    81,    82,    83,   127,
-     128,   129,    84,    85,    86,    87,    88,    89,    90,    91,
-      92,    93,    94,    95,    96,    97,    42,    98,    99,     0,
-       0,     0,     0,     0,     0,   103,   104,   105,   106,   107,
-     108,   109,   110,   111,   112,   113,   114,   115,   116,   118,
-     122,   119,   123,   124,   125,     0,     0,   126,    75,    76
-  };
-
-  const signed char
-  Parser::yycheck_[] =
-  {
-      13,    43,    39,    46,    46,    42,    43,    44,     0,    46,
-      46,     3,     4,     5,    43,     7,    44,    30,    10,    11,
-      12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
-      22,    23,    24,    25,    26,    27,    28,    29,    30,    31,
-      32,    33,    34,    35,    36,    44,    38,    44,     3,     4,
-       5,    44,     7,    40,    41,    47,    11,    12,    13,    14,
+      59,    53,    43,   115,   116,    54,    55,    56,    47,    57,
+      89,    48,    46,    90,    50,     2,    51,    76,     3,     4,
+       5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
-      35,    36,    95,    38,    43,    45,    44,    46,    44,    46,
-      44,    44,    44,    44,    44,    44,    44,    44,    44,    44,
-      44,    44,    38,    38,    37,    44,    37,    37,    37,   122,
-     123,   124,    37,    37,    37,    37,    37,    37,    37,    37,
-      37,    37,    37,    37,    37,    37,     4,    38,    38,    -1,
-      -1,    -1,    -1,    -1,    -1,    44,    44,    44,    44,    44,
-      44,    44,    44,    44,    44,    44,    44,    44,    44,    44,
-      37,    45,    37,    37,    40,    -1,    -1,    40,    39,    39
+      35,    36,   111,    37,   136,   112,    52,   137,   134,   135,
+      78,    60,   113,    38,    61,    62,    63,    64,    65,    66,
+      67,    68,    69,    70,    71,    72,    73,    74,    75,    77,
+      79,    80,     3,     4,     5,     6,     7,     8,     9,   131,
+      11,    12,    13,    14,    15,    16,    17,    18,    19,    20,
+      21,    22,    23,    24,    25,    26,    27,    28,    29,    30,
+      31,    32,    33,    34,    35,    36,    81,    82,    85,    86,
+      87,    88,   145,   146,   147,    91,    92,    93,    94,    95,
+      96,    97,    98,    99,   100,   101,   102,   103,   104,   105,
+     106,   107,     0,   108,   109,    45,   138,     0,     0,     0,
+       0,     0,     0,   117,   110,   118,   119,   120,   121,   122,
+     123,   124,   125,   126,   127,   128,   129,   130,   132,   139,
+     133,   140,   141,   142,     0,   143,   144,     0,     0,    83,
+      84
+  };
+
+  const short
+  Parser::yycheck_[] =
+  {
+      16,    39,    47,    40,    41,    43,    44,    45,    44,    47,
+      44,    47,    47,    47,    44,     0,    49,    33,     3,     4,
+       5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
+      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
+      35,    36,    44,    38,    44,    47,    47,    47,    41,    42,
+      46,    45,    44,    48,    45,    45,    45,    45,    45,    45,
+      45,    45,    45,    45,    45,    45,    45,    45,    45,    45,
+      45,    38,     3,     4,     5,     6,     7,     8,     9,   105,
+      11,    12,    13,    14,    15,    16,    17,    18,    19,    20,
+      21,    22,    23,    24,    25,    26,    27,    28,    29,    30,
+      31,    32,    33,    34,    35,    36,    38,    38,    37,    37,
+      37,    45,   138,   139,   140,    37,    37,    37,    37,    37,
+      37,    37,    37,    37,    37,    37,    37,    37,    37,    37,
+      37,    37,    -1,    38,    38,     4,    37,    -1,    -1,    -1,
+      -1,    -1,    -1,    45,    47,    45,    45,    45,    45,    45,
+      45,    45,    45,    45,    45,    45,    45,    45,    45,    37,
+      46,    37,    44,    44,    -1,    40,    40,    -1,    -1,    42,
+      42
   };
 
   const signed char
   Parser::yystos_[] =
   {
-       0,    51,     0,     3,     4,     5,     7,    10,    11,    12,
-      13,    14,    15,    16,    17,    18,    19,    20,    21,    22,
-      23,    24,    25,    26,    27,    28,    29,    30,    31,    32,
-      33,    34,    35,    36,    38,    47,    52,    53,    55,    57,
-      46,    56,    56,    46,    43,    39,    42,    43,    44,    46,
-      54,    54,    44,    44,    44,    44,    44,    44,    44,    44,
-      44,    44,    44,    44,    44,    44,    44,    44,    54,    44,
-      45,    44,    38,    38,    38,    53,    55,    37,    44,    43,
-      46,    37,    37,    37,    37,    37,    37,    37,    37,    37,
+       0,    55,     0,     3,     4,     5,     6,     7,     8,     9,
+      10,    11,    12,    13,    14,    15,    16,    17,    18,    19,
+      20,    21,    22,    23,    24,    25,    26,    27,    28,    29,
+      30,    31,    32,    33,    34,    35,    36,    38,    48,    56,
+      57,    59,    62,    47,    60,    60,    47,    44,    47,    61,
+      44,    49,    47,    39,    43,    44,    45,    47,    58,    58,
+      45,    45,    45,    45,    45,    45,    45,    45,    45,    45,
+      45,    45,    45,    45,    45,    45,    58,    45,    46,    45,
+      38,    38,    38,    57,    59,    37,    37,    37,    45,    44,
+      47,    37,    37,    37,    37,    37,    37,    37,    37,    37,
       37,    37,    37,    37,    37,    37,    37,    37,    38,    38,
-      46,    40,    41,    44,    44,    44,    44,    44,    44,    44,
-      44,    44,    44,    44,    44,    44,    44,    54,    44,    45,
-      43,    46,    37,    37,    37,    40,    40,    54,    54,    54
+      47,    44,    47,    44,    63,    40,    41,    45,    45,    45,
+      45,    45,    45,    45,    45,    45,    45,    45,    45,    45,
+      45,    58,    45,    46,    41,    42,    44,    47,    37,    37,
+      37,    44,    44,    40,    40,    58,    58,    58
   };
 
   const signed char
   Parser::yyr1_[] =
   {
-       0,    50,    51,    51,    51,    52,    52,    52,    52,    52,
-      52,    53,    53,    53,    53,    53,    53,    53,    53,    53,
-      53,    53,    53,    53,    53,    53,    53,    53,    53,    53,
-      53,    53,    53,    53,    53,    53,    53,    54,    54,    54,
-      54,    54,    54,    54,    54,    55,    55,    55,    55,    56,
-      56,    57
+       0,    54,    55,    55,    55,    56,    56,    56,    56,    56,
+      56,    57,    57,    57,    57,    57,    57,    57,    57,    57,
+      57,    57,    57,    57,    57,    57,    57,    57,    57,    57,
+      57,    57,    57,    57,    57,    57,    57,    58,    58,    58,
+      58,    58,    58,    58,    58,    59,    59,    59,    59,    59,
+      59,    59,    60,    60,    61,    61,    61,    61,    62,    63,
+      63,    63
   };
 
   const signed char
@@ -1408,8 +1560,9 @@ namespace Assembler {
        3,     1,     1,     1,     2,     1,     2,     6,     6,     6,
        2,     2,     4,     4,     4,     4,     4,     2,     4,     4,
        4,     4,     4,     4,     4,     4,     4,     2,     1,     2,
-       1,     1,     3,     5,     5,     2,     2,     2,     2,     1,
-       3,     1
+       1,     1,     3,     5,     5,     2,     2,     2,     2,     2,
+       2,     4,     1,     3,     1,     1,     3,     3,     1,     1,
+       3,     3
   };
 
 
@@ -1428,25 +1581,28 @@ namespace Assembler {
   "\"sub_inst\"", "\"mul_inst\"", "\"div_inst\"", "\"not_inst\"",
   "\"and_inst\"", "\"or_inst\"", "\"xor_inst\"", "\"shl_inst\"",
   "\"shr_inst\"", "\"ld_inst\"", "\"st_inst\"", "\"csrrd_inst\"",
-  "\"csrwr_inst\"", "\",\"", "\"eol\"", "\"[\"", "\"]\"", "\"+\"", "\"$\"",
-  "\"literal\"", "\"general purpose register\"",
+  "\"csrwr_inst\"", "\",\"", "\"eol\"", "\"[\"", "\"]\"", "\"+\"", "\"-\"",
+  "\"$\"", "\"literal\"", "\"general purpose register\"",
   "\"control and status register\"", "\"symbol\"", "\"label\"",
-  "\"symbol_list\"", "\"operand\"", "$accept", "program", "line",
-  "instruction", "operand", "directive", "symbol_list", "label", YY_NULLPTR
+  "\"ascii\"", "\"symbol_list\"", "\"symbol_or_literal_list\"",
+  "\"operand\"", "\"expression\"", "$accept", "program", "line",
+  "instruction", "operand", "directive", "symbol_list",
+  "symbol_or_literal_list", "label", "expression", YY_NULLPTR
   };
 #endif
 
 
 #if YYDEBUG
-  const unsigned char
+  const short
   Parser::yyrline_[] =
   {
-       0,   135,   135,   137,   138,   142,   143,   144,   145,   146,
-     147,   151,   152,   153,   154,   155,   156,   157,   158,   159,
-     160,   161,   162,   163,   164,   165,   166,   167,   168,   169,
-     170,   171,   172,   173,   174,   175,   176,   180,   181,   182,
-     183,   184,   185,   186,   187,   192,   200,   201,   204,   208,
-     209,   213
+       0,   141,   141,   143,   144,   148,   149,   150,   151,   152,
+     153,   157,   158,   159,   160,   161,   162,   163,   164,   165,
+     166,   167,   168,   169,   170,   171,   172,   173,   174,   175,
+     176,   177,   178,   179,   180,   181,   182,   186,   187,   188,
+     197,   206,   207,   208,   209,   222,   223,   224,   225,   226,
+     229,   232,   238,   239,   243,   244,   247,   248,   251,   255,
+     256,   257
   };
 
   void
@@ -1515,10 +1671,10 @@ namespace Assembler {
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
       35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
-      45,    46,    47,    48,    49
+      45,    46,    47,    48,    49,    50,    51,    52,    53
     };
     // Last valid token kind.
-    const int code_max = 304;
+    const int code_max = 308;
 
     if (t <= 0)
       return symbol_kind::S_YYEOF;
@@ -1530,9 +1686,9 @@ namespace Assembler {
 
 #line 4 "src/parser.y"
 } // Assembler
-#line 1534 "src/parser.cc"
+#line 1690 "src/parser.cc"
 
-#line 215 "src/parser.y"
+#line 259 "src/parser.y"
 
 
 void 

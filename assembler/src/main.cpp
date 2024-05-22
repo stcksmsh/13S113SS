@@ -12,32 +12,52 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
+#include <fstream>
 
 #include "driver.hpp"
+#include "arguments.hpp"
 
 int 
 main( const int argc, const char **argv )
 {
-   /** check for the right # of arguments **/
-   if( argc != 2 )
+   Arguments args({
+      {"output", "o", "Specifies the output file name", 1, false, false, -1},
+      {"log-level", "l", "Specifies the log level: 0 - no logging, 1 - errors only, 2 - warnings, 3 - info, 4 - debug", 1, false, false, -1},
+   });
+
+   if( args.parse(argc, argv) == EXIT_FAILURE )
    {
-      /** exit with failure condition **/
-      return ( EXIT_FAILURE );
+      return( EXIT_FAILURE );
    }
 
-   if( std::strncmp( argv[ 1 ], "-h", 2 ) == 0 )
+   std::string in_file_name = args.getArguments()[0][0];
+   std::string out_file_name = "a.out";
+   
+
+   if( args.isPresent("output") )
    {
-      /** simple help menu **/
-      std::cout << "use -o for pipe to std::cin\n";
-      std::cout << "just give a filename to count from a file\n";
-      std::cout << "use -h to get this menu\n";
-      return( EXIT_SUCCESS );
+      out_file_name = args.getArguments("output")[0][0];
    }
 
-   Assembler::Driver driver;
-   driver.parse( argv[1] );
+   int log_level = 0;
+   if( args.isPresent("log-level") )
+   {
+      log_level = std::stoi( args.getArguments("log-level")[0][0] );
+   }
 
-   driver.print();
+
+   Assembler::Driver driver(log_level);
+   std::ofstream out_file;
+   out_file.open( out_file_name, std::ios::binary | std::ios::trunc );
+   if( ! out_file.good() )
+   {
+      std::cerr << "Unable to open file: " << out_file_name << "\n";
+      return( EXIT_FAILURE );
+   }
+
+   driver.parse( in_file_name );
+   driver.create_shared_file( out_file_name );
+
 
    return( EXIT_SUCCESS );
 }

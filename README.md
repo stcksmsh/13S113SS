@@ -209,8 +209,6 @@ The abstract computer system consists of:
 - A timer (TIM)
 - A terminal (TERM)
   All of the components mentioned above are interconnected via a system bus. Aside from this system bus the timer and the terminal are directly connected to the processor via interrupt causing lines.
-  A simple diagram of this computer system is shown below.
-  ![simple diagram of the computer system](image/README/computer.png)
 
 ## The processor
 

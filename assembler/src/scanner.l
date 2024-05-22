@@ -23,6 +23,7 @@ using token = Assembler::Parser::token;
 %}
 
 %option debug
+%option yylineno
 %option nodefault
 %option yyclass="Assembler::Scanner"
 %option noyywrap
@@ -34,6 +35,7 @@ using token = Assembler::Parser::token;
 %}
 
 [ \t]+					{ /* ignore whitespace */ }
+"#"[^\n]*				{ /* ignore comments */ }
 
 "\.global"					{ return token::GLOBAL; }
 "\.extern"					{ return token::EXTERN; }
@@ -76,17 +78,25 @@ using token = Assembler::Parser::token;
 "]"					{ return token::RBRACKET; }
 
 "+"					{ return token::PLUS; }
+"-"					{ return token::MINUS; }
 "$"                 { return token::DOLLAR; }
 
 
 ","					{ return token::COMMA; }
-"\n"				{ return token::EOL; }
+"\n"+				{ loc->lines( yyleng ); return token::EOL; }
 
 
 "%r"[[:digit:]]+				{ 
                                     yylval->build<int>( atoi(yytext + 2) );
                                     return token::GPR;
                                 }
+
+"%sp"                           { yylval->build<int>( 14 ); return token::GPR; }
+"%pc"                           { yylval->build<int>( 15 ); return token::GPR; }
+
+"%status"                       { yylval->build<Assembler::csr_type>( STATUS ); return token::CSR; }
+"%handler"                      { yylval->build<Assembler::csr_type>( HANDLER ); return token::CSR; }
+"%cause"                        { yylval->build<Assembler::csr_type>( CAUSE ); return token::CSR; }
 
 "0x"[0-9a-fA-F]+				{
                                     yylval->build<uint32_t>( strtoll(yytext, NULL, 16) );
@@ -108,6 +118,11 @@ using token = Assembler::Parser::token;
                                     return token::NUMBER;
                                 }
 
+"0"								{   
+                                    yylval->build<uint32_t>( 0 );
+                                    return token::NUMBER;
+                                }
+
 [a-zA-Z_][a-zA-Z0-9_]*:		    {   
                                     yytext[strlen(yytext) - 1] = '\0';
                                     yylval->build<std::string>( yytext );
@@ -119,4 +134,11 @@ using token = Assembler::Parser::token;
                                     return token::SYMBOL; 
                                 }
 
+"\""[[:print:]]*"\""            {   
+                                    yytext[strlen(yytext) - 1] = '\0';
+                                    yylval->build<std::string>( yytext + 1 );
+                                    return token::STRING; 
+                                }
+
+.                               { std::cerr << "Unrecognized token: " << yytext << " at line " << loc->end.line << " character " << loc->end.column << std::endl; exit(1); } 
 %%

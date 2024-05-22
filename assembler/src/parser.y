@@ -16,10 +16,10 @@
    namespace Assembler {
       class Driver;
       class Scanner;
-      enum csr_type{
-         STATUS,
-         HANDLER,
-         CAUSE
+      enum csr_type: uint8_t{
+         STATUS = 0,
+         HANDLER = 1,
+         CAUSE = 2
       };
       union instruction{
          struct{
@@ -108,6 +108,7 @@
 %token	                           LBRACKET    "["
 %token	                           RBRACKET    "]"
 %token	                           PLUS        "+"
+%token	                           MINUS       "-"
 %token	                           DOLLAR      "$"
 
 /* Type tokens */
@@ -117,13 +118,18 @@
 %token <Assembler::csr_type>        CSR         "control and status register"
 %token <std::string>                SYMBOL      "symbol"
 %token <std::string>                LABEL       "label"
+%token <std::string>                STRING       "ascii"
 
 
 /* Types */
 
-%type < std::vector<std::string> >  symbol_list "symbol_list"
-/*  */
-%type < Assembler::instruction >   operand     "operand"
+%type <std::vector<std::string>>    symbol_list "symbol_list"
+
+%type <std::vector<uint32_t>>       symbol_or_literal_list "symbol_or_literal_list"
+
+%type <Assembler::instruction>      operand     "operand"
+
+%type <uint32_t>                    expression  "expression"
 
 /* End of file token */
 
@@ -151,7 +157,7 @@ instruction:
      HALT                               { Assembler::instruction inst; inst.fields.OC = 0b00000; driver.append_TEXT(inst.raw); }
    | INT                                { Assembler::instruction inst; inst.fields.OC = 0b00001; driver.append_TEXT(inst.raw); }
    | IRET                               { Assembler::instruction inst; inst.fields.OC = 0b00010; driver.append_TEXT(inst.raw); }
-   | CALL operand                       { $2.fields.OC = 0b00011; driver.append_TEXT($2.raw); std::cout << std::hex << $2.raw << std::endl; }
+   | CALL operand                       { $2.fields.OC = 0b00011; driver.append_TEXT($2.raw); }
    | RET                                { Assembler::instruction inst; inst.fields.OC = 0b00100; driver.append_TEXT(inst.raw); }
    | JMP operand                        { $2.fields.OC = 0b00101; driver.append_TEXT($2.raw); }
    | BEQ GPR COMMA GPR COMMA operand    { $6.fields.OC = 0b00110; $6.fields.RegA = $2; $6.fields.RegB = $4; driver.append_TEXT($6.raw); }
@@ -172,36 +178,60 @@ instruction:
    | SHR GPR COMMA GPR                  { Assembler::instruction inst; inst.fields.OC = 0b10101; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
    | LD operand COMMA GPR               { $2.fields.OC = 0b10110; $2.fields.RegA = $4; driver.append_TEXT($2.raw); }
    | ST GPR COMMA operand               { $4.fields.OC = 0b10111; $4.fields.RegA = $2; driver.append_TEXT($4.raw); }
-   | CSRRD CSR COMMA GPR                { Assembler::instruction inst; inst.fields.OC = 0b11000; inst.fields.RegA = $2; driver.append_TEXT(inst.raw); }
-   | CSRWR GPR COMMA CSR                { Assembler::instruction inst; inst.fields.OC = 0b11001; inst.fields.RegA = $2; driver.append_TEXT(inst.raw); }
+   | CSRRD CSR COMMA GPR                { Assembler::instruction inst; inst.fields.OC = 0b11000; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
+   | CSRWR GPR COMMA CSR                { Assembler::instruction inst; inst.fields.OC = 0b11001; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
    ;
 
 operand:  
      DOLLAR NUMBER                      { $$.fields.MOD = 0b000; $$.fields.Disp = $2; }
    | NUMBER                             { $$.fields.MOD = 0b001; $$.fields.Disp = $1; }
-   | DOLLAR SYMBOL                      { $$.fields.MOD = 0b010; /* TODO: check if symbol is defined etc. */$$.fields.Disp = driver.get_symbol($2, driver.TEXT.size(), true)->offset; }
-   | SYMBOL                             { $$.fields.MOD = 0b011; /* TODO: check if symbol is defined etc. */$$.fields.Disp = driver.get_symbol($1, driver.TEXT.size(), true)->offset;}
+   | DOLLAR SYMBOL                      { $$.fields.MOD = 0b010;
+                                          Driver::STentry *entry = driver.get_symbol($2);
+                                          if(!entry){
+                                             driver.forward_reference($2);
+                                             $$.fields.Disp = 0;
+                                          }else{
+                                             $$.fields.Disp = entry->offset;
+                                          }
+                                        }
+   | SYMBOL                             { $$.fields.MOD = 0b011;
+                                          Driver::STentry *entry = driver.get_symbol($1);
+                                          if(!entry){
+                                             driver.forward_reference($1);
+                                             $$.fields.Disp = 0;
+                                          }else{
+                                             $$.fields.Disp = entry->offset;
+                                          }
+                                        }
    | GPR                                { $$.fields.MOD = 0b100; $$.fields.RegC = $1; }
    | LBRACKET GPR RBRACKET              { $$.fields.MOD = 0b101; $$.fields.RegC = $2; }
    | LBRACKET GPR PLUS NUMBER RBRACKET  { $$.fields.MOD = 0b110; $$.fields.RegC = $2; $$.fields.Disp = $4; }
-   | LBRACKET GPR PLUS SYMBOL RBRACKET  { $$.fields.MOD = 0b111; $$.fields.RegC = $2; /* TODO: check if symbol is defined etc. */$$.fields.Disp = driver.get_symbol($4, driver.TEXT.size(), true)->offset;}
+   | LBRACKET GPR PLUS SYMBOL RBRACKET  { $$.fields.MOD = 0b111; $$.fields.RegC = $2;
+                                          Driver::STentry *entry = driver.get_symbol($4);
+                                          if(!entry){
+                                             driver.forward_reference($4);
+                                             $$.fields.Disp = 0;
+                                          }else{
+                                             $$.fields.Disp = entry->offset;
+                                          }
+                                        }
    ;
 
 
 directive:
-     GLOBAL symbol_list                 {  for(std::string s : $2){
-                                              Assembler::Driver::STentry *entry = driver.get_symbol(s, driver.TEXT.size(), false);
-                                              if(!entry){
-                                                 entry = driver.insert_symbol(s, driver.current_section, driver.TEXT.size(), false);
-                                              }
-                                              entry->local = false;
-                                           }
-                                        }
+     GLOBAL symbol_list                 { driver.add_global($2); }
    | EXTERN symbol_list                 { driver.add_extern($2); }
-   | SECTION SYMBOL                     { driver.current_section = $2;
-                                          driver.insert_symbol($2, driver.current_section, driver.TEXT.size());
+   | SECTION SYMBOL                     { driver.add_section($2); }
+   | WORD symbol_or_literal_list        { for(uint32_t val : $2) driver.append_TEXT(val); }
+   | SKIP NUMBER                        { driver.TEXT.resize(driver.TEXT.size() + $2);
+                                          driver.current_section_ref.get().size += $2;
                                         }
-   | SKIP NUMBER                        { for(int i = 0; i < $2; i++) driver.TEXT.push_back(0); }
+   | ASCII STRING                       { for(char c : $2) driver.TEXT.push_back(c);
+                                          driver.current_section_ref.get().size += $2.size();
+                                        }
+   | EQU SYMBOL COMMA expression        { driver.insert_symbol($2);
+                                          driver.get_symbol($2)->offset = $4;
+                                        }
    ;
 
 symbol_list:
@@ -209,9 +239,23 @@ symbol_list:
    | symbol_list COMMA SYMBOL           { $$ = $1; $$.push_back($3); }
    ;
 
+symbol_or_literal_list:
+   NUMBER                               { $$ = std::vector<uint32_t>(); $$.push_back($1); }
+   | SYMBOL                             { $$ = std::vector<uint32_t>();
+                                          Driver::STentry *entry = driver.get_symbol($1);
+                                          $$.push_back(driver.get_symbol($1)->offset); }
+   | symbol_or_literal_list COMMA NUMBER{ $$ = $1; $$.push_back($3); }
+   | symbol_or_literal_list COMMA SYMBOL{ $$ = $1; /* TODO: check if symbol is defined etc. */$$.push_back(driver.get_symbol($3)->offset); }
+
 label:
-   LABEL                                { /* TODO: change offset to section offset */driver.insert_symbol($1, driver.current_section, driver.TEXT.size()); }
+   LABEL                                { driver.insert_symbol($1); }
    ;
+
+expression:
+   NUMBER                               { $$ = $1; }
+   | expression PLUS NUMBER             { $$ = $1 + $3; if($$ < $1) Parser::error(@2, "Overflow occured"); }
+   | expression MINUS NUMBER            { $$ = $1 - $3; if($$ > $1) Parser::error(@2, "Underflow occured"); }
+
 %%
 
 void 
