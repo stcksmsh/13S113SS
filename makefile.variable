@@ -4,8 +4,7 @@ EMULATOR=emulator
 TESTS=tests
 COMMON=common
 
-INDENTONE=" \ \ "
-INDENTTWO=" \ \ \ \ \ "
+INDENT=" \ "
 
 BIN_DIR = bin
 SRC_DIR=src

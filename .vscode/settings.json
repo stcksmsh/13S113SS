@@ -43,6 +43,7 @@
         "tuple": "cpp",
         "atomic": "cpp",
         "random": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "format": "cpp"
     }
 }

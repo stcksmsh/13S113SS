@@ -1,8 +1,5 @@
 include ../makefile.variable
 
-# Comment out the following line to disable debug mode
-DEBUG=1
-
 # Path: assembler/makefile
 
 ASSEMBLER_SRC=${wildcard src/*.cpp}
@@ -23,17 +20,17 @@ LIB_OBJS=$(foreach lib,$(subst $(space),$(newline),$(LIBS)),../lib/$(lib).o)
 
 
 build: clean parser scanner ${ASSEMBLER_OBJ}
-	@echo -n "${INDENTONE}Linking assembler...  \n"
+	@echo -n "${INDENT}Linking assembler...  \n"
 	@${CXX} ${CXXFLAGS} ${LIB_OBJS} ${ASSEMBLER_OBJ} ${OBJ_DIR}/parser.o ${OBJ_DIR}/scanner.o -o ${ASSEMBLER_EXE}
 	@echo "Done."
 
 ${OBJ_DIR}/%.o: ${SRC_DIR}/%.cpp
-	@echo -n "${INDENTONE}Building $@...  "
+	@echo -n "${INDENT}Building $@...  "
 	@${CXX} ${CXXFLAGS} -c $< -o $@
 	@echo "Done."
 
 parser: ${PARSER_FILE}
-	@echo -n "${INDENTONE}Building parser...  "
+	@echo -n "${INDENT}Building parser...  "
 	@bison -t -d -o ${SRC_DIR}/parser.cc ${PARSER_FILE}
 	@mv ${SRC_DIR}/parser.hh ${INC_DIR}
 	@mv ${SRC_DIR}/location.hh ${INC_DIR}
@@ -41,15 +38,14 @@ parser: ${PARSER_FILE}
 	@echo "Done."
 
 scanner: ${SCANNER_FILE}
-	@echo -n "${INDENTONE}Building scanner...  "
+	@echo -n "${INDENT}Building scanner...  "
 	@flex -o ${SRC_DIR}/scanner.cc ${SCANNER_FILE}
 	@${CXX}  ${CXXFLAGS} -c ${SRC_DIR}/scanner.cc -o ${OBJ_DIR}/scanner.o
 	@echo "Done."
 
 
-
 clean:
-	@echo -n "${INDENTONE}Cleaning assembler...  "
+	@echo -n "${INDENT}Cleaning assembler...  "
 	@rm -f ${SRC_DIR}/parser.cc ${SRC_DIR}/scanner.cc
 	@rm -f ${ASSEMBLER_EXE}
 	@rm -rdf ${OBJ_DIR}/*

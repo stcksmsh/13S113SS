@@ -4,9 +4,11 @@
 #include <cstdint>
 
 /// @brief The program header of the ELF file
-struct Program_Header{
+struct Program_Header
+{
     /// @brief The type of the program header ( 1 for loadable segment )
-    enum Program_Type: uint32_t{
+    enum Program_Type : uint32_t
+    {
         /// @brief Unused program header
         PT_NULL = 0x0,
         /// @brief Loadable segment
@@ -43,7 +45,8 @@ struct Program_Header{
 };
 
 /// @brief The flags of the section header
-enum Section_Header_Flags: uint32_t{
+enum Section_Header_Flags : uint32_t
+{
     /// @brief Section contains data that should be writable during execution
     SHF_WRITE = 0x1,
     /// @brief Section occupies memory during program execution
@@ -76,12 +79,14 @@ enum Section_Header_Flags: uint32_t{
     SHF_EXCLUDE = 0x8000000
 };
 /// @brief The section header of the ELF file
-struct Section_Header{
+struct Section_Header
+{
     /// @brief The name of the section (index in the string table)
     uint32_t name = 0x0;
     /// @brief The type of the section
     /// @brief The type of the section header
-    enum Section_Type: uint32_t{
+    enum Section_Type : uint32_t
+    {
         /// @brief Unused section
         SHT_NULL = 0x0,
         /// @brief Section with data
@@ -140,9 +145,10 @@ struct Section_Header{
 };
 
 /// @brief The ELF header of the file
-struct ELF_Header{
+struct ELF_Header
+{
     /// @brief The magic number of the ELF file
-    uint8_t magic[4] = { 0x7F, 'E', 'L', 'F' };
+    uint8_t magic[4] = {0x7F, 'E', 'L', 'F'};
     /// @brief The class of the ELF file ( 1 for 32-bit )
     uint8_t class_ = 1;
     /// @brief The data encoding of the ELF file ( 1 for little-endian )
@@ -156,7 +162,8 @@ struct ELF_Header{
     /// @brief 7 padding bytes
     uint8_t padding[7] = {0};
     /// @brief The type of the ELF file ( 1 - relocatable, 2 - exec, 3 - shared )
-    enum ELF_Type: uint16_t{
+    enum ELF_Type : uint16_t
+    {
         /// @brief Relocatable file
         ET_REL = 0x1,
         /// @brief Executable file
@@ -197,7 +204,8 @@ struct ELF_Header{
 };
 
 /// @brief The symbol table entry
-struct symtab_entry{
+struct symtab_entry
+{
     /// @brief The name of the symbol (index in the string table)
     uint32_t name;
     /// @brief The value of the symbol
@@ -212,7 +220,8 @@ struct symtab_entry{
     uint16_t shndx;
 };
 /// @brief The symbol table entry info bindings
-enum symtab_entry_bindings{
+enum symtab_entry_bindings
+{
     /// @brief The symbol is not visible outside the object file
     STB_LOCAL = 0,
     /// @brief The symbol is visible outside the object file
@@ -225,7 +234,8 @@ enum symtab_entry_bindings{
     STB_HIPROC = 15,
 };
 /// @brief The symbol table entry types
-enum symtab_entry_types{
+enum symtab_entry_types
+{
     /// @brief Not specified
     STT_NOTYPE = 0,
     /// @brief The symbol is an object
@@ -245,20 +255,21 @@ enum symtab_entry_types{
 /// @param binding The binding of the symbol
 /// @param type The type of the symbol
 /// @return The info byte
-inline uint8_t symtab_entry_info(uint8_t binding, uint8_t type){
+inline uint8_t symtab_entry_info(uint8_t binding, uint8_t type)
+{
     return (binding << 4) | (type & 0x0F);
 }
 
 /// @brief The relocation table entry
-struct rel_tab_entry{
+struct rel_tab_entry
+{
     /// @brief The offset of the relocation
     uint32_t offset;
     /* @brief Information on the relocation
-    *   In our case this is the index of the symbol in the symbol table, as we only have one type of relocation
-    *   If we had more types of relocations, we would need to store the type of the relocation as well
-    */  
+     *   In our case this is the index of the symbol in the symbol table, as we only have one type of relocation
+     *   If we had more types of relocations, we would need to store the type of the relocation as well
+     */
     uint32_t info;
 };
-
 
 #endif // __ELF_STRUCTS_HPP__

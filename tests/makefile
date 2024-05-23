@@ -5,21 +5,21 @@ include ../makefile.variable
 SHELL := /bin/bash
 
 a: FORCE
-	@echo "${INDENTONE}Running a..."
+	@echo "${INDENT}Running a..."
 	@source a/start.sh
-	@echo "${INDENTONE}Done."
+	@echo "${INDENT}Done."
 
 b: FORCE
-	@echo "${INDENTONE}Running b..."
+	@echo "${INDENT}Running b..."
 	@source b/start.sh
-	@echo "${INDENTONE}Done."
+	@echo "${INDENT}Done."
 
 c: FORCE
-	@echo "${INDENTONE}Running c..."
+	@echo "${INDENT}Running c..."
 	@source c/start.sh
-	@echo "${INDENTONE}Done."
+	@echo "${INDENT}Done."
 
 clean:
-	@echo -n "${INDENTONE}Cleaning tests...   "
+	@echo -n "${INDENT}Cleaning tests...   "
 	@rm -f a/*.o a/program.hex b/*.o b/program.hex c/*.o c/program.hex
-	@echo "${INDENTONE}Done."
+	@echo "${INDENT}Done."

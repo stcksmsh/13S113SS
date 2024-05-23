@@ -6,26 +6,26 @@ all: build test
 build: ${ASSEMBLER} ${LINKER} ${EMULATOR}
 
 
-${ASSEMBLER}: common FORCE | ${BIN_DIR}
+${ASSEMBLER}: FORCE ${COMMON} | ${BIN_DIR}
 	@echo "Building assembler..."
 	@${MAKE} --no-print-directory -C ${ASSEMBLER} build
 	@cp ${ASSEMBLER}/${ASSEMBLER} ${BIN_DIR}/${ASSEMBLER}
 	@export INDENT=""
 	@echo "Done building assembler."
 
-${LINKER}: common FORCE | ${BIN_DIR}
+${LINKER}: FORCE ${COMMON} | ${BIN_DIR}
 	@echo "Building linker..."
 	@${MAKE} --no-print-directory -C ${LINKER} build
 	@cp ${LINKER}/${LINKER} ${BIN_DIR}/${LINKER}
 	@echo "Done building linker."
 
-${EMULATOR}: common FORCE | ${BIN_DIR}
+${EMULATOR}: FORCE ${COMMON} | ${BIN_DIR}
 	@echo "Building emulator..."
 	@${MAKE} --no-print-directory -C ${EMULATOR} build
 	@cp ${EMULATOR}/${EMULATOR} ${BIN_DIR}/${EMULATOR}
 	@echo "Done building emulator."
 
-${COMMON}: FORCE | ${BIN_DIR}
+${COMMON}: FORCE ${BIN_DIR}
 	@echo "Building common..."
 	@${MAKE} --no-print-directory -C ${COMMON} build
 	@echo "Done building common."
@@ -60,3 +60,7 @@ clean:
 	@${MAKE} --no-print-directory -C ${COMMON} clean
 	@rm -f ${BIN_DIR}/*
 	@echo "Done cleaning."
+
+commit: clean
+	@git add .
+	@git commit ./

@@ -1,26 +1,35 @@
-all: build test
-
 include ../makefile.variable
 
-# Path: emulator/makefile
+# Path: linker/makefile
 
 LINKER_SRC=${wildcard src/*.cpp}
-LINKER_OBJ=${LINKER_SRC:.cpp=.o}
+LINKER_OBJ=${patsubst src/%.cpp,obj/%.o,${LINKER_SRC}}
 
-build: ${LINKER_OBJ}
-	@echo -n "${INDENTONE}Building linker...  "
-	@${CXX} ${CXXFLAGS} -o ${LINKER} ${LINKER_OBJ}
+LIBRARIES= ../lib/libelf.so
+LIB_HEADERS= ../lib/inc
+
+LINKER_EXE=linker
+
+CXXFLAGS= -I../lib/inc -Iinc -std=c++11
+
+LIBS= elf logger arguments
+LIB_OBJS=$(foreach lib,$(subst $(space),$(newline),$(LIBS)),../lib/$(lib).o)
+
+
+build: clean ${LINKER_OBJ}
+	@echo -n "${INDENT}Linking linker...  \n"
+	@${CXX} ${CXXFLAGS} ${LIB_OBJS} ${LINKER_OBJ} -o ${LINKER_EXE}
 	@echo "Done."
 
-${LINKER_OBJ}: ${LINKER_SRC} | ${OBJ_DIR}
-	@echo -n "${INDENTONE}Compiling $<...  "
+${OBJ_DIR}/%.o: ${SRC_DIR}/%.cpp
+	@echo -n "${INDENT}Building $@...  "
 	@${CXX} ${CXXFLAGS} -c $< -o $@
 	@echo "Done."
 
-${OBJ_DIR}:
-	@mkdir -p $@
 
 clean:
-	@echo -n "${INDENTONE}Cleaning linker...  "
-	@rm -f ${LINKER_OBJ} ${LINKER}
+	@echo -n "${INDENT}Cleaning linker...  "
+	@rm -f ${SRC_DIR}/parser.cc ${SRC_DIR}/scanner.cc
+	@rm -f ${LINKER_EXE}
+	@rm -rdf ${OBJ_DIR}/*
 	@echo "Done."

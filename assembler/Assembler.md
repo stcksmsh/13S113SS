@@ -2,8 +2,8 @@
 
 ## Instruction syntax
 
-| Instruction | Syntax                        |
-| ----------- | ----------------------------- |
+| Instruction | Syntax                      |
+| ----------- | --------------------------- |
 | HALT        | `halt`                      |
 | INT         | `int`                       |
 | IRET        | `iret`                      |
@@ -72,14 +72,14 @@
 
 The modifiers specify how the `operand` is represented:
 
-| Syntax                   | Modifier | Value                                                |
-| ------------------------ | -------- | ---------------------------------------------------- |
+| Syntax                 | Modifier | Value                                              |
+| ---------------------- | -------- | -------------------------------------------------- |
 | `$<literal>`           | 0b000    | The value of `<literal>`                           |
 | `$<symbol>`            | 0b001    | The value of `<symbol>`                            |
 | `<literal>`            | 0b010    | The value in memory at address `<literal>`         |
 | `<symbol>`             | 0b011    | The value in memory at address `<symbol>`          |
 | `%<reg>`               | 0b100    | The value in register `<reg>`                      |
-| `[%<reg>]`             | 0b101    | The value in memory at  address `<reg>`            |
+| `[%<reg>]`             | 0b101    | The value in memory at address `<reg>`             |
 | `[%<reg> + <literal>]` | 0b110    | The value in memory at address `<reg> + <literal>` |
 | `[%<reg> + <symbol>]`  | 0b111    | The value in memory at address `<reg> + <symbol>`  |
 
