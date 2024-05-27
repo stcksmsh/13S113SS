@@ -20,6 +20,7 @@
 #include <vector>
 
 #include "elf_structs.hpp"
+#include "logger.hpp"
 
 #define write_to_stream(os, data) os.write(reinterpret_cast<char *>(&data), sizeof(data))
 
@@ -38,19 +39,20 @@ public:
    };
 
 public:
-   ELF()
+   ELF(Logger *logger) : logger(logger)
    {
       /// Add the NULL section header
       Section_Header null_section;
+      section_names.push_back("");
       section_headers.push_back(null_section);
 
-      /// Add the .text section header
-      Section_Header text_section;
-      text_section.type = Section_Header::Section_Type::SHT_PROGBITS;
-      text_section.flags = Section_Header_Flags::SHF_ALLOC | Section_Header_Flags::SHF_EXECINSTR;
-      text_section.addralign = 0x1;
-      section_names.push_back(".text");
-      section_headers.push_back(text_section);
+      /// Add the .bss section header
+      Section_Header bss_section;
+      bss_section.type = Section_Header::Section_Type::SHT_NOBITS;
+      bss_section.flags = Section_Header_Flags::SHF_ALLOC | Section_Header_Flags::SHF_WRITE;
+      bss_section.addralign = 0x1;
+      section_names.push_back(".bss");
+      section_headers.push_back(bss_section);
 
       /// Add the .data section header
       Section_Header data_section;
@@ -60,34 +62,54 @@ public:
       section_names.push_back(".data");
       section_headers.push_back(data_section);
 
-      /// Add the .bss section header
-      Section_Header bss_section;
-      bss_section.type = Section_Header::Section_Type::SHT_NOBITS;
-      bss_section.flags = Section_Header_Flags::SHF_ALLOC | Section_Header_Flags::SHF_WRITE;
-      bss_section.addralign = 0x1;
-      section_names.push_back(".bss");
-      section_headers.push_back(bss_section);
+      /// Add the .text section header
+      Section_Header text_section;
+      text_section.type = Section_Header::Section_Type::SHT_PROGBITS;
+      text_section.flags = Section_Header_Flags::SHF_ALLOC | Section_Header_Flags::SHF_EXECINSTR;
+      text_section.addralign = 0x1;
+      section_names.push_back(".text");
+      section_headers.push_back(text_section);
+
    };
    ~ELF(){};
 
-   /// @brief Serialize a shared object file
+   /// @brief Create a shared object file
    /// @param os The output stream to serialize the shared object file to
    /// @return The output stream
    std::ostream &createShared(std::ostream &stream);
 
-   /// @brief Deserialize the ELF file
+   /// @brief Create an executable file
+   /// @param stream The output stream to serialize the executable file to
+   /// @return The output stream
+   std::ostream &createExecutable(std::ostream &stream); 
+
+   /// @brief Set the address of a section
+   /// @param section The name of the section
+   /// @param address The address to set
+   void setSectionAddress(const std::string section, const uint32_t address);
+
+   /// @brief Read the ELF object from a file
    /// @param is The input stream to deserialize from
    /// @return The input stream
-   std::istream &deserialize(std::istream &stream);
+   std::istream &readFromStream(std::istream &stream);
 
    /// @brief Add a section to the ELF file
-   void add_section(const std::string name, const std::vector<uint8_t> data, const Section_Header::Section_Type type, const uint32_t flags, const uint32_t addralign);
+   void add_section(const std::string name, const std::vector<char> data, const Section_Header::Section_Type type, const uint32_t flags, const uint32_t addralign);
 
    /// @brief Add a symbol to the ELF file
    void add_symbol(const std::string name, const std::string section, const uint32_t value, bool is_local = false, bool is_section = false);
 
    /// @brief Add a relocation entry to the ELF file
    void add_relocation(const std::string name, const std::string section, const uint32_t offset);
+
+   /// @brief Set the size of the BSS section
+   void set_bss_size(const std::size_t size);
+
+   /// @brief Set the DATA section
+   void set_data(const std::vector<char> data);
+
+   /// @brief Set the TEXT section
+   void set_text(const std::vector<char> data);
 
 private:
    /* The format will be as follows:
@@ -106,7 +128,7 @@ private:
    ELF_Header file_header;
 
    /// @brief The binary data of the ELF file (what was written in the source file)
-   std::vector<uint8_t> binary_data;
+   std::vector<char> binary_data;
    /// @brief The program headers of the ELF file
    std::vector<Program_Header> program_headers;
    /// @brief The section headers of the ELF file
@@ -121,6 +143,11 @@ private:
 
    /// @brief The relocation table of the ELF file
    std::vector<Symbol_Table_Entry> relocation_table;
+
+   /// @brief The logger object
+   Logger *logger;
+
+   friend class Linker;
 };
 
 #endif // __ELF_HPP__

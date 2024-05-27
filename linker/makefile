@@ -10,7 +10,7 @@ LIB_HEADERS= ../lib/inc
 
 LINKER_EXE=linker
 
-CXXFLAGS= -I../lib/inc -Iinc -std=c++11
+CXXFLAGS= -I../lib/inc -Iinc -std=c++20
 
 LIBS= elf logger arguments
 LIB_OBJS=$(foreach lib,$(subst $(space),$(newline),$(LIBS)),../lib/$(lib).o)

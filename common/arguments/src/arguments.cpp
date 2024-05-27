@@ -15,17 +15,17 @@ Arguments::Arguments(std::vector<Option> argSpecs) : argSpecs()
     {
         if (argSpec.name == "" && argSpec.shortName == "")
         {
-            if (this->argSpecs.back().exclusiveGroup == -2)
+            if (this->argSpecs.front().exclusiveGroup == -2)
             {
                 std::cerr << "Error: Argument with no name or shortName specifies the main program parameters, but multiple of these were supplied" << std::endl;
                 printHelp();
                 exit(EXIT_FAILURE);
             }
-            this->argSpecs.back().numArgs += argSpec.numArgs;
-            this->argSpecs.back().description = argSpec.description;
-            this->argSpecs.back().required = argSpec.required;
-            this->argSpecs.back().multiple = argSpec.multiple;
-            this->argSpecs.back().exclusiveGroup = -2;
+            this->argSpecs.front().numArgs += argSpec.numArgs;
+            this->argSpecs.front().description = argSpec.description;
+            this->argSpecs.front().required = argSpec.required;
+            this->argSpecs.front().multiple = argSpec.multiple;
+            this->argSpecs.front().exclusiveGroup = -2;
             continue;
         }
         this->argSpecs.push_back(argSpec);
@@ -143,14 +143,19 @@ int Arguments::parse(std::vector<std::string> args)
         {
             if (arg == "--" + argSpecs[i].name || arg == '-' + argSpecs[i].shortName)
             {
-                if (!currentArguments.empty() && currentArguments.size() == argSpecs[currentOption].numArgs)
+                if (!currentArguments.empty() && (currentArguments.size() == argSpecs[currentOption].numArgs || argSpecs[currentOption].numArgs == -1))
                 {
                     arguments[currentOption].push_back(currentArguments);
                     currentArguments.clear();
                 }
                 else if (!currentArguments.empty())
                 {
-                    std::cerr << "Error: Argument --" << argSpecs[currentOption].name << " requires " << argSpecs[currentOption].numArgs << " arguments, but " << currentArguments.size() << " were supplied" << std::endl;
+                    if(argSpecs[currentOption].name == "" && argSpecs[currentOption].shortName == "")
+                    {
+                        std::cerr << "Error: Program requires " << argSpecs[currentOption].numArgs << " arguments, but " << currentArguments.size() << " were supplied" << std::endl;
+                    }else{
+                        std::cerr << "Error: Option --" << argSpecs[currentOption].name << " requires " << argSpecs[currentOption].numArgs << " arguments, but " << currentArguments.size() << " were supplied" << std::endl;
+                    }
                     printHelp();
                     return EXIT_FAILURE;
                 }
@@ -179,13 +184,28 @@ int Arguments::parse(std::vector<std::string> args)
             }
         }
     }
-    if (!currentArguments.empty() && currentArguments.size() == argSpecs[currentOption].numArgs)
+    if (!currentArguments.empty() && (currentArguments.size() == argSpecs[currentOption].numArgs || argSpecs[currentOption].numArgs == -1))
     {
         arguments[currentOption].push_back(currentArguments);
     }
     else if (!currentArguments.empty())
     {
-        std::cerr << "Error: Argument --" << argSpecs[currentOption].name << " requires " << argSpecs[currentOption].numArgs << " arguments, but " << currentArguments.size() << " were supplied" << std::endl;
+        if(argSpecs[currentOption].name == "" && argSpecs[currentOption].shortName == "")
+        {
+            std::cerr << "Error: Program requires " << argSpecs[currentOption].numArgs << " arguments, but " << currentArguments.size() << " were supplied" << std::endl;
+        }else{
+            std::cerr << "Error: Option --" << argSpecs[currentOption].name << " requires " << argSpecs[currentOption].numArgs << " arguments, but " << currentArguments.size() << " were supplied" << std::endl;
+        }
+        printHelp();
+        return EXIT_FAILURE;
+    }else if(argSpecs[currentOption].numArgs != 0 && !( currentOption == 0 && currentArguments.empty() ))
+    {
+        if(argSpecs[currentOption].name == "" && argSpecs[currentOption].shortName == "")
+        {
+            std::cerr << "Error: Program requires " << argSpecs[currentOption].numArgs << " arguments, but none were supplied" << std::endl;
+        }else{
+            std::cerr << "Error: Option --" << argSpecs[currentOption].name << " requires " << argSpecs[currentOption].numArgs << " arguments, but none were supplied" << std::endl;
+        }
         printHelp();
         return EXIT_FAILURE;
     }
@@ -193,19 +213,29 @@ int Arguments::parse(std::vector<std::string> args)
     {
         if (argSpecs[i].required && arguments[i].empty())
         {
-            std::cerr << "Error: Required argument --" << argSpecs[i].name << " not supplied" << std::endl;
+            if(argSpecs[i].name == "")
+            {
+                std::cerr << "Error: required arguments not supplied" << std::endl;
+            }else{
+                std::cerr << "Error: Required option --" << argSpecs[i].name << " not supplied" << std::endl;
+            }
             printHelp();
             return EXIT_FAILURE;
         }
         if (!argSpecs[i].multiple && arguments[i].size() > 1)
         {
-            std::cerr << "Error: Argument --" << argSpecs[i].name << " can only be supplied once" << std::endl;
+            if(argSpecs[i].name == "" && argSpecs[i].shortName == "")
+            {
+                std::cerr << "Error: Program arguments can only be supplied once" << std::endl;
+            }else{
+                std::cerr << "Error: Option --" << argSpecs[i].name << " arguments can only be supplied once" << std::endl;
+            }
             printHelp();
             return EXIT_FAILURE;
         }
         if (argSpecs[i].exclusiveGroup != -1 && exclusiveGroups[argSpecs[i].exclusiveGroup].size() > 1)
         {
-            std::cerr << "Error: Arguments with exclusiveGroup " << argSpecs[i].exclusiveGroup << " are exclusive, but multiple were supplied:\n  ";
+            std::cerr << "Error: Options with exclusiveGroup " << argSpecs[i].exclusiveGroup << " are exclusive, but multiple were supplied:\n  ";
             for (std::string arg : exclusiveGroups[argSpecs[i].exclusiveGroup])
             {
                 std::cerr << "  --" << arg;

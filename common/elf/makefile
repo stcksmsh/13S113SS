@@ -8,12 +8,12 @@ LIB = ../../lib/elf.o
 
 build: ${OBJ}
 	@echo -n "${INDENT}${INDENT}Linking elf...  "
-	@${CXX} ${OBJ} -r -o ${LIB} 
+	@${CXX} ${CXXFLAGS} ${OBJ} -r -o ${LIB} 
 	@echo "Done."
 
 obj/%.o: src/%.cpp | ${OBJ_DIR}
 	@echo -n "${INDENT}${INDENT}Building $@...  "
-	@${CXX} -Iinc -c $< -o $@
+	@${CXX} ${CXXFLAGS} -Iinc -I../../lib/inc -c $< -o $@
 	@echo "Done."
 
 ${OBJ_DIR}:

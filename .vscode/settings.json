@@ -44,6 +44,10 @@
         "atomic": "cpp",
         "random": "cpp",
         "fstream": "cpp",
-        "format": "cpp"
+        "format": "cpp",
+        "ratio": "cpp",
+        "functional": "cpp",
+        "chrono": "cpp",
+        "optional": "cpp"
     }
 }

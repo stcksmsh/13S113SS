@@ -52,7 +52,7 @@
    namespace Assembler {
       class Driver;
       class Scanner;
-      enum csr_type: uint8_t{
+      enum csr_type: char{
          STATUS = 0,
          HANDLER = 1,
          CAUSE = 2
@@ -453,6 +453,8 @@ namespace Assembler {
       // "symbol"
       // "label"
       // "ascii"
+      // "label_type"
+      // label
       char dummy4[sizeof (std::string)];
 
       // "symbol_list"
@@ -582,7 +584,7 @@ namespace Assembler {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 54, ///< Number of tokens.
+        YYNTOKENS = 55, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
@@ -638,16 +640,19 @@ namespace Assembler {
         S_51_symbol_or_literal_list_ = 51,       // "symbol_or_literal_list"
         S_52_operand_ = 52,                      // "operand"
         S_53_expression_ = 53,                   // "expression"
-        S_YYACCEPT = 54,                         // $accept
-        S_program = 55,                          // program
-        S_line = 56,                             // line
-        S_instruction = 57,                      // instruction
-        S_operand = 58,                          // operand
-        S_directive = 59,                        // directive
-        S_symbol_list = 60,                      // symbol_list
-        S_symbol_or_literal_list = 61,           // symbol_or_literal_list
-        S_label = 62,                            // label
-        S_expression = 63                        // expression
+        S_54_label_type_ = 54,                   // "label_type"
+        S_YYACCEPT = 55,                         // $accept
+        S_program = 56,                          // program
+        S_line = 57,                             // line
+        S_instruction = 58,                      // instruction
+        S_operand = 59,                          // operand
+        S_directive = 60,                        // directive
+        S_data_directive = 61,                   // data_directive
+        S_bss_directive = 62,                    // bss_directive
+        S_symbol_list = 63,                      // symbol_list
+        S_symbol_or_literal_list = 64,           // symbol_or_literal_list
+        S_label = 65,                            // label
+        S_expression = 66                        // expression
       };
     };
 
@@ -700,6 +705,8 @@ namespace Assembler {
       case symbol_kind::S_SYMBOL: // "symbol"
       case symbol_kind::S_LABEL: // "label"
       case symbol_kind::S_STRING: // "ascii"
+      case symbol_kind::S_54_label_type_: // "label_type"
+      case symbol_kind::S_label: // label
         value.move< std::string > (std::move (that.value));
         break;
 
@@ -880,6 +887,8 @@ switch (yykind)
       case symbol_kind::S_SYMBOL: // "symbol"
       case symbol_kind::S_LABEL: // "label"
       case symbol_kind::S_STRING: // "ascii"
+      case symbol_kind::S_54_label_type_: // "label_type"
+      case symbol_kind::S_label: // label
         value.template destroy< std::string > ();
         break;
 
@@ -1048,7 +1057,8 @@ switch (yykind)
 #endif
       {
 #if !defined _MSC_VER || defined __clang__
-        YY_ASSERT ((token::SYMBOL <= tok && tok <= token::STRING));
+        YY_ASSERT ((token::SYMBOL <= tok && tok <= token::STRING)
+                   || tok == 309);
 #endif
       }
 #if 201103L <= YY_CPLUSPLUS
@@ -2193,8 +2203,8 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 180,     ///< Last index in yytable_.
-      yynnts_ = 10,  ///< Number of nonterminal symbols.
+      yylast_ = 184,     ///< Last index in yytable_.
+      yynnts_ = 12,  ///< Number of nonterminal symbols.
       yyfinal_ = 2 ///< Termination state number.
     };
 
@@ -2208,7 +2218,7 @@ switch (yykind)
 
 #line 4 "src/parser.y"
 } // Assembler
-#line 2212 "src/parser.hh"
+#line 2222 "src/parser.hh"
 
 
 

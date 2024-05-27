@@ -136,7 +136,39 @@ using token = Assembler::Parser::token;
 
 "\""[[:print:]]*"\""            {   
                                     yytext[strlen(yytext) - 1] = '\0';
-                                    yylval->build<std::string>( yytext + 1 );
+                                    std::string str = yytext + 1;
+
+                                    /// We need to 'build' the string, meaning we need to take care of escape sequences
+                                    std::string parsed_str = "";
+
+                                    for( size_t i = 0; i < str.size(); i++ )
+                                    {
+                                        if( str[i] == '\\' )
+                                        {
+                                            i++;
+                                            switch( str[i] )
+                                            {
+                                                case 'n': parsed_str += '\n'; break;
+                                                case 't': parsed_str += '\t'; break;
+                                                case 'r': parsed_str += '\r'; break;
+                                                case '0': parsed_str += '\0'; break;
+                                                case '\\': parsed_str += '\\'; break;
+                                                case '"': parsed_str += '"'; break;
+                                                default: parsed_str += str[i]; break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            parsed_str += str[i];
+                                        }
+                                    }
+                                    /// Add a null terminator
+                                    parsed_str += '\0';
+
+                                    yylval->build<std::string>( parsed_str );
+
+
+
                                     return token::STRING; 
                                 }
 

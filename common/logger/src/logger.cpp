@@ -3,30 +3,31 @@
 void Logger::logError(const std::string &message, const std::string &file, const int line, const std::string &function)
 {
     if (live && debugLevel >= 1)
-        std::cerr << formatError(message, file, line, function) << std::endl;
+        stream << formatError(message, file, line, function) << std::endl;
     errors.push_back(Message{message, file, line, function});
 }
 
 void Logger::logWarning(const std::string &message, const std::string &file, const int line, const std::string &function)
 {
     if (live && debugLevel >= 2)
-        std::cerr << formatWarning(message, file, line, function) << std::endl;
+        stream << formatWarning(message, file, line, function) << std::endl;
     warnings.push_back(Message{message, file, line, function});
 }
 
 void Logger::logInfo(const std::string &message, const std::string &file, const int line, const std::string &function)
 {
     if (live && debugLevel >= 3)
-        std::cerr << formatInfo(message, file, line, function) << std::endl;
+        stream << formatInfo(message, file, line, function) << std::endl;
     infos.push_back(Message{message, file, line, function});
 }
 
 void Logger::logDebug(const std::string &message, const std::string &file, const int line, const std::string &function)
 {
     if (live && debugLevel >= 4)
-        std::cerr << formatDebug(message, file, line, function) << std::endl;
+        stream << formatDebug(message, file, line, function) << std::endl;
     debugs.push_back(Message{message, file, line, function});
 }
+
 
 void Logger::printErrors(std::ostream &stream)
 {

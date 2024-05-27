@@ -78,7 +78,6 @@ enum Section_Header_Flags : uint32_t
     /// @brief Section contains data that should be zeroed during execution
     SHF_EXCLUDE = 0x8000000
 };
-
 /// @brief The section header of the ELF file
 struct Section_Header
 {
@@ -149,19 +148,19 @@ struct Section_Header
 struct ELF_Header
 {
     /// @brief The magic number of the ELF file
-    uint8_t magic[4] = {0x7F, 'E', 'L', 'F'};
+    char magic[4] = {0x7F, 'E', 'L', 'F'};
     /// @brief The class of the ELF file ( 1 for 32-bit )
-    uint8_t class_ = 1;
+    char class_ = 1;
     /// @brief The data encoding of the ELF file ( 1 for little-endian )
-    uint8_t data = 1;
+    char data = 1;
     /// @brief The version of the ELF file ( 1 for original )
-    uint8_t version = 1;
+    char version = 1;
     /// @brief The OS ABI of the ELF file ( 0 for System V )
-    uint8_t os_abi = 0;
+    char os_abi = 0;
     /// @brief The ABI version of the ELF file ( undefined here, so basically extra padding )
-    uint8_t abi_version = 0;
+    char abi_version = 0;
     /// @brief 7 padding bytes
-    uint8_t padding[7] = {0};
+    char padding[7] = {0};
     /// @brief The type of the ELF file ( 1 - relocatable, 2 - exec, 3 - shared )
     enum ELF_Type : uint16_t
     {
@@ -214,13 +213,12 @@ struct symtab_entry
     /// @brief The size of the symbol
     uint32_t size;
     /// @brief The info byte of the symbol
-    uint8_t info;
+    char info;
     /// @brief The other byte of the symbol (unused, set to 0x0)
-    uint8_t other = 0x0;
+    char other = 0x0;
     /// @brief The section index of the symbol (the index of its section in the section header table)
     uint16_t shndx;
 };
-
 /// @brief The symbol table entry info bindings
 enum symtab_entry_bindings
 {
@@ -235,7 +233,6 @@ enum symtab_entry_bindings
     /// @brief Upper bound of the reserved bindings
     STB_HIPROC = 15,
 };
-
 /// @brief The symbol table entry types
 enum symtab_entry_types
 {
@@ -254,14 +251,29 @@ enum symtab_entry_types
     /// @brief Upper bound of the reserved types
     STT_HIPROC = 15
 };
-
 /// @brief Create the symbol table entry info byte
 /// @param binding The binding of the symbol
 /// @param type The type of the symbol
 /// @return The info byte
-inline uint8_t symtab_entry_info(uint8_t binding, uint8_t type)
+inline char symtab_entry_info(char binding, char type)
 {
     return (binding << 4) | (type & 0x0F);
+}
+
+/// @brief Get the binding of the symbol from the info byte
+/// @param info The info byte
+/// @return The binding of the symbol
+inline char symtab_entry_binding(char info)
+{
+    return info >> 4;
+}
+
+/// @brief Get the type of the symbol from the info byte
+/// @param info The info byte
+/// @return The type of the symbol
+inline char symtab_entry_type(char info)
+{
+    return info & 0x0F;
 }
 
 /// @brief The relocation table entry

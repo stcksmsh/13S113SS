@@ -16,7 +16,7 @@
    namespace Assembler {
       class Driver;
       class Scanner;
-      enum csr_type: uint8_t{
+      enum csr_type: char{
          STATUS = 0,
          HANDLER = 1,
          CAUSE = 2
@@ -131,6 +131,7 @@
 
 %type <uint32_t>                    expression  "expression"
 
+%type <std::string>                 label   "label_type"
 /* End of file token */
 
 %locations
@@ -146,11 +147,12 @@ program:
 
 line:
      EOL
-   | label EOL
    | directive EOL
    | label directive EOL
    | instruction EOL
    | label instruction EOL
+   | bss_directive EOL
+   | data_directive EOL
    ;
 
 instruction:
@@ -187,7 +189,7 @@ operand:
    | NUMBER                             { $$.fields.MOD = 0b001; $$.fields.Disp = $1; }
    | DOLLAR SYMBOL                      { $$.fields.MOD = 0b010;
                                           Driver::STentry *entry = driver.get_symbol($2);
-                                          if(!entry){
+                                          if(!entry || !entry->is_defined){
                                              driver.forward_reference($2);
                                              $$.fields.Disp = 0;
                                           }else{
@@ -196,7 +198,7 @@ operand:
                                         }
    | SYMBOL                             { $$.fields.MOD = 0b011;
                                           Driver::STentry *entry = driver.get_symbol($1);
-                                          if(!entry){
+                                          if(!entry || !entry->is_defined){
                                              driver.forward_reference($1);
                                              $$.fields.Disp = 0;
                                           }else{
@@ -208,7 +210,7 @@ operand:
    | LBRACKET GPR PLUS NUMBER RBRACKET  { $$.fields.MOD = 0b110; $$.fields.RegC = $2; $$.fields.Disp = $4; }
    | LBRACKET GPR PLUS SYMBOL RBRACKET  { $$.fields.MOD = 0b111; $$.fields.RegC = $2;
                                           Driver::STentry *entry = driver.get_symbol($4);
-                                          if(!entry){
+                                          if(!entry || !entry->is_defined){
                                              driver.forward_reference($4);
                                              $$.fields.Disp = 0;
                                           }else{
@@ -222,37 +224,54 @@ directive:
      GLOBAL symbol_list                 { driver.add_global($2); }
    | EXTERN symbol_list                 { driver.add_extern($2); }
    | SECTION SYMBOL                     { driver.add_section($2); }
-   | WORD symbol_or_literal_list        { for(uint32_t val : $2) driver.append_TEXT(val); }
-   | SKIP NUMBER                        { driver.TEXT.resize(driver.TEXT.size() + $2);
-                                          driver.current_section_ref.get().size += $2;
-                                        }
-   | ASCII STRING                       { for(char c : $2) driver.TEXT.push_back(c);
-                                          driver.current_section_ref.get().size += $2.size();
-                                        }
    | EQU SYMBOL COMMA expression        { driver.insert_symbol($2);
                                           driver.get_symbol($2)->offset = $4;
                                         }
    ;
 
+data_directive:
+     WORD symbol_or_literal_list        { for(uint32_t val : $2) driver.append_DATA(val); }
+   | label WORD symbol_or_literal_list  { driver.update_symbol($1, ".data");
+                                             for(uint32_t val : $3) driver.append_DATA(val);
+                                        }
+   | ASCII STRING                       { for(char c : $2) driver.DATA.push_back(c); }
+   | label ASCII STRING                 { driver.update_symbol($1, ".data");
+                                          for(char c : $3) driver.DATA.push_back(c);
+                                        }
+   ;
+
+bss_directive:
+      SKIP NUMBER                       { driver.extend_BSS($2); }
+   | label SKIP NUMBER                  { driver.update_symbol($1, ".bss");
+                                          driver.extend_BSS($3);
+                                        }
+   ;
+
 symbol_list:
-   SYMBOL                               { $$ = std::vector<std::string>(); $$.push_back($1); }
+     SYMBOL                               { $$ = std::vector<std::string>(); $$.push_back($1); }
    | symbol_list COMMA SYMBOL           { $$ = $1; $$.push_back($3); }
    ;
 
 symbol_or_literal_list:
-   NUMBER                               { $$ = std::vector<uint32_t>(); $$.push_back($1); }
+     NUMBER                               { $$ = std::vector<uint32_t>(); $$.push_back($1); }
    | SYMBOL                             { $$ = std::vector<uint32_t>();
                                           Driver::STentry *entry = driver.get_symbol($1);
                                           $$.push_back(driver.get_symbol($1)->offset); }
    | symbol_or_literal_list COMMA NUMBER{ $$ = $1; $$.push_back($3); }
-   | symbol_or_literal_list COMMA SYMBOL{ $$ = $1; /* TODO: check if symbol is defined etc. */$$.push_back(driver.get_symbol($3)->offset); }
+   | symbol_or_literal_list COMMA SYMBOL{ $$ = $1;
+                                          Driver::STentry *entry = driver.get_symbol($3);
+                                          if(!entry){
+                                             driver.logger->logError("Undefined symbol", driver.filename, @3.begin.line);
+                                          }
+                                          $$.push_back(driver.get_symbol($3)->offset); }
 
 label:
-   LABEL                                { driver.insert_symbol($1); }
+   LABEL                                { $$ = $1; driver.insert_symbol($1); }
+   | label EOL
    ;
 
 expression:
-   NUMBER                               { $$ = $1; }
+     NUMBER                               { $$ = $1; }
    | expression PLUS NUMBER             { $$ = $1 + $3; if($$ < $1) Parser::error(@2, "Overflow occured"); }
    | expression MINUS NUMBER            { $$ = $1 - $3; if($$ > $1) Parser::error(@2, "Underflow occured"); }
 
@@ -261,5 +280,11 @@ expression:
 void 
 Assembler::Parser::error( const location_type &l, const std::string &err_message )
 {
-   std::cerr << "Error: " << err_message << " at " << l << std::endl;
+   driver.logger->logError(err_message, driver.filename, l.begin.line);
+   // std::cerr << "Error: " << err_message << " at " << l << std::endl;
+
+   /*
+
+
+   */
 }
