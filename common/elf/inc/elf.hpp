@@ -23,6 +23,10 @@
 #include "logger.hpp"
 
 #define write_to_stream(os, data) os.write(reinterpret_cast<char *>(&data), sizeof(data))
+namespace Assembler
+{
+   class Driver;
+};
 
 class ELF
 {
@@ -43,36 +47,10 @@ public:
 public:
    ELF(Logger *logger) : logger(logger)
    {
-      { /// Add the the mandatory sections
-         /// Add the NULL section header
-         Section_Header null_section;
-         section_names.push_back("");
-         section_headers.push_back(null_section);
-
-         /// Add the .bss section header
-         Section_Header bss_section;
-         bss_section.type = Section_Header::Section_Type::SHT_NOBITS;
-         bss_section.flags = Section_Header_Flags::SHF_ALLOC | Section_Header_Flags::SHF_WRITE;
-         bss_section.addralign = 0x1;
-         section_names.push_back(".bss");
-         section_headers.push_back(bss_section);
-
-         /// Add the .data section header
-         Section_Header data_section;
-         data_section.type = Section_Header::Section_Type::SHT_PROGBITS;
-         data_section.flags = Section_Header_Flags::SHF_ALLOC | Section_Header_Flags::SHF_WRITE;
-         data_section.addralign = 0x1;
-         section_names.push_back(".data");
-         section_headers.push_back(data_section);
-
-         /// Add the .text section header
-         Section_Header text_section;
-         text_section.type = Section_Header::Section_Type::SHT_PROGBITS;
-         text_section.flags = Section_Header_Flags::SHF_ALLOC | Section_Header_Flags::SHF_EXECINSTR;
-         text_section.addralign = 0x1;
-         section_names.push_back(".text");
-         section_headers.push_back(text_section);
-      }
+      /// Add the NULL section header
+      Section_Header null_section;
+      section_names.push_back("");
+      section_headers.push_back(null_section);
 
       /// Add the NULL symbol table entry
       Symbol_Table_Entry null_symbol;
@@ -114,15 +92,6 @@ public:
 
    /// @brief Add a relocation entry to the ELF file
    void add_relocation(const std::string name, const std::string section, const uint32_t offset, uint32_t addend = 0);
-
-   /// @brief Set the size of the BSS section
-   void set_bss_size(const std::size_t size);
-
-   /// @brief Set the DATA section
-   void set_data(const std::vector<char> data);
-
-   /// @brief Set the TEXT section
-   void set_text(const std::vector<char> data);
 
 private:
    /* The format will be as follows:
@@ -169,6 +138,8 @@ private:
    /// @brief The logger object
    Logger *logger;
 
+
+   friend class Assembler::Driver;
    friend class Linker;
 };
 

@@ -192,15 +192,17 @@ void Assembler::Driver::update_symbol(std::string name, std::string section){
             logger->logError("Symbol '" + name + "' is a section and cannot be updated", filename, scanner->lineno());
             return;
          }
-         symbol_table[i].offset = (section == ".data") ? DATA.size() : BSS;
+         uint32_t new_offset = (section == ".data") ? DATA.size() : BSS;
          logger->logInfo("Updating relocations for symbol '" + name + "' in section '" + section + "'", filename, scanner->lineno());
          for(int j = 0; j < relocation_list.size(); j++){
-            logger->logDebug("Updating relocation in section '" + relocation_list[j].dst_section + "' at offset 0x" + std::format("{:x}", relocation_list[j].dst_offset) + " to point to section '" + section + "' at offset 0x" + std::format("{:x}", symbol_table[i].offset), filename, scanner->lineno());
-            if(relocation_list[j].src_section == symbol_table[i].section && relocation_list[j].src_offset == symbol_table[i].offset){
+            if (relocation_list[j].src_section == symbol_table[i].section && relocation_list[j].src_offset == symbol_table[i].offset)
+            {
+               logger->logDebug("Updating relocation in section '" + relocation_list[j].dst_section + "' at offset 0x" + std::format("{:x}", relocation_list[j].dst_offset) + " to point to section '" + section + "' at offset 0x" + std::format("{:x}", symbol_table[i].offset), filename, scanner->lineno());
                relocation_list[j].src_section = section;
-               relocation_list[j].src_offset = symbol_table[i].offset;
+               relocation_list[j].src_offset = new_offset;
             }
          }
+         symbol_table[i].offset = new_offset;
          symbol_table[i].section = section;
          return;
       }
@@ -267,9 +269,6 @@ void Assembler::Driver::add_relocation(const std::string symbol, const std::stri
       uint32_t current_offset = section_list.back().size;
       uint32_t symbol_offset = get_symbol(symbol)->offset;
       std::string symbol_section = get_symbol(symbol)->section;
-      if(current_section == symbol_section){
-         symbol_offset = 0; /// If the symbol is in the same section, the offset is 0, as it already exists in the instruction displacement value
-      }
       Relocation new_relocation;
       new_relocation.src_section = symbol_section;
       new_relocation.src_offset = symbol_offset;
@@ -285,7 +284,6 @@ void Assembler::Driver::add_relocation(const std::string symbol, const std::stri
       new_relocation.src_offset = get_symbol(symbol)->offset;
       new_relocation.dst_section = section;
       new_relocation.dst_offset = offset;
-      std::cout << new_relocation.src_section << " " << new_relocation.src_offset << " " << new_relocation.dst_section << " " << new_relocation.dst_offset << std::endl; /// TODO: remove
       relocation_list.push_back(new_relocation);
    }
 }
@@ -325,6 +323,15 @@ void Assembler::Driver::create_shared_file(const std::string &filename)
    {
       logger->logError("Errors encountered while creating ELF file, aborting");
       return;
+   }
+   if(DATA.size() > 0){
+      elf.add_section(".data", DATA, Section_Header::Section_Type::SHT_PROGBITS, Section_Header_Flags::SHF_ALLOC | Section_Header_Flags::SHF_WRITE, 1);
+      elf.add_symbol(".data", ".data", 0, true, true, true);
+   }
+   if(BSS > 0){
+      elf.add_section(".bss", std::vector<char>(), Section_Header::Section_Type::SHT_NOBITS, Section_Header_Flags::SHF_ALLOC | Section_Header_Flags::SHF_WRITE, 1);
+      elf.section_headers.back().size = BSS;
+      elf.add_symbol(".bss", ".bss", 0, true, true, true);
    }
    for (int i = 0; i < section_list.size(); i++)
    {
@@ -377,11 +384,6 @@ void Assembler::Driver::create_shared_file(const std::string &filename)
       elf.add_relocation(relocation_list[i].src_section, relocation_list[i].dst_section, relocation_list[i].dst_offset, relocation_list[i].src_offset);
    }
 
-
-   elf.set_bss_size(BSS);
-
-   elf.set_data(DATA);
-
    elf.createShared(out_file);
 }
 
@@ -409,7 +411,6 @@ void Assembler::Driver::append_TEXT(const uint32_t text)
    logger->logDebug("Appending binary data to '" + section_list.back().name + "' section", filename, scanner->lineno());
    for (int i = 0; i < 4; i++)
    {
-      /// TODO: check if this is correct
       TEXT.push_back((text >> (i * 8)) & 0xFF);
    }
    section_list.back().size += 4;
@@ -420,7 +421,6 @@ void Assembler::Driver::set_TEXT(const uint32_t text, uint32_t offset)
    logger->logDebug("Setting DWORD in TEXT section", filename, scanner->lineno());
    for (int i = 0; i < 4; i++)
    {
-      /// TODO: check if this is correct
       TEXT[offset + i] = (text >> (i * 8)) & 0xFF;
    }
 }

@@ -36,10 +36,10 @@ Linker::link(ELF &output, ELF &input)
             logger->logDebug("Merging section '" + section_name + "'");
             if(section_name != ".bss" && input.section_headers[i].size > 0) /// If the section has data to copy
             {
+                std::size_t header_size = sizeof(ELF_Header) + output.program_headers.size() * sizeof(Program_Header);
                 /// First resize the output file to accomodate the new section data
                 output.binary_data.resize(output.binary_data.size() + input.section_headers[i].size);
                 /// Then shift the data after the section to make space for the new section data
-                std::size_t header_size = sizeof(ELF_Header) + output.program_headers.size() * sizeof(Program_Header);
                 char *dest = output.binary_data.data() + output.section_headers[index].offset + output.section_headers[index].size - header_size;
                 char *src = output.binary_data.data() + output.section_headers[index].offset + output.section_headers[index].size + input.section_headers[i].size - header_size;
                 std::size_t size = output.binary_data.size() - (output.section_headers[index].offset - header_size) - output.section_headers[index].size + 1; /// TODO: Why +1???
@@ -59,8 +59,10 @@ Linker::link(ELF &output, ELF &input)
                 symbol.value += output.section_headers[index].size;
             }
             /// Also shift the headers of the sections after the current section to the right by the size of the output section
-            for(int j = index + 1; j < output.section_headers.size(); j++)
+            for(int j = 0; j < output.section_headers.size(); j++)
             {
+                if(output.section_headers[j].offset <= output.section_headers[index].offset)
+                    continue;
                 output.section_headers[j].offset += input.section_headers[i].size;
             }
             /// Finally, update the size of the output section
@@ -110,8 +112,17 @@ Linker::link(ELF &output, ELF &input)
                     /// The symbol is defined in the input file, update the output file
                     output.symbol_table[symbol_index].section = section_name;
                     output.symbol_table[symbol_index].value = symbol.value;
-                    output.symbol_table[symbol_index].name = symbol.name;
                     output.symbol_table[symbol_index].is_extern = false;
+                    logger->logInfo("Updating relocation entries for symbol '" + symbol.name + "'");
+                    for(auto &relocation : output.relocation_table)
+                    {
+                        if(relocation.name == symbol.name)
+                        {
+                            logger->logDebug("Updating relocation entry at offset " + std::to_string(relocation.offset));
+                            relocation.name = section_name;
+                            relocation.addend = symbol.value;
+                        }
+                    }
                 }
                 if(symbol.is_extern && output.symbol_table[symbol_index].is_extern){
                     logger->logDebug("Symbol '" + symbol.name + "' which is extern in section '" + section_name + "' is also extern in section '" + output.symbol_table[symbol_index].section + "'");

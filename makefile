@@ -64,3 +64,4 @@ clean:
 commit: clean
 	@git add .
 	@git commit ./
+	@git push

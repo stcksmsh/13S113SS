@@ -155,7 +155,6 @@ ELF::readFromStream(std::istream &stream)
         stream.read((char *)binary_data.data(), binary_data.size());
     }
 
-
     logger->logInfo("Finished deserializing ELF file");
 
     return stream;
@@ -170,7 +169,6 @@ ELF::createShared(std::ostream &stream)
     std::sort(symbol_table.begin(), symbol_table.end(), [](Symbol_Table_Entry a, Symbol_Table_Entry b) {
         return !b.is_local && a.is_local;
     });
-
 
     std::vector<char> strtab_data;
     { /// Generate the strtab data (so we can set the name_index field of the symbol table)
@@ -223,8 +221,12 @@ ELF::createShared(std::ostream &stream)
         logger->logInfo("Generating relocation sections");
         int sections = section_names.size();
         std::vector<std::vector<rel_tab_entry>> rel_data;
-        for (int i = 3; i < sections; i++)
+
+        for (int i = 1; i < sections; i++)
         {
+            if(section_headers[i].type != Section_Header::Section_Type::SHT_PROGBITS)
+                continue;
+            logger->logDebug("Generating relocation section for section '" + section_names[i] + "'");
             std::vector<rel_tab_entry> rel_section_data;
             Section_Header rel_section;
 
@@ -261,9 +263,17 @@ ELF::createShared(std::ostream &stream)
             }
 
             /// If there are no relocations for this section, we skip it
-            if (rel_section_data.size() == 0)
+            if (rel_section_data.size() == 0){
+                logger->logDebug("No relocations for section '" + section_names[i] + "'");
                 continue;
+            }
 
+            /// Sort the rel_section_data by offset
+            std::sort(rel_section_data.begin(), rel_section_data.end(), [](rel_tab_entry a, rel_tab_entry b) {
+                return a.offset < b.offset;
+        });
+
+            logger->logDebug("Generated " + std::to_string(rel_section_data.size()) + " relocations for section '" + section_names[i] + "'");
             /// Add the rel_section_data to the rel_data vector and the section to the names/headers vectors
             rel_data.push_back(rel_section_data);
             rel_section.size = rel_section_data.size() * sizeof(rel_tab_entry);
@@ -503,32 +513,4 @@ void ELF::add_relocation(const std::string name, const std::string section, cons
     rel.offset = offset;
     rel.addend = addend;
     relocation_table.push_back(rel);
-}
-
-void ELF::set_bss_size(const std::size_t size)
-{
-    logger->logInfo("Setting the size of the BSS section to " + std::to_string(size));
-    section_headers[1].size = size;
-}
-
-void ELF::set_data(std::vector<char> data)
-{
-    logger->logInfo("Setting the DATA section");
-    section_headers[2].offset = sizeof(ELF_Header) + program_headers.size() * sizeof(Program_Header) + binary_data.size();
-    section_headers[2].size = data.size();
-    for (char byte : data)
-    {
-        binary_data.push_back(byte);
-    }
-}
-
-void ELF::set_text(std::vector<char> data)
-{
-    logger->logInfo("Setting the TEXT section");
-    section_headers[3].offset = sizeof(ELF_Header) + program_headers.size() * sizeof(Program_Header) + binary_data.size();
-    section_headers[3].size = data.size();
-    for (char byte : data)
-    {
-        binary_data.push_back(byte);
-    }
 }
