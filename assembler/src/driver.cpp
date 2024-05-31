@@ -28,6 +28,14 @@ Assembler::Driver::~Driver()
    scanner = nullptr;
    delete (parser);
    parser = nullptr;
+   for(STentry entry : symbol_table){
+      STentry::STforward_ref *current = entry.forward_refs;
+      while(current){
+         STentry::STforward_ref *next = current->next;
+         delete current;
+         current = next;
+      }
+   }
 }
 
 void Assembler::Driver::parse(const std::string &filename)
@@ -84,7 +92,7 @@ void Assembler::Driver::parse_helper(std::istream &stream)
       STentry *entry = get_symbol(symbol);
       if (!entry || !entry->is_defined)
       {
-         logger->logWarning("Symbol '" + symbol + "' which is declared as global is not defined");
+         logger->logError("Symbol '" + symbol + "' which is declared as extern is not defined");
       }
       if (entry)
       {
@@ -97,11 +105,21 @@ void Assembler::Driver::parse_helper(std::istream &stream)
       STentry *entry = get_symbol(symbol);
       if (!entry)
       {
-         logger->logWarning("Symbol '" + symbol + "' which is declared as extern is not defined");
+         logger->logError("Symbol '" + symbol + "' which is declared as extern is not used");
       }
       else
       {
+         if(entry->is_defined){
+            logger->logError("Symbol '" + symbol + "' which is declared as extern is defined");
+         }
          entry->local = false;
+      }
+   }
+
+   /// If there are any local symbols that are not defined, throw an error
+   for(STentry entry : symbol_table){
+      if(entry.local && !entry.is_defined){
+         logger->logError("Local symbol '" + entry.name + "' is not defined", filename);
       }
    }
 
@@ -109,11 +127,14 @@ void Assembler::Driver::parse_helper(std::istream &stream)
 }
 
 Assembler::Driver::STentry *
-Assembler::Driver::insert_symbol(const std::string name, const bool is_defined, const bool is_section, std::string section)
+Assembler::Driver::insert_symbol(const std::string name, const bool is_defined, const bool is_section, std::string section, const bool is_const)
 {
    logger->logInfo("Inserting symbol '" + name + "'", filename, scanner->lineno());
-   if(section == "") section = current_section_ref.get().name;
-   uint32_t offset = current_section_ref.get().size;
+   uint32_t offset = 0;
+   if(!section_list.empty() && section == ""){
+      offset = section_list.back().size;
+      section = section_list.back().name;
+   }
    /// First check if the symbol is already in the table
    for (int i = 0; i < symbol_table.size(); i++)
    {
@@ -137,6 +158,7 @@ Assembler::Driver::insert_symbol(const std::string name, const bool is_defined, 
             while (current)
             {
                logger->logDebug("Resolving forward reference in section '" + current->section + "' at offset 0x" + std::format("{:x}", current->offset), filename);
+               add_relocation(name, current->section, current->offset);
                set_TEXT(symbol_table[i].offset, current->offset);
                STentry::STforward_ref *next = current->next;
                delete current;
@@ -154,6 +176,7 @@ Assembler::Driver::insert_symbol(const std::string name, const bool is_defined, 
    new_entry.local = true;
    new_entry.is_defined = is_defined;
    new_entry.is_section = is_section;
+   new_entry.is_const = is_const;
    new_entry.forward_refs = nullptr;
    symbol_table.push_back(new_entry);
    return &symbol_table[symbol_table.size() - 1];
@@ -169,8 +192,16 @@ void Assembler::Driver::update_symbol(std::string name, std::string section){
             logger->logError("Symbol '" + name + "' is a section and cannot be updated", filename, scanner->lineno());
             return;
          }
-         symbol_table[i].section = section;
          symbol_table[i].offset = (section == ".data") ? DATA.size() : BSS;
+         logger->logInfo("Updating relocations for symbol '" + name + "' in section '" + section + "'", filename, scanner->lineno());
+         for(int j = 0; j < relocation_list.size(); j++){
+            logger->logDebug("Updating relocation in section '" + relocation_list[j].dst_section + "' at offset 0x" + std::format("{:x}", relocation_list[j].dst_offset) + " to point to section '" + section + "' at offset 0x" + std::format("{:x}", symbol_table[i].offset), filename, scanner->lineno());
+            if(relocation_list[j].src_section == symbol_table[i].section && relocation_list[j].src_offset == symbol_table[i].offset){
+               relocation_list[j].src_section = section;
+               relocation_list[j].src_offset = symbol_table[i].offset;
+            }
+         }
+         symbol_table[i].section = section;
          return;
       }
    }
@@ -196,9 +227,9 @@ Assembler::Driver::get_symbol(const std::string name)
 
 void Assembler::Driver::forward_reference(const std::string name)
 {
-   logger->logInfo("Forward referencing symbol '" + name + "' in section '" + current_section_ref.get().name, filename, scanner->lineno());
-   std::string section = current_section_ref.get().name;
-   std::size_t offset = current_section_ref.get().size;
+   logger->logInfo("Forward referencing symbol '" + name + "' in section '" + section_list.back().name, filename, scanner->lineno());
+   std::string section = section_list.back().name;
+   std::size_t offset = section_list.back().size;
    for (int i = 0; i < symbol_table.size(); i++)
    {
       if (symbol_table[i].name == name)
@@ -227,6 +258,38 @@ void Assembler::Driver::forward_reference(const std::string name)
    symbol_table.push_back(new_entry);
 }
 
+void Assembler::Driver::add_relocation(const std::string symbol, const std::string section , const uint32_t offset)
+{
+   if(section == ""){
+      /// This means that the method was invoked from the parser, when it found a defined symbol
+      logger->logDebug("Adding relocation for symbol '" + symbol + "' in section '" + section + "' at offset 0x" + std::format("{:x}", offset), filename, scanner->lineno());
+      std::string current_section = section_list.back().name;
+      uint32_t current_offset = section_list.back().size;
+      uint32_t symbol_offset = get_symbol(symbol)->offset;
+      std::string symbol_section = get_symbol(symbol)->section;
+      if(current_section == symbol_section){
+         symbol_offset = 0; /// If the symbol is in the same section, the offset is 0, as it already exists in the instruction displacement value
+      }
+      Relocation new_relocation;
+      new_relocation.src_section = symbol_section;
+      new_relocation.src_offset = symbol_offset;
+      new_relocation.dst_section = current_section;
+      new_relocation.dst_offset = current_offset;
+
+      relocation_list.push_back(new_relocation);
+   }else{
+      /// This means that the method was invoked when a symbols forward reference was resolved
+      logger->logDebug("Adding relocation for symbol '" + symbol + "' in section '" + section + "' at offset 0x" + std::format("{:x} while resolving its forward ref", offset), filename, scanner->lineno());
+      Relocation new_relocation;
+      new_relocation.src_section = get_symbol(symbol)->section;
+      new_relocation.src_offset = get_symbol(symbol)->offset;
+      new_relocation.dst_section = section;
+      new_relocation.dst_offset = offset;
+      std::cout << new_relocation.src_section << " " << new_relocation.src_offset << " " << new_relocation.dst_section << " " << new_relocation.dst_offset << std::endl; /// TODO: remove
+      relocation_list.push_back(new_relocation);
+   }
+}
+
 void Assembler::Driver::add_extern(const std::vector<std::string> &externs)
 {
    logger->logInfo("Adding extern symbols", filename, scanner->lineno());
@@ -249,7 +312,7 @@ void Assembler::Driver::add_global(const std::vector<std::string> &globals)
 
 void Assembler::Driver::create_shared_file(const std::string &filename)
 {
-   logger->logInfo("Creating shared file '" + filename + "'");
+   logger->logInfo("Creating shared file '" + filename + "'\n----------------------------------------------------");
    std::ofstream out_file;
    out_file.open(filename);
    if (!out_file.good())
@@ -265,6 +328,10 @@ void Assembler::Driver::create_shared_file(const std::string &filename)
    }
    for (int i = 0; i < section_list.size(); i++)
    {
+      if(section_list[i].size == 0){
+         logger->logWarning("Section '" + section_list[i].name + "' in file '" + this->filename + "' is empty, skipping");
+         continue;
+      }
       std::string name = section_list[i].name;
       std::size_t offset = section_list[i].offset;
       std::size_t size = section_list[i].size;
@@ -277,9 +344,24 @@ void Assembler::Driver::create_shared_file(const std::string &filename)
 
    for (int j = 0; j < symbol_table.size(); j++)
    {
-      elf.add_symbol(symbol_table[j].name, symbol_table[j].section, symbol_table[j].offset, symbol_table[j].local, symbol_table[j].is_section);
+      if(symbol_table[j].is_section){
+         /// If the section size is 0, skip it
+         bool empty = true;
+         for(int i = 0; i < section_list.size(); i++){
+            if(section_list[i].name == symbol_table[j].name){
+               empty = section_list[i].size == 0;
+               break;
+            }
+         }
+         if(empty){
+            logger->logWarning("Section '" + symbol_table[j].name + "' in file '" + this->filename + "' is empty, skipping");
+            continue;
+         }
+      }
+      elf.add_symbol(symbol_table[j].name, symbol_table[j].section, symbol_table[j].offset, symbol_table[j].local, symbol_table[j].is_section, symbol_table[j].is_const, !symbol_table[j].is_defined);
    }
 
+   /// Add relocations for undefined symbols
    for (int j = 0; j < symbol_table.size(); j++)
    {
       STentry::STforward_ref *current = symbol_table[j].forward_refs;
@@ -290,6 +372,10 @@ void Assembler::Driver::create_shared_file(const std::string &filename)
       }
    }
 
+   /// Add relocations for defined ( used in sections other than where they are defined ) symbols
+   for(int i = 0; i < relocation_list.size(); i ++){
+      elf.add_relocation(relocation_list[i].src_section, relocation_list[i].dst_section, relocation_list[i].dst_offset, relocation_list[i].src_offset);
+   }
 
 
    elf.set_bss_size(BSS);
@@ -314,19 +400,19 @@ void Assembler::Driver::add_section(std::string section_name)
    new_section.offset = TEXT.size();
    new_section.size = 0;
    section_list.push_back(new_section);
-   current_section_ref = std::ref(section_list[section_list.size() - 1]);
+   current_section_index = section_list.size() - 1;
    insert_symbol(section_name, true, true);
 }
 
 void Assembler::Driver::append_TEXT(const uint32_t text)
 {
-   logger->logDebug("Appending binary data to TEXT section", filename, scanner->lineno());
+   logger->logDebug("Appending binary data to '" + section_list.back().name + "' section", filename, scanner->lineno());
    for (int i = 0; i < 4; i++)
    {
       /// TODO: check if this is correct
       TEXT.push_back((text >> (i * 8)) & 0xFF);
    }
-   current_section_ref.get().size += 4;
+   section_list.back().size += 4;
 }
 
 void Assembler::Driver::set_TEXT(const uint32_t text, uint32_t offset)

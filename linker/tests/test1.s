@@ -17,6 +17,7 @@ wait:   ld my_counter, %r1
         halt
     .global my_counter
     .section my_data
+        ld $my_counter, %r1
 my_counter:
         .word 0
     .end

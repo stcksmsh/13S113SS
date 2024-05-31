@@ -36,6 +36,7 @@ namespace Assembler
          bool local;
          bool is_defined;
          bool is_section;
+         bool is_const = false;
          struct STforward_ref
          {
             std::string section;
@@ -45,12 +46,9 @@ namespace Assembler
       };
 
    public:
-      Driver(Logger *logger) : parser(nullptr), scanner(nullptr), current_section_ref(section_list[0]), logger(logger)
+      Driver(Logger *logger) : parser(nullptr), scanner(nullptr), logger(logger)
       {
          logger->logDebug("Driver object created");
-         /// Without this we get SIGSEGVd so it will stay here
-         Section text_section = {"", 0, 0};
-         current_section_ref = std::ref(text_section);
       }
 
       virtual ~Driver();
@@ -63,7 +61,7 @@ namespace Assembler
       /// @param name The name of the symbol
       /// @param is_defined Whether the symbol is defined or not
       /// @return A pointer to the symbol table entry
-      STentry *insert_symbol(const std::string name, const bool is_defined = true, const bool is_section = false, std::string section = "");
+      STentry *insert_symbol(const std::string name, const bool is_defined = true, const bool is_section = false, std::string section = "", const bool is_const = false);
 
       /// @brief Update a symbol in the symbol table (used for .data and .bss section symbols)
       /// @param name The name of the symbol
@@ -78,6 +76,12 @@ namespace Assembler
       /// @brief Add a forward reference to a symbol
       /// @param name The name of the symbol
       void forward_reference(const std::string name);
+
+      /// @brief Add a relocation to the relocation list (the symbol is presumed to be defined)
+      /// @param symbol The symbol to relocate
+      /// @param section The section in which the symbol is used
+      /// @param offset The offset in the section where the symbol is used
+      void add_relocation(const std::string symbol, const std::string section = "", const uint32_t offset = 0);
 
       /// @brief Add an extern to the extern list
       void add_extern(const std::vector<std::string> &externs);
@@ -128,7 +132,7 @@ namespace Assembler
 
       std::vector<Section> section_list;
 
-      std::reference_wrapper<Section> current_section_ref;
+      int current_section_index = -1;
 
       friend class Assembler::Parser;
       friend class Assembler::Scanner;
@@ -141,6 +145,20 @@ namespace Assembler
 
       /// @brief The global list
       std::vector<std::string> global_list;
+
+      
+      /// @brief The relocation list
+      struct Relocation {
+         /// @brief The section in which the symbol is defined
+         std::string src_section;
+         /// @brief The offset in the section where the symbol is defined
+         uint32_t src_offset;
+         /// @brief The section where the symbol is used
+         std::string dst_section;
+         /// @brief The offset in the section where the symbol is used
+         uint32_t dst_offset;
+      };
+      std::vector<Relocation> relocation_list;
 
       /* I will use a char vector to store the binary data */
       /// @brief TEXT section binary data

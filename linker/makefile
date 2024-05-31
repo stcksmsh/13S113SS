@@ -10,11 +10,10 @@ LIB_HEADERS= ../lib/inc
 
 LINKER_EXE=linker
 
-CXXFLAGS= -I../lib/inc -Iinc -std=c++20
+CXXFLAGS+= -I../lib/inc
 
 LIBS= elf logger arguments
 LIB_OBJS=$(foreach lib,$(subst $(space),$(newline),$(LIBS)),../lib/$(lib).o)
-
 
 build: clean ${LINKER_OBJ}
 	@echo -n "${INDENT}Linking linker...  \n"
@@ -26,6 +25,10 @@ ${OBJ_DIR}/%.o: ${SRC_DIR}/%.cpp
 	@${CXX} ${CXXFLAGS} -c $< -o $@
 	@echo "Done."
 
+test: FORCE
+	@echo "${INDENT}Running linker tests..."
+	@source tests/start.sh
+	@echo "${INDENT}Done."
 
 clean:
 	@echo -n "${INDENT}Cleaning linker...  "

@@ -84,7 +84,6 @@ int main(int argc, const char **argv)
 
     output_elf.readFromStream(file);
     file.close();
-    linker.link(output_elf, output_elf);
 
     for (int i = 1; i < elf_file_names.size(); i++)
     {

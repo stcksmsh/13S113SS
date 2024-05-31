@@ -48,6 +48,7 @@
         "ratio": "cpp",
         "functional": "cpp",
         "chrono": "cpp",
-        "optional": "cpp"
+        "optional": "cpp",
+        "array": "cpp"
     }
 }

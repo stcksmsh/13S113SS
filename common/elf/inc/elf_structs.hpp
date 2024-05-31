@@ -246,6 +246,14 @@ enum symtab_entry_types
     STT_SECTION = 3,
     /// @brief The symbol is a file
     STT_FILE = 4,
+    /// @brief The symbol is a common block
+    STT_COMMON = 5,
+    /// @brief The symbol is a thread-local data object
+    STT_TLS = 6,
+    /// @brief The symbol is a GNU indirect function
+    STT_GNU_IFUNC = 10,
+    /// @brief The symbol is a constant
+    STT_CONST = 11,    
     /// @brief Lower bound of the reserved types
     STT_LOPROC = 13,
     /// @brief Upper bound of the reserved types
@@ -276,6 +284,46 @@ inline char symtab_entry_type(char info)
     return info & 0x0F;
 }
 
+/// @brief The relocation table entry types
+enum rel_tab_types
+{
+    /// @brief No relocation
+    R_386_NONE = 0,
+    /// @brief Relocation with 32-bit absolute address
+    R_386_32 = 1,
+    /// @brief Relocation with 32-bit PC-relative address
+    R_386_PC32 = 2,
+    /// @brief Relocation with 32-bit address relative to the section
+    R_386_GLOB_DAT = 6,
+    /// @brief Relocation with 32-bit offset to the symbol
+    R_386_RELATIVE = 8,
+};
+
+/// @brief Create the relocation table entry info
+/// @param symbol The index of the symbol in the symbol table
+/// @param type The type of the relocation
+/// @return The info
+inline uint32_t rel_tab_entry_info(uint32_t symbol, uint32_t type)
+{
+    return (symbol << 8) | (type & 0xFF);
+}
+
+/// @brief Get the symbol index from the relocation info
+/// @param info The info
+/// @return The symbol index
+inline uint32_t rel_tab_entry_symbol(uint32_t info)
+{
+    return info >> 8;
+}
+
+/// @brief Get the type of the relocation from the info
+/// @param info The info
+/// @return The type of the relocation
+inline uint32_t rel_tab_entry_type(uint32_t info)
+{
+    return info & 0xFF;
+}
+
 /// @brief The relocation table entry
 struct rel_tab_entry
 {
@@ -286,6 +334,8 @@ struct rel_tab_entry
      *   If we had more types of relocations, we would need to store the type of the relocation as well
      */
     uint32_t info;
+
+    int32_t addend = 0;
 };
 
 #endif // __ELF_STRUCTS_HPP__

@@ -13,14 +13,14 @@ ASSEMBLER_EXE=assembler
 PARSER_FILE=src/parser.y
 SCANNER_FILE=src/scanner.l
 
-CXXFLAGS= -I../lib/inc -Iinc -std=c++20
+CXXFLAGS+= -I../lib/inc
 
 LIBS= elf logger arguments
 LIB_OBJS=$(foreach lib,$(subst $(space),$(newline),$(LIBS)),../lib/$(lib).o)
 
 
 build: clean parser scanner ${ASSEMBLER_OBJ}
-	@echo -n "${INDENT}Linking assembler...  \n"
+	@echo -n "${INDENT}Linking assembler...  "
 	@${CXX} ${CXXFLAGS} ${LIB_OBJS} ${ASSEMBLER_OBJ} ${OBJ_DIR}/parser.o ${OBJ_DIR}/scanner.o -o ${ASSEMBLER_EXE}
 	@echo "Done."
 
@@ -43,6 +43,11 @@ scanner: ${SCANNER_FILE}
 	@${CXX}  ${CXXFLAGS} -c ${SRC_DIR}/scanner.cc -o ${OBJ_DIR}/scanner.o
 	@echo "Done."
 
+
+test: FORCE
+	@echo "${INDENT}Running assembler tests..."
+	@source tests/start.sh
+	@echo "${INDENT}Done."
 
 clean:
 	@echo -n "${INDENT}Cleaning assembler...  "

@@ -193,6 +193,9 @@ operand:
                                              driver.forward_reference($2);
                                              $$.fields.Disp = 0;
                                           }else{
+                                             if(!entry->is_const){
+                                                driver.add_relocation($2);
+                                             } 
                                              $$.fields.Disp = entry->offset;
                                           }
                                         }
@@ -202,6 +205,9 @@ operand:
                                              driver.forward_reference($1);
                                              $$.fields.Disp = 0;
                                           }else{
+                                             if(!entry->is_const){
+                                                driver.add_relocation($1);
+                                             } 
                                              $$.fields.Disp = entry->offset;
                                           }
                                         }
@@ -214,6 +220,9 @@ operand:
                                              driver.forward_reference($4);
                                              $$.fields.Disp = 0;
                                           }else{
+                                             if(!entry->is_const){
+                                                driver.add_relocation($4);
+                                             }
                                              $$.fields.Disp = entry->offset;
                                           }
                                         }
@@ -224,7 +233,7 @@ directive:
      GLOBAL symbol_list                 { driver.add_global($2); }
    | EXTERN symbol_list                 { driver.add_extern($2); }
    | SECTION SYMBOL                     { driver.add_section($2); }
-   | EQU SYMBOL COMMA expression        { driver.insert_symbol($2);
+   | EQU SYMBOL COMMA expression        { driver.insert_symbol($2, true, false, "", true);
                                           driver.get_symbol($2)->offset = $4;
                                         }
    ;
@@ -232,7 +241,7 @@ directive:
 data_directive:
      WORD symbol_or_literal_list        { for(uint32_t val : $2) driver.append_DATA(val); }
    | label WORD symbol_or_literal_list  { driver.update_symbol($1, ".data");
-                                             for(uint32_t val : $3) driver.append_DATA(val);
+                                          for(uint32_t val : $3) driver.append_DATA(val);
                                         }
    | ASCII STRING                       { for(char c : $2) driver.DATA.push_back(c); }
    | label ASCII STRING                 { driver.update_symbol($1, ".data");
@@ -248,15 +257,17 @@ bss_directive:
    ;
 
 symbol_list:
-     SYMBOL                               { $$ = std::vector<std::string>(); $$.push_back($1); }
+     SYMBOL                             { $$ = std::vector<std::string>(); $$.push_back($1); }
    | symbol_list COMMA SYMBOL           { $$ = $1; $$.push_back($3); }
    ;
 
 symbol_or_literal_list:
-     NUMBER                               { $$ = std::vector<uint32_t>(); $$.push_back($1); }
+     NUMBER                             { $$ = std::vector<uint32_t>(); $$.push_back($1); }
    | SYMBOL                             { $$ = std::vector<uint32_t>();
                                           Driver::STentry *entry = driver.get_symbol($1);
-                                          $$.push_back(driver.get_symbol($1)->offset); }
+                                          $$.push_back(driver.get_symbol($1)->offset);
+                                          
+                                        }
    | symbol_or_literal_list COMMA NUMBER{ $$ = $1; $$.push_back($3); }
    | symbol_or_literal_list COMMA SYMBOL{ $$ = $1;
                                           Driver::STentry *entry = driver.get_symbol($3);
@@ -271,7 +282,7 @@ label:
    ;
 
 expression:
-     NUMBER                               { $$ = $1; }
+     NUMBER                             { $$ = $1; }
    | expression PLUS NUMBER             { $$ = $1 + $3; if($$ < $1) Parser::error(@2, "Overflow occured"); }
    | expression MINUS NUMBER            { $$ = $1 - $3; if($$ > $1) Parser::error(@2, "Underflow occured"); }
 

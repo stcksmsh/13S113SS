@@ -20,6 +20,11 @@ ${EMULATOR_OBJ}: ${EMULATOR_SRC} | ${OBJ_DIR}
 ${OBJ_DIR}:
 	@mkdir -p $@
 
+test: FORCE
+	@echo "${INDENT}Running emulator tests..."
+	@source tests/start.sh
+	@echo "${INDENT}Done."
+
 clean:
 	@echo -n "${INDENT}Cleaning emulator...  "
 	@rm -f ${EMULATOR_OBJ} ${EMULATOR}

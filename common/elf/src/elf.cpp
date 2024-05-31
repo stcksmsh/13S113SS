@@ -6,7 +6,7 @@
 std::istream &
 ELF::readFromStream(std::istream &stream)
 {
-    logger->logInfo("Reading ELF file");
+    logger->logInfo("Reading ELF file from stream\n----------------------------------");
 
     program_headers.clear();
     binary_data.clear();
@@ -86,6 +86,8 @@ ELF::readFromStream(std::istream &stream)
             sym_entry.value = sym.value;
             sym_entry.is_local = (symtab_entry_binding(sym.info) == symtab_entry_bindings::STB_GLOBAL ? false : true);
             sym_entry.is_section = (symtab_entry_type(sym.info) == symtab_entry_types::STT_SECTION);
+            sym_entry.is_const = (symtab_entry_type(sym.info) == symtab_entry_types::STT_CONST);
+            sym_entry.is_extern = !sym_entry.is_local && sym.shndx == 0;
             sym_entry.section = section_names[sym.shndx];
             symbol_table.push_back(sym_entry);
             logger->logDebug("Added symbol " + name + " to the symbol table with value " + std::format("{:x}", sym.value) + " and " + (sym_entry.is_local ? "local" : "global") + " binding");
@@ -95,19 +97,19 @@ ELF::readFromStream(std::istream &stream)
         /// And finally we fill the relocation table
         for (int i = 1; i < section_headers.size() - 3; i++)
         {
-            logger->logDebug("Reading relocations for section " + section_names[i]);
-            if (section_headers[i].type != Section_Header::Section_Type::SHT_REL)
+            if (section_headers[i].type != Section_Header::Section_Type::SHT_RELA)
                 continue;
+            logger->logDebug("Reading relocations for section " + section_names[i]);
             std::vector<char> rel_data(section_headers[i].size);
             stream.seekg(section_headers[i].offset);
             stream.read(rel_data.data(), rel_data.size());
-            for (int j = 0; j < section_headers[i].size / sizeof(rel_tab_entry); j++)
+            for (int j = 0; j < section_headers[i].size / section_headers[i].entsize; j++)
             {
                 rel_tab_entry rel;
-                memcpy(&rel, rel_data.data() + j * sizeof(rel_tab_entry), sizeof(rel_tab_entry));
-                std::string name(strtab_data.data() + symbol_table[rel.info].name);
+                memcpy(&rel, rel_data.data() + j * section_headers[i].entsize, section_headers[i].entsize);
+                std::string name(strtab_data.data() + symbol_table[rel_tab_entry_symbol(rel.info)].name);
                 logger->logDebug("Reading relocation " + std::to_string(j) + " for section " + section_names[i].substr(4) + " for symbol " + name);
-                add_relocation(name, section_names[i].substr(4), rel.offset);
+                add_relocation(name, section_names[i].substr(4), rel.offset, rel.addend);
             }
         }
     }
@@ -117,22 +119,24 @@ ELF::readFromStream(std::istream &stream)
 
     /* Then we have to remove some sections */
 
+    std::size_t new_end = 0;
     { /// Now remove the .strtab, .symtab and .shstrtab sections
         logger->logInfo("Removing the .strtab, .symtab and .shstrtab sections");
+        
         section_headers.pop_back();
         section_names.pop_back();
         section_headers.pop_back();
         section_names.pop_back();
+        new_end = section_headers.back().offset;
         section_headers.pop_back();
         section_names.pop_back();
     }
-    std::size_t new_end = section_headers[section_headers.size() - 1].offset + section_headers[section_headers.size() - 1].size;
 
     { /// Also remove the .rel sections
         logger->logInfo("Removing the .rel sections");
         for (int i = 0; i < section_headers.size(); i++)
         {
-            if (section_headers[i].type == Section_Header::Section_Type::SHT_REL)
+            if (section_headers[i].type == Section_Header::Section_Type::SHT_RELA)
             {
                 new_end -= section_headers[i].size;
                 logger->logDebug("Removing " + section_names[i] + " section");
@@ -151,6 +155,7 @@ ELF::readFromStream(std::istream &stream)
         stream.read((char *)binary_data.data(), binary_data.size());
     }
 
+
     logger->logInfo("Finished deserializing ELF file");
 
     return stream;
@@ -159,15 +164,21 @@ ELF::readFromStream(std::istream &stream)
 std::ostream &
 ELF::createShared(std::ostream &stream)
 {
+    logger->logInfo("Creating shared ELF file\n----------------------------------");
     /* First we generate the strtab and symtab structures */
+    /// First sort the symbol table so that the local symbols come first
+    std::sort(symbol_table.begin(), symbol_table.end(), [](Symbol_Table_Entry a, Symbol_Table_Entry b) {
+        return !b.is_local && a.is_local;
+    });
+
+
     std::vector<char> strtab_data;
     { /// Generate the strtab data (so we can set the name_index field of the symbol table)
         logger->logInfo("Generating strtab data");
         /// Adding empty string
-        strtab_data.push_back('\0');
         for (int i = 0; i < symbol_table.size(); i++)
         {
-            logger->logDebug("Adding symbol " + symbol_table[i].name + " to strtab");
+            logger->logDebug("Adding symbol '" + symbol_table[i].name + "' to strtab");
             symbol_table[i].name_index = strtab_data.size();
             for (char c : symbol_table[i].name)
             {
@@ -181,13 +192,6 @@ ELF::createShared(std::ostream &stream)
     { /// Generate the symbol table structure
         logger->logInfo("Generating the symbol table");
         symtab_entry null_sym;
-        /// Add the NULL symbol
-        null_sym.name = null_sym.value = null_sym.size = null_sym.info = null_sym.other = null_sym.shndx = 0;
-        symtab.push_back(null_sym);
-        /// First sort the symbol table so that the local symbols come first
-        std::sort(symbol_table.begin(), symbol_table.end(), [](Symbol_Table_Entry a, Symbol_Table_Entry b) {
-            return !b.is_local && a.is_local;
-        });
         /// Then add the symbols to the symtab        
         for (int i = 0; i < symbol_table.size(); i++)
         {
@@ -196,7 +200,7 @@ ELF::createShared(std::ostream &stream)
             sym.value = symbol_table[i].value;
             sym.size = 0;
             sym.info = symtab_entry_info(symbol_table[i].is_local ? symtab_entry_bindings::STB_LOCAL : symtab_entry_bindings::STB_GLOBAL,
-                                         symbol_table[i].is_section ? symtab_entry_types::STT_SECTION : symtab_entry_types::STT_NOTYPE);
+                                         symbol_table[i].is_section ? symtab_entry_types::STT_SECTION : (symbol_table[i].is_const ? symtab_entry_types::STT_CONST : symtab_entry_types::STT_NOTYPE));
             sym.other = 0;
             sym.shndx = 0;
 
@@ -208,7 +212,7 @@ ELF::createShared(std::ostream &stream)
                     break;
                 }
             }
-            logger->logDebug("Adding symbol " + symbol_table[i].name + " to symtab with value " + std::format("{:x}", symbol_table[i].value) + " and " + (symbol_table[i].is_local ? "local" : "global") + " binding");
+            logger->logDebug("Adding symbol '" + symbol_table[i].name + "' to symtab with value " + std::format("{:x}", symbol_table[i].value) + " and " + (symbol_table[i].is_local ? "local" : "global") + " binding");
             symtab.push_back(sym);
         }
     }
@@ -224,13 +228,12 @@ ELF::createShared(std::ostream &stream)
             std::vector<rel_tab_entry> rel_section_data;
             Section_Header rel_section;
 
-            rel_section.type = Section_Header::Section_Type::SHT_REL;
+            rel_section.type = Section_Header::Section_Type::SHT_RELA;
             rel_section.flags = Section_Header_Flags::SHF_ALLOC;
             rel_section.addralign = 1;
             rel_section.offset = 0;                        /// will be updated later
             rel_section.size = 0;                          /// will be updated later
-            rel_section.link = section_headers.size() - 1; /// The index of the symtab section
-            rel_section.info = i + 1;                      /// The index of the section to which the relocations apply
+            rel_section.info = i;                      /// The index of the section to which the relocations apply
             rel_section.entsize = sizeof(rel_tab_entry);
 
             /// Now fill the rel_section_data vector
@@ -239,17 +242,20 @@ ELF::createShared(std::ostream &stream)
             {
                 if (relocation_table[j].section == section_names[i])
                 {
+                    logger->logDebug("Relocation for symbol '" + relocation_table[j].name + "' in section '" + relocation_table[j].section + "' at offset " + std::format("{:x}", relocation_table[j].offset));
                     rel_tab_entry rel;
-                    rel.offset = relocation_table[j].value;
+                    rel.offset = relocation_table[j].offset;
                     for (int k = 0; k < symbol_table.size(); k++)
                     {
                         if (symbol_table[k].name == relocation_table[j].name)
                         {
-                            rel.info = k + 1; /// The index of the symbol in the symtab ( add 1 because of the NULL symbol )
+                            rel.info = k; /// The index of the symbol in the symtab
                             break;
                         }
                     }
-                    logger->logDebug("Adding relocation entry for symbol " + relocation_table[j].name + " at offset " + std::format("{:x}", relocation_table[j].value), " referencing symbol at index " + std::to_string(rel.info));
+                    logger->logDebug("Adding relocation entry for symbol '" + relocation_table[j].name + "' in section: '" + relocation_table[j].section + "' at offset " + std::format("{:x}", relocation_table[j].offset), " referencing symbol at index " + std::to_string(rel.info));
+                    rel.info = rel_tab_entry_info(rel.info, rel_tab_types::R_386_32);
+                    rel.addend = relocation_table[j].addend;
                     rel_section_data.push_back(rel);
                 }
             }
@@ -260,36 +266,46 @@ ELF::createShared(std::ostream &stream)
 
             /// Add the rel_section_data to the rel_data vector and the section to the names/headers vectors
             rel_data.push_back(rel_section_data);
-            section_headers.push_back(rel_section);
-            section_names.push_back(".rel" + section_names[i]);
+            rel_section.size = rel_section_data.size() * sizeof(rel_tab_entry);
+            rel_section.offset = sizeof(ELF_Header) + program_headers.size() * sizeof(Program_Header) + binary_data.size();
+            /// Add the new rel section after the section to which the relocations apply, and increase i to skip the new section
+            /// std::vector::insert inserts before the element at the specified position, so we need to increment i (if we are not at the end of the sections)
+            if(i < sections - 1){
+                i++;
+                sections++;
+                section_headers.insert(section_headers.begin() + i, rel_section);
+                section_names.insert(section_names.begin() + i, ".rel" + section_names[i-1]); // section_names[i-1] because we incremented i
+            }else{
+                /// If we are at the end of the sections, we just push the new section to the end
+                section_headers.push_back(rel_section);
+                section_names.push_back(".rel" + section_names[i]);
+            }
 
-            logger->logDebug("Added .rel" + section_names[i] + " section with " + std::to_string(rel_section_data.size()) + " entries");
+            /// And now write the rel_section_data to the binary
+            logger->logDebug("writing '.rel" + section_names[i] + "' section with " + std::to_string(rel_section_data.size()) + " entries to the binary");
+            for(int j = 0; j < rel_section_data.size(); j++){
+                for(int k = 0; k < sizeof(rel_tab_entry); k++){
+                    binary_data.push_back(((char *)&rel_section_data[j])[k]);
+                }
+            }
+
         }
+    }
 
-        /// Now we need to update te link field of the symtab section headers
-        logger->logInfo("Updating the link field of the symtab section headers");
-        for (int i = sections; i < section_headers.size(); i++)
-        {
-            logger->logDebug("Updating link field of section " + section_names[i] + " to " + std::to_string(section_headers.size() + 1));
-            section_headers[i].link = section_headers.size() + 1;
-        }
-
-        /// And now we need to write the rel sections to the binary and update the section offsets
-        logger->logInfo("Writing the relocation sections to the binary");
-        for (int i = 0; i < rel_data.size(); i++)
-        {
-            section_headers[sections + i].offset = sizeof(ELF_Header) + program_headers.size() * sizeof(Program_Header) + binary_data.size();
-            section_headers[sections + i].size = rel_data[i].size() * sizeof(rel_tab_entry);
-            for (int j = 0; j < rel_data[i].size(); j++)
-            {
-                for (int k = 0; k < sizeof(rel_tab_entry); k++)
-                {
-                    binary_data.push_back(((char *)&rel_data[i][j])[k]);
+    { /// Then we need to update the symbols ndx due to the added rel sections
+        int disp = 0;
+        for(int i = 3; i < section_names.size(); i++){
+            if(section_headers[i].type == Section_Header::Section_Type::SHT_RELA){
+                disp++;
+                continue;
+            }
+            for(int j = 0; j < symtab.size(); j++){
+                if(symtab[j].shndx == i - disp){
+                    symtab[j].shndx = i;
                 }
             }
         }
     }
-
     /* After that we need to create some common sections and fill their data structures */
     { /// Create the strtab section
         logger->logInfo("Creating the .strtab section");
@@ -320,10 +336,20 @@ ELF::createShared(std::ostream &stream)
             if (!symbol_table[num_local].is_local)
                 break;
         }
-        symtab_header.info = num_local + 1;
+        symtab_header.info = num_local;
 
         section_headers.push_back(symtab_header);
         section_names.push_back(".symtab");
+
+        /// Update the .rel sections link field
+        for(int i = 0; i < section_headers.size(); i++)
+        {
+            if(section_headers[i].type == Section_Header::Section_Type::SHT_RELA)
+            {
+                logger->logDebug("Updating info field for section " + section_names[i] + " to " + std::to_string(section_headers.size() - 1));
+                section_headers[i].link = section_headers.size() - 1;
+            }
+        }
     }
 
     std::vector<char> shstrtab_data;
@@ -435,7 +461,7 @@ ELF::setSectionAddress(const std::string section_name, const uint32_t address){
 void ELF::add_section(const std::string name, const std::vector<char> data,
                     const Section_Header::Section_Type type, const uint32_t flags, const uint32_t addralign)
 {
-    logger->logInfo("Adding section " + name + " to the ELF file");
+    logger->logInfo("Adding section '" + name + "' to the ELF file");
     Section_Header sh;
     sh.type = type;
     sh.flags = flags;
@@ -444,7 +470,7 @@ void ELF::add_section(const std::string name, const std::vector<char> data,
     sh.offset = sizeof(ELF_Header) + program_headers.size() * sizeof(Program_Header) + binary_data.size();
     sh.size = data.size();
 
-    logger->logDebug("Section " + name + " has offset " + std::format("{:x}", sh.offset) + " and size " + std::to_string(sh.size));
+    logger->logDebug("Section '" + name + "' has offset " + std::format("{:x}", sh.offset) + " and size " + std::to_string(sh.size));
 
     section_names.push_back(name);
     section_headers.push_back(sh);
@@ -454,25 +480,28 @@ void ELF::add_section(const std::string name, const std::vector<char> data,
     }
 }
 
-void ELF::add_symbol(const std::string name, const std::string section, const uint32_t value, bool is_local, bool is_section)
+void ELF::add_symbol(const std::string name, const std::string section, const uint32_t value, bool is_local, bool is_section, bool is_const, bool is_extern)
 {
-    logger->logDebug("Adding symbol " + name + " to section " + section + " with value " + std::format("{:x}", value));
+    logger->logDebug("Adding symbol '" + name + "' to section '" + section + "' with value " + std::format("{:x}", value));
     ELF::Symbol_Table_Entry sym;
     sym.name = name;
     sym.section = section;
     sym.value = value;
     sym.is_section = is_section;
     sym.is_local = is_local;
+    sym.is_const = is_const;
+    sym.is_extern = is_extern;
     symbol_table.push_back(sym);
 }
 
-void ELF::add_relocation(const std::string name, const std::string section, const uint32_t offset)
+void ELF::add_relocation(const std::string name, const std::string section, const uint32_t offset, const uint32_t addend)
 {
-    logger->logDebug("Adding relocation for symbol " + name + " in section " + section + " at offset " + std::format("{:x}", offset));
-    ELF::Symbol_Table_Entry rel;
-    rel.name = name;
+    logger->logDebug("Adding relocation for symbol '" + name + "' in section '" + section + "' at offset " + std::format("{:x}", offset));
+    Relocation_Entry rel;
     rel.section = section;
-    rel.value = offset;
+    rel.name = name;
+    rel.offset = offset;
+    rel.addend = addend;
     relocation_table.push_back(rel);
 }
 

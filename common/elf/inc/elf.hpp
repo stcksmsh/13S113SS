@@ -35,41 +35,54 @@ public:
       uint32_t value;
       bool is_local;
       bool is_section;
+      bool is_const;
+      bool is_extern;
       uint32_t name_index;
    };
 
 public:
    ELF(Logger *logger) : logger(logger)
    {
-      /// Add the NULL section header
-      Section_Header null_section;
-      section_names.push_back("");
-      section_headers.push_back(null_section);
+      { /// Add the the mandatory sections
+         /// Add the NULL section header
+         Section_Header null_section;
+         section_names.push_back("");
+         section_headers.push_back(null_section);
 
-      /// Add the .bss section header
-      Section_Header bss_section;
-      bss_section.type = Section_Header::Section_Type::SHT_NOBITS;
-      bss_section.flags = Section_Header_Flags::SHF_ALLOC | Section_Header_Flags::SHF_WRITE;
-      bss_section.addralign = 0x1;
-      section_names.push_back(".bss");
-      section_headers.push_back(bss_section);
+         /// Add the .bss section header
+         Section_Header bss_section;
+         bss_section.type = Section_Header::Section_Type::SHT_NOBITS;
+         bss_section.flags = Section_Header_Flags::SHF_ALLOC | Section_Header_Flags::SHF_WRITE;
+         bss_section.addralign = 0x1;
+         section_names.push_back(".bss");
+         section_headers.push_back(bss_section);
 
-      /// Add the .data section header
-      Section_Header data_section;
-      data_section.type = Section_Header::Section_Type::SHT_PROGBITS;
-      data_section.flags = Section_Header_Flags::SHF_ALLOC | Section_Header_Flags::SHF_WRITE;
-      data_section.addralign = 0x1;
-      section_names.push_back(".data");
-      section_headers.push_back(data_section);
+         /// Add the .data section header
+         Section_Header data_section;
+         data_section.type = Section_Header::Section_Type::SHT_PROGBITS;
+         data_section.flags = Section_Header_Flags::SHF_ALLOC | Section_Header_Flags::SHF_WRITE;
+         data_section.addralign = 0x1;
+         section_names.push_back(".data");
+         section_headers.push_back(data_section);
 
-      /// Add the .text section header
-      Section_Header text_section;
-      text_section.type = Section_Header::Section_Type::SHT_PROGBITS;
-      text_section.flags = Section_Header_Flags::SHF_ALLOC | Section_Header_Flags::SHF_EXECINSTR;
-      text_section.addralign = 0x1;
-      section_names.push_back(".text");
-      section_headers.push_back(text_section);
+         /// Add the .text section header
+         Section_Header text_section;
+         text_section.type = Section_Header::Section_Type::SHT_PROGBITS;
+         text_section.flags = Section_Header_Flags::SHF_ALLOC | Section_Header_Flags::SHF_EXECINSTR;
+         text_section.addralign = 0x1;
+         section_names.push_back(".text");
+         section_headers.push_back(text_section);
+      }
 
+      /// Add the NULL symbol table entry
+      Symbol_Table_Entry null_symbol;
+      null_symbol.name = "";
+      null_symbol.section = "";
+      null_symbol.value = 0;
+      null_symbol.is_local = true;
+      null_symbol.is_section = false;
+      null_symbol.name_index = 0;
+      symbol_table.push_back(null_symbol);
    };
    ~ELF(){};
 
@@ -97,10 +110,10 @@ public:
    void add_section(const std::string name, const std::vector<char> data, const Section_Header::Section_Type type, const uint32_t flags, const uint32_t addralign);
 
    /// @brief Add a symbol to the ELF file
-   void add_symbol(const std::string name, const std::string section, const uint32_t value, bool is_local = false, bool is_section = false);
+   void add_symbol(const std::string name, const std::string section, const uint32_t value, bool is_local = false, bool is_section = false, bool is_const = false, bool is_extern = false);
 
    /// @brief Add a relocation entry to the ELF file
-   void add_relocation(const std::string name, const std::string section, const uint32_t offset);
+   void add_relocation(const std::string name, const std::string section, const uint32_t offset, uint32_t addend = 0);
 
    /// @brief Set the size of the BSS section
    void set_bss_size(const std::size_t size);
@@ -141,8 +154,17 @@ private:
    /// @brief The symbol table of the ELF file
    std::vector<Symbol_Table_Entry> symbol_table;
 
+   struct Relocation_Entry
+   {
+      std::string section;
+      std::string name;
+      uint32_t offset;
+      uint32_t addend;
+      
+   };
+
    /// @brief The relocation table of the ELF file
-   std::vector<Symbol_Table_Entry> relocation_table;
+   std::vector<Relocation_Entry> relocation_table;
 
    /// @brief The logger object
    Logger *logger;
