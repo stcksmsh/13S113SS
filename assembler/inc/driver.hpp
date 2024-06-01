@@ -24,7 +24,51 @@
 
 namespace Assembler
 {
+   /// @brief The opcode enum
+   enum Opcode
+   {
+      HALT = 0b00000,
+      INT = 0b00001,
+      IRET = 0b00010,
+      CALL = 0b00011,
+      RET = 0b00100,
+      JMP = 0b00101,
+      BEQ = 0b00110,
+      BNE = 0b00111,
+      BGT = 0b01000,
+      PUSH = 0b01001,
+      POP = 0b01010,
+      XCHG = 0b01011,
+      ADD = 0b01100,
+      SUB = 0b01101,
+      MUL = 0b01110,
+      DIV = 0b01111,
+      NOT = 0b10000,
+      AND = 0b10001,
+      OR = 0b10010,
+      XOR = 0b10011,
+      SHL = 0b10100,
+      SHR = 0b10101,
+      LD = 0b10110,
+      ST = 0b10111,
+      CSRRD = 0b11000,
+      CSRWR = 0b11001,
+   };
 
+   /// @brief The modifier
+   enum Modifier
+   {
+      LIT_DIR = 0b000,
+      SYM_DIR = 0b001,
+      LIT_IND = 0b010,
+      SYM_IND = 0b011,
+      REG_DIR = 0b100,
+      REG_IND = 0b101,
+      REG_LIT_IND = 0b110,
+      REG_SYM_IND = 0b111,
+   };
+
+   /// @brief The driver class, used for parsing input files
    class Driver
    {
    private:
@@ -101,11 +145,6 @@ namespace Assembler
       /// @brief Parse the input file
       /// @param stream The input file stream
       void parse_helper(std::istream &stream);
-
-      /// @brief Set a DWORD in the TEXT section
-      /// @param text The binary data to set
-      /// @param offset Where to set the data
-      void set_TEXT(const uint32_t text, uint32_t offset);
 
       /// @brief Append binary data to the TEXT section
       /// @param text What to append

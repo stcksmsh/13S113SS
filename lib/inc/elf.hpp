@@ -69,10 +69,10 @@ public:
    /// @return The output stream
    std::ostream &createShared(std::ostream &stream);
 
-   /// @brief Create an executable file
+   /// @brief Create a memory dump of the loaded ELF file
    /// @param stream The output stream to serialize the executable file to
    /// @return The output stream
-   std::ostream &createExecutable(std::ostream &stream); 
+   std::ostream &memDump(std::ostream &stream); 
 
    /// @brief Set the address of a section
    /// @param section The name of the section
@@ -119,6 +119,8 @@ private:
    std::vector<Section_Header> section_headers;
    /// @brief The names of the sections (in order)
    std::vector<std::string> section_names;
+   /// @brief The section set to virtual address 0
+   std::string zero_section = "";
 
    /// @brief The symbol table of the ELF file
    std::vector<Symbol_Table_Entry> symbol_table;

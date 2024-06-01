@@ -156,38 +156,38 @@ line:
    ;
 
 instruction:
-     HALT                               { Assembler::instruction inst; inst.fields.OC = 0b00000; driver.append_TEXT(inst.raw); }
-   | INT                                { Assembler::instruction inst; inst.fields.OC = 0b00001; driver.append_TEXT(inst.raw); }
-   | IRET                               { Assembler::instruction inst; inst.fields.OC = 0b00010; driver.append_TEXT(inst.raw); }
-   | CALL operand                       { $2.fields.OC = 0b00011; driver.append_TEXT($2.raw); }
-   | RET                                { Assembler::instruction inst; inst.fields.OC = 0b00100; driver.append_TEXT(inst.raw); }
-   | JMP operand                        { $2.fields.OC = 0b00101; driver.append_TEXT($2.raw); }
-   | BEQ GPR COMMA GPR COMMA operand    { $6.fields.OC = 0b00110; $6.fields.RegA = $2; $6.fields.RegB = $4; driver.append_TEXT($6.raw); }
-   | BNE GPR COMMA GPR COMMA operand    { $6.fields.OC = 0b00111; $6.fields.RegA = $2; $6.fields.RegB = $4; driver.append_TEXT($6.raw); }
-   | BGT GPR COMMA GPR COMMA operand    { $6.fields.OC = 0b01000; $6.fields.RegA = $2; $6.fields.RegB = $4; driver.append_TEXT($6.raw); }
-   | PUSH GPR                           { Assembler::instruction inst; inst.fields.OC = 0b01001; inst.fields.RegA = $2; driver.append_TEXT(inst.raw); }
-   | POP GPR                            { Assembler::instruction inst; inst.fields.OC = 0b01010; inst.fields.RegA = $2; driver.append_TEXT(inst.raw); }
-   | XCHG GPR COMMA GPR                 { Assembler::instruction inst; inst.fields.OC = 0b01011; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
-   | ADD GPR COMMA GPR                  { Assembler::instruction inst; inst.fields.OC = 0b01100; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
-   | SUB GPR COMMA GPR                  { Assembler::instruction inst; inst.fields.OC = 0b01101; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
-   | MUL GPR COMMA GPR                  { Assembler::instruction inst; inst.fields.OC = 0b01110; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
-   | DIV GPR COMMA GPR                  { Assembler::instruction inst; inst.fields.OC = 0b01111; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
-   | NOT GPR                            { Assembler::instruction inst; inst.fields.OC = 0b10000; inst.fields.RegA = $2; driver.append_TEXT(inst.raw); }
-   | AND GPR COMMA GPR                  { Assembler::instruction inst; inst.fields.OC = 0b10001; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
-   | OR GPR COMMA GPR                   { Assembler::instruction inst; inst.fields.OC = 0b10010; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
-   | XOR GPR COMMA GPR                  { Assembler::instruction inst; inst.fields.OC = 0b10011; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
-   | SHL GPR COMMA GPR                  { Assembler::instruction inst; inst.fields.OC = 0b10100; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
-   | SHR GPR COMMA GPR                  { Assembler::instruction inst; inst.fields.OC = 0b10101; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
-   | LD operand COMMA GPR               { $2.fields.OC = 0b10110; $2.fields.RegA = $4; driver.append_TEXT($2.raw); }
-   | ST GPR COMMA operand               { $4.fields.OC = 0b10111; $4.fields.RegA = $2; driver.append_TEXT($4.raw); }
-   | CSRRD CSR COMMA GPR                { Assembler::instruction inst; inst.fields.OC = 0b11000; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
-   | CSRWR GPR COMMA CSR                { Assembler::instruction inst; inst.fields.OC = 0b11001; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
+     HALT                               { Assembler::instruction inst; inst.fields.OC = Opcode::HALT; driver.append_TEXT(inst.raw); }
+   | INT                                { Assembler::instruction inst; inst.fields.OC = Opcode::INT; driver.append_TEXT(inst.raw); }
+   | IRET                               { Assembler::instruction inst; inst.fields.OC = Opcode::IRET; driver.append_TEXT(inst.raw); }
+   | CALL operand                       { $2.fields.OC = Opcode::CALL; driver.append_TEXT($2.raw); }
+   | RET                                { Assembler::instruction inst; inst.fields.OC = Opcode::RET; driver.append_TEXT(inst.raw); }
+   | JMP operand                        { $2.fields.OC = Opcode::JMP; driver.append_TEXT($2.raw); }
+   | BEQ GPR COMMA GPR COMMA operand    { $6.fields.OC = Opcode::BEQ; $6.fields.RegA = $2; $6.fields.RegB = $4; driver.append_TEXT($6.raw); }
+   | BNE GPR COMMA GPR COMMA operand    { $6.fields.OC = Opcode::BNE; $6.fields.RegA = $2; $6.fields.RegB = $4; driver.append_TEXT($6.raw); }
+   | BGT GPR COMMA GPR COMMA operand    { $6.fields.OC = Opcode::BGT; $6.fields.RegA = $2; $6.fields.RegB = $4; driver.append_TEXT($6.raw); }
+   | PUSH GPR                           { Assembler::instruction inst; inst.fields.OC = Opcode::PUSH; inst.fields.RegA = $2; driver.append_TEXT(inst.raw); }
+   | POP GPR                            { Assembler::instruction inst; inst.fields.OC = Opcode::POP; inst.fields.RegA = $2; driver.append_TEXT(inst.raw); }
+   | XCHG GPR COMMA GPR                 { Assembler::instruction inst; inst.fields.OC = Opcode::XCHG; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
+   | ADD GPR COMMA GPR                  { Assembler::instruction inst; inst.fields.OC = Opcode::ADD; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
+   | SUB GPR COMMA GPR                  { Assembler::instruction inst; inst.fields.OC = Opcode::SUB; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
+   | MUL GPR COMMA GPR                  { Assembler::instruction inst; inst.fields.OC = Opcode::MUL; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
+   | DIV GPR COMMA GPR                  { Assembler::instruction inst; inst.fields.OC = Opcode::DIV; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
+   | NOT GPR                            { Assembler::instruction inst; inst.fields.OC = Opcode::NOT; inst.fields.RegA = $2; driver.append_TEXT(inst.raw); }
+   | AND GPR COMMA GPR                  { Assembler::instruction inst; inst.fields.OC = Opcode::AND; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
+   | OR GPR COMMA GPR                   { Assembler::instruction inst; inst.fields.OC = Opcode::OR; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
+   | XOR GPR COMMA GPR                  { Assembler::instruction inst; inst.fields.OC = Opcode::XOR; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
+   | SHL GPR COMMA GPR                  { Assembler::instruction inst; inst.fields.OC = Opcode::SHL; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
+   | SHR GPR COMMA GPR                  { Assembler::instruction inst; inst.fields.OC = Opcode::SHR; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
+   | LD operand COMMA GPR               { $2.fields.OC = Opcode::LD; $2.fields.RegA = $4; driver.append_TEXT($2.raw); }
+   | ST GPR COMMA operand               { $4.fields.OC = Opcode::ST; $4.fields.RegA = $2; driver.append_TEXT($4.raw); }
+   | CSRRD CSR COMMA GPR                { Assembler::instruction inst; inst.fields.OC = Opcode::CSRRD; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
+   | CSRWR GPR COMMA CSR                { Assembler::instruction inst; inst.fields.OC = Opcode::CSRWR; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
    ;
 
 operand:  
-     DOLLAR NUMBER                      { $$.fields.MOD = 0b000; $$.fields.Disp = $2; }
-   | NUMBER                             { $$.fields.MOD = 0b001; $$.fields.Disp = $1; }
-   | DOLLAR SYMBOL                      { $$.fields.MOD = 0b010;
+     DOLLAR NUMBER                      { $$.fields.MOD = Modifier::LIT_DIR; $$.fields.Disp = $2; }
+   | NUMBER                             { $$.fields.MOD = Modifier::LIT_IND; $$.fields.Disp = $1; }
+   | DOLLAR SYMBOL                      { $$.fields.MOD = Modifier::SYM_DIR;
                                           Driver::STentry *entry = driver.get_symbol($2);
                                           if(!entry || !entry->is_defined){
                                              driver.forward_reference($2);
@@ -199,7 +199,7 @@ operand:
                                              $$.fields.Disp = entry->offset;
                                           }
                                         }
-   | SYMBOL                             { $$.fields.MOD = 0b011;
+   | SYMBOL                             { $$.fields.MOD = Modifier::SYM_IND;
                                           Driver::STentry *entry = driver.get_symbol($1);
                                           if(!entry || !entry->is_defined){
                                              driver.forward_reference($1);
@@ -211,10 +211,10 @@ operand:
                                              $$.fields.Disp = entry->offset;
                                           }
                                         }
-   | GPR                                { $$.fields.MOD = 0b100; $$.fields.RegC = $1; }
-   | LBRACKET GPR RBRACKET              { $$.fields.MOD = 0b101; $$.fields.RegC = $2; }
-   | LBRACKET GPR PLUS NUMBER RBRACKET  { $$.fields.MOD = 0b110; $$.fields.RegC = $2; $$.fields.Disp = $4; }
-   | LBRACKET GPR PLUS SYMBOL RBRACKET  { $$.fields.MOD = 0b111; $$.fields.RegC = $2;
+   | GPR                                { $$.fields.MOD = Modifier::REG_DIR; $$.fields.RegC = $1; }
+   | LBRACKET GPR RBRACKET              { $$.fields.MOD = Modifier::REG_IND; $$.fields.RegC = $2; }
+   | LBRACKET GPR PLUS NUMBER RBRACKET  { $$.fields.MOD = Modifier::REG_LIT_IND; $$.fields.RegC = $2; $$.fields.Disp = $4; }
+   | LBRACKET GPR PLUS SYMBOL RBRACKET  { $$.fields.MOD = Modifier::REG_SYM_IND; $$.fields.RegC = $2;
                                           Driver::STentry *entry = driver.get_symbol($4);
                                           if(!entry || !entry->is_defined){
                                              driver.forward_reference($4);

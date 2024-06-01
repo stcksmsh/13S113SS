@@ -2,8 +2,8 @@
 
 ## Instruction syntax
 
-| Instruction | Syntax                      |
-| ----------- | --------------------------- |
+| Instruction | Syntax                        |
+| ----------- | ----------------------------- |
 | HALT        | `halt`                      |
 | INT         | `int`                       |
 | IRET        | `iret`                      |
@@ -33,7 +33,7 @@
 
 ## Instruction format
 
-| 31 .. 27 | 26 .. 24 | 23 .. 22   | 29 .. 16   | 15 .. 12   | 11 .. 0      |
+| 31 .. 27 | 26 .. 24 | 23 .. 20   | 19 .. 16   | 15 .. 12   | 11 .. 0      |
 | -------- | -------- | ---------- | ---------- | ---------- | ------------ |
 | Opcode   | Modifier | Register A | Register B | Register C | Displacement |
 
@@ -49,31 +49,31 @@
 | JMP         | 0b00101 |
 | BEQ         | 0b00110 |
 | BNE         | 0b00111 |
-| BGT         | 0b00100 |
-| PUSH        | 0b00101 |
-| POP         | 0b00110 |
-| XCHG        | 0b00111 |
-| ADD         | 0b01000 |
-| SUB         | 0b01001 |
-| MUL         | 0b01010 |
-| DIV         | 0b01011 |
-| NOT         | 0b01100 |
-| AND         | 0b01101 |
-| OR          | 0b01110 |
-| XOR         | 0b01111 |
-| SHL         | 0b10000 |
-| SHR         | 0b10001 |
-| LD          | 0b10010 |
-| ST          | 0b10011 |
-| CSRRD       | 0b10100 |
-| CSRWR       | 0b10101 |
+| BGT         | 0b01000 |
+| PUSH        | 0b01001 |
+| POP         | 0b01010 |
+| XCHG        | 0b01011 |
+| ADD         | 0b01100 |
+| SUB         | 0b01101 |
+| MUL         | 0b01110 |
+| DIV         | 0b01111 |
+| NOT         | 0b10000 |
+| AND         | 0b10001 |
+| OR          | 0b10010 |
+| XOR         | 0b10011 |
+| SHL         | 0b10100 |
+| SHR         | 0b10101 |
+| LD          | 0b10110 |
+| ST          | 0b10111 |
+| CSRRD       | 0b11000 |
+| CSRWR       | 0b11001 |
 
 ### Modifiers
 
 The modifiers specify how the `operand` is represented:
 
-| Syntax                 | Modifier | Value                                              |
-| ---------------------- | -------- | -------------------------------------------------- |
+| Syntax                   | Modifier | Value                                                |
+| ------------------------ | -------- | ---------------------------------------------------- |
 | `$<literal>`           | 0b000    | The value of `<literal>`                           |
 | `$<symbol>`            | 0b001    | The value of `<symbol>`                            |
 | `<literal>`            | 0b010    | The value in memory at address `<literal>`         |

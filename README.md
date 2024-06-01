@@ -1,3 +1,7 @@
+
+![Line count][Line-badge]
+
+
 System Software Project
 
 Course link: [13SS113SS](https://www.etf.bg.ac.rs/en/fis/karton_predmeta/13S113SS-2013)
@@ -66,56 +70,56 @@ The use of non-standard libraries (if they are not closely linked to the core of
 
 #### Options
 
--   `-o <output_file>` - specifies output name and destination
+- `-o <output_file>` - specifies output name and destination
 
 ### Source code syntax
 
 #### General information
 
--   One line of source code shall contain at most one instruction or directive
--   Comments are completely ignored during the assembly process
--   One line comments, located at the end of a line, begin with the `#` character
--   A label, which ends with `:`, must be located at the very beginning of a line of source code
--   A label may exist 'as its own line', without a following assembler instruction or directive, in this case it is equivalent as being at the beginning of the next line of source code which contains an instruction/directive
+- One line of source code shall contain at most one instruction or directive
+- Comments are completely ignored during the assembly process
+- One line comments, located at the end of a line, begin with the `#` character
+- A label, which ends with `:`, must be located at the very beginning of a line of source code
+- A label may exist 'as its own line', without a following assembler instruction or directive, in this case it is equivalent as being at the beginning of the next line of source code which contains an instruction/directive
 
 #### Assembler directives
 
--   `.global <symbol_list>` - Exports all symbols within `<symbol_list>`. The list may contain one, or more comma separated symbols
--   `.extern <symbol_list>` - Imports all symbols within `<symbol_list>`. The list may contain one, or more comma separated symbols
--   `.section <section_name>` - Starts a new assembler section, which implicitly marks the end of the previous section, with the desired name
--   `.word <symbol_or_literal_list>` - Allocates a fixed amount of space in 4 byte increments for each initializer (symbol or literal) within the supplied, comma separated list. The directive initializes the space with the value of the initializers
--   `.skip <literal>` - Allocates space whose size is equal to the literal supplied. The directive initializes the space with zeroes
--   `.ascii <string>` - Allocates a fixed amount of space 1 byte increments for each character of the supplied string. The directive initializes the space with the value of the supplied string
--   `.equ <new_symbol>, <expression>` - Defines a new symbol whose value is equal to the supplied expression
--   `.end` - Ends the process of assembling the input file. The contents of the file following this directive are discarded and are not assembled
+- `.global <symbol_list>` - Exports all symbols within `<symbol_list>`. The list may contain one, or more comma separated symbols
+- `.extern <symbol_list>` - Imports all symbols within `<symbol_list>`. The list may contain one, or more comma separated symbols
+- `.section <section_name>` - Starts a new assembler section, which implicitly marks the end of the previous section, with the desired name
+- `.word <symbol_or_literal_list>` - Allocates a fixed amount of space in 4 byte increments for each initializer (symbol or literal) within the supplied, comma separated list. The directive initializes the space with the value of the initializers
+- `.skip <literal>` - Allocates space whose size is equal to the literal supplied. The directive initializes the space with zeroes
+- `.ascii <string>` - Allocates a fixed amount of space 1 byte increments for each character of the supplied string. The directive initializes the space with the value of the supplied string
+- `.equ <new_symbol>, <expression>` - Defines a new symbol whose value is equal to the supplied expression
+- `.end` - Ends the process of assembling the input file. The contents of the file following this directive are discarded and are not assembled
 
 #### Assembler instructions
 
--   `halt` - Ceases the execution of instructions
--   `int` - Causes a software interrupt
--   `iret` - `pop pc; pop status;`
--   `call operand` - `push pc; pc <= operand`
--   `ret` - `pop pc;`
--   `jmp operand` - `pc <= operand`
--   `beq %gpr1, %gpr2, operand` - `if (gpr1 == gpr2) pc <= operand`
--   `bne %gpr1, %gpr2, operand ` - `if (gpr1 != gpr2) pc <= operand`
--   `bgt %gpr1, %gpr2, operand ` - `if (gpr1 signed > gpr2) pc <= operand`
--   `push %gpr ` - `sp <= sp -4; mem32[sp] <= gpr`
--   `pop %gpr ` - `gpr <= mem32[sp]; sp <= sp + 4`
--   `xchg %gprS, %gprD ` - `temp <= gprD; gprD <= gprS; gprS <= temp`
--   `add %gprS, %gprD ` - `gprD <= gprD + gprS`
--   `sub %gprS, %gprD ` - `gprD <= gprD - gprS`
--   `mul %gprS, %gprD ` - `gprD <= gprD * gprS`
--   `div %gprS, %gprD ` - `gprD <= gprD / gprS`
--   `not %gpr ` - `gpr <= ~gpr`
--   `and %gprS, %gprD ` - `gprD <= gprD & gprS`
--   `or %gprS, %gprD ` - `gprD <= gprD | gprS`
--   `xor %gprS, %gprD` - `gprD <= gprD ^ gprS`
--   `shl %gprS, %gprD ` - `gprD <= gprD << gprS`
--   `shr %gprS, %gprD ` - `gprD <= gprD >> gprS`
--   `ld operand, %gpr ` - `gpr <= operand`
--   `st %gpr, operand ` - `operand <= gpr`
--   `csrrd %csr, %gpr ` - `gpr <= csrAcsrwr %gpr, %csrcsr <= gpr`
+- `halt` - Ceases the execution of instructions
+- `int` - Causes a software interrupt
+- `iret` - `pop pc; pop status;`
+- `call operand` - `push pc; pc <= operand`
+- `ret` - `pop pc;`
+- `jmp operand` - `pc <= operand`
+- `beq %gpr1, %gpr2, operand` - `if (gpr1 == gpr2) pc <= operand`
+- `bne %gpr1, %gpr2, operand ` - `if (gpr1 != gpr2) pc <= operand`
+- `bgt %gpr1, %gpr2, operand ` - `if (gpr1 signed > gpr2) pc <= operand`
+- `push %gpr ` - `sp <= sp -4; mem32[sp] <= gpr`
+- `pop %gpr ` - `gpr <= mem32[sp]; sp <= sp + 4`
+- `xchg %gprS, %gprD ` - `temp <= gprD; gprD <= gprS; gprS <= temp`
+- `add %gprS, %gprD ` - `gprD <= gprD + gprS`
+- `sub %gprS, %gprD ` - `gprD <= gprD - gprS`
+- `mul %gprS, %gprD ` - `gprD <= gprD * gprS`
+- `div %gprS, %gprD ` - `gprD <= gprD / gprS`
+- `not %gpr ` - `gpr <= ~gpr`
+- `and %gprS, %gprD ` - `gprD <= gprD & gprS`
+- `or %gprS, %gprD ` - `gprD <= gprD | gprS`
+- `xor %gprS, %gprD` - `gprD <= gprD ^ gprS`
+- `shl %gprS, %gprD ` - `gprD <= gprD << gprS`
+- `shr %gprS, %gprD ` - `gprD <= gprD >> gprS`
+- `ld operand, %gpr ` - `gpr <= operand`
+- `st %gpr, operand ` - `operand <= gpr`
+- `csrrd %csr, %gpr ` - `gpr <= csrAcsrwr %gpr, %csrcsr <= gpr`
 
 #### Registers and operands
 
@@ -124,17 +128,17 @@ The label `csrX` represents one of the programmatically available control and st
 The label `operand` represents all syntax notations for labeling operands. Syntax notations differ between jump instructions or instructions which deal with data.
 Data notations:
 
--   `$<literal>` - the value `<literal>`
--   `$<symbol>` - the value of `<symbol>`
--   `<literal>` - the memory value at `<literal>`
--   `<symbol>` - the memory value at `<symbol>`
--   `%<reg>` - the value inside the register `<reg>`
--   `[%<reg>]` - the memory value at address `<reg>`
--   `[%<reg> + <literal>]` - the memory value at address `<reg> + <literal>`
--   `[%<reg> + <symbol>]` - the memory value at address `<reg> + <symbol>`
-    Jump and subroutine notations:
--   `<literal>` - the value of `<literal>`
--   `<symbol>` - the value of `<symbol>`
+- `$<literal>` - the value `<literal>`
+- `$<symbol>` - the value of `<symbol>`
+- `<literal>` - the memory value at `<literal>`
+- `<symbol>` - the memory value at `<symbol>`
+- `%<reg>` - the value inside the register `<reg>`
+- `[%<reg>]` - the memory value at address `<reg>`
+- `[%<reg> + <literal>]` - the memory value at address `<reg> + <literal>`
+- `[%<reg> + <symbol>]` - the memory value at address `<reg> + <symbol>`
+  Jump and subroutine notations:
+- `<literal>` - the value of `<literal>`
+- `<symbol>` - the value of `<symbol>`
 
 ## Linker
 
@@ -146,14 +150,14 @@ Data notations:
 
 ONE and ONLY ONE of the `-relocatable`,`-hex` options must be specified when using the linker.
 
--   `-o <output_file>` - Specifies output file of the command.
--   `-place=<name_of_section>@<address>` - Explicitly defines the start address of a section. Can be used multiple times to set the addresses of multiple sections. All sections for which this option is not used are placed using the default placement method.
--   `-hex` - Tells the linker to generate a hex representation of the program, for purposes of memory initialization. The contents of this hex dump represent the machine code paired to its address in the program. Data is only generated for addresses with defined starting values. The format is as follows:
-    ```bash
-    0000: 00 01 02 03 04 05 06 07
-    0008: 08 09 0A 0B 0C 0D 0E 0F
-    0010: 10 11 12 13 14 15 16 17
-    ```
+- `-o <output_file>` - Specifies output file of the command.
+- `-place=<name_of_section>@<address>` - Explicitly defines the start address of a section. Can be used multiple times to set the addresses of multiple sections. All sections for which this option is not used are placed using the default placement method.
+- `-hex` - Tells the linker to generate a hex representation of the program, for purposes of memory initialization. The contents of this hex dump represent the machine code paired to its address in the program. Data is only generated for addresses with defined starting values. The format is as follows:
+  ```bash
+  0000: 00 01 02 03 04 05 06 07
+  0008: 08 09 0A 0B 0C 0D 0E 0F
+  0010: 10 11 12 13 14 15 16 17
+  ```
 
 -`relocatable` - Tells the linker to output a relocatable object file, of the same format as the output of the [assembler](#assembler) in which all sections are placed at the `NULL` address and all `-place` options are completely ignored. The resulting relocatable program may later be used as input for the linker.
 
@@ -204,11 +208,11 @@ r12=0x00000000   r13=0x00000000   r14=0x00000000   r15=0x00000000
 
 The abstract computer system consists of:
 
--   A processor (CPU)
--   Operating memory (MEM)
--   A timer (TIM)
--   A terminal (TERM)
-    All of the components mentioned above are interconnected via a system bus. Aside from this system bus the timer and the terminal are directly connected to the processor via interrupt causing lines.
+- A processor (CPU)
+- Operating memory (MEM)
+- A timer (TIM)
+- A terminal (TERM)
+  All of the components mentioned above are interconnected via a system bus. Aside from this system bus the timer and the terminal are directly connected to the processor via interrupt causing lines.
 
 ## The processor
 
@@ -224,13 +228,13 @@ The `r0` register is wired to zero, `r14` is used as the stack pointer (`sp`), a
 The stack pointer (`sp` or `r14`) contains the address of the taken address at the top of the stack (the stack grows down towards lower addresses).
 Besides the sixteen mentioned general purpose registers, the processor also has the following status and control 32-bit registers:
 
--   `status` - the processor status word
--   `handler` - the address of the interrupt routine
--   `cause` - the cause of the interrupt
-    The `status` register contains flags which provide the ability to configure the interrupt mechanism, these flags are:
--   `status[0]` $=>$ `Tr` - Timer, masks the timer interrupts ($0$ - enabled, $1$ - masked)
--   `status[1]` $=>$ `Tl` - Terminal, masks the terminal interrupts ($0$ - enabled, $1$ - masked)
--   `status[2]` $=>$ `I` - Interrupt, globally masks external interrupts ($0$ - enabled, $1$ - masked)
+- `status` - the processor status word
+- `handler` - the address of the interrupt routine
+- `cause` - the cause of the interrupt
+  The `status` register contains flags which provide the ability to configure the interrupt mechanism, these flags are:
+- `status[0]` $=>$ `Tr` - Timer, masks the timer interrupts ($0$ - enabled, $1$ - masked)
+- `status[1]` $=>$ `Tl` - Terminal, masks the terminal interrupts ($0$ - enabled, $1$ - masked)
+- `status[2]` $=>$ `I` - Interrupt, globally masks external interrupts ($0$ - enabled, $1$ - masked)
 
 ### Memory mapped registers
 
@@ -244,12 +248,12 @@ The system possesses only one interrupt routine whose address is defined by the 
 The cause for entering the given interrupt routine is defined by the value of the `cause` register.
 The possible values of `cause` are:
 
--   $1$ - Incorrect instruction
--   $2$ - Timer interrupt
--   $3$ - Terminal interrupt
--   $4$ - Software interrupt
-    Each instruction is atomic. The interrupt request is handled only after the current instruction is atomically finished.
-    When the processor enters the interrupt handler, it saves the `status` and `pc` registers to the stack and then masks all interrupts globally.
+- $1$ - Incorrect instruction
+- $2$ - Timer interrupt
+- $3$ - Terminal interrupt
+- $4$ - Software interrupt
+  Each instruction is atomic. The interrupt request is handled only after the current instruction is atomically finished.
+  When the processor enters the interrupt handler, it saves the `status` and `pc` registers to the stack and then masks all interrupts globally.
 
 ### Instruction format
 
@@ -264,8 +268,8 @@ The `MOD` field represents the instruction modifier, it says exactly what the `O
 The field `RegX` represents one used register. For general purpose registers the value of `X`is self explanatory, $X=0$ for `r0`, $X=1$ for `r1`, ... The status and control registers have the following values:
 
 | `status` | `handler` | `cause` |
-| -------- | --------- | ------- |
-| 0        | 1         | 2       |
+| ---------- | ----------- | --------- |
+| 0          | 1           | 2         |
 
 The `Disp` field represents a signed displacement value.
 
@@ -375,8 +379,8 @@ The system contains two peripherals, namely the terminal and the timer.
 
 The terminal represents an input/output peripheral which consists of a display (output) and a keyboard (output). The terminal possesses two programmatically accessible registers `term_out` and `term_int` which are [memory mapped](#memory-mapped-registers). They are mapped in the following way:
 
-| Register   | Address range               |
-| ---------- | --------------------------- |
+| Register     | Address range                 |
+| ------------ | ----------------------------- |
 | `term_out` | `0xFFFFFF00 ... 0xFFFFFF03` |
 | `term_int` | `0xFFFFFF04 ... 0xFFFFFF07` |
 
@@ -400,22 +404,22 @@ This register represents the input register. The terminal performs two actions o
 The timer represents a peripheral which will periodically generate an interrupt request.
 The timer possesses one memory mapped register `timer_cfg` which is used to configure the timer.
 
-| Register    | Address range               |
-| ----------- | --------------------------- |
+| Register      | Address range                 |
+| ------------- | ----------------------------- |
 | `timer_cfg` | `0xFFFFFF10 ... 0xFFFFFF13` |
 
 #### `timer_cfg`
 
 This register represents the configuration register of the timer peripheral. The timer period is defined using the value of `timer_cfg` in the following way:
 
--   `timer_cfg` $==$ `0x0` $=>$ $500ms$
--   `timer_cfg` $==$ `0x1` $=>$ $1000ms$
--   `timer_cfg` $==$ `0x2` $=>$ $1500ms$
--   `timer_cfg` $==$ `0x3` $=>$ $2000ms$
--   `timer_cfg` $==$ `0x4` $=>$ $5000ms$
--   `timer_cfg` $==$ `0x5` $=>$ $10s$
--   `timer_cfg` $==$ `0x6` $=>$ $30s$
--   `timer_cfg` $==$ `0x7` $=>$ $60s$
+- `timer_cfg` $==$ `0x0` $=>$ $500ms$
+- `timer_cfg` $==$ `0x1` $=>$ $1000ms$
+- `timer_cfg` $==$ `0x2` $=>$ $1500ms$
+- `timer_cfg` $==$ `0x3` $=>$ $2000ms$
+- `timer_cfg` $==$ `0x4` $=>$ $5000ms$
+- `timer_cfg` $==$ `0x5` $=>$ $10s$
+- `timer_cfg` $==$ `0x6` $=>$ $30s$
+- `timer_cfg` $==$ `0x7` $=>$ $60s$
 
 The default value of `timer_cfg`, that is to say its value after power-on / reset is `0x0`
 
@@ -487,3 +491,15 @@ Commands to assemble, link and emulate this example are:
 ```
 
 `./emulator program.hex`
+
+
+
+
+
+
+
+
+
+
+
+[Line-badge]: https://img.shields.io/badge/Lines-3633-f89820?style=for-the-badge

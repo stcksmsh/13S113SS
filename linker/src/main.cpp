@@ -114,7 +114,10 @@ int main(int argc, const char **argv)
 
     if (hex)
     {
-        output_elf.createExecutable(output_file);
+        output_elf.memDump(output_file);
+        std::ofstream elfFile;
+        elfFile.open("test.o", std::ios::binary);
+        output_elf.createShared(elfFile);
     }
     else
     {

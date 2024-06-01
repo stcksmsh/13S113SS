@@ -20,6 +20,7 @@
 #include "colors.h"
 #include <format>
 #include "../../linker/inc/linker.hpp"
+#include <string.h>
 
 Assembler::Driver::~Driver()
 {
@@ -159,7 +160,6 @@ Assembler::Driver::insert_symbol(const std::string name, const bool is_defined, 
             {
                logger->logDebug("Resolving forward reference in section '" + current->section + "' at offset 0x" + std::format("{:x}", current->offset), filename);
                add_relocation(name, current->section, current->offset);
-               set_TEXT(symbol_table[i].offset, current->offset);
                STentry::STforward_ref *next = current->next;
                delete current;
                current = next;
@@ -343,10 +343,8 @@ void Assembler::Driver::create_shared_file(const std::string &filename)
       std::size_t offset = section_list[i].offset;
       std::size_t size = section_list[i].size;
       std::vector<char> data = std::vector<char>(TEXT.begin() + offset, TEXT.begin() + offset + size);
-
       uint32_t flags = Section_Header_Flags::SHF_ALLOC | Section_Header_Flags::SHF_EXECINSTR;
       elf.add_section(name, data, Section_Header::Section_Type::SHT_PROGBITS, flags, 1);
-
    }
 
    for (int j = 0; j < symbol_table.size(); j++)
@@ -410,19 +408,10 @@ void Assembler::Driver::append_TEXT(const uint32_t text)
 {
    logger->logDebug("Appending binary data to '" + section_list.back().name + "' section", filename, scanner->lineno());
    for (int i = 0; i < 4; i++)
-   {
+   {  
       TEXT.push_back((text >> (i * 8)) & 0xFF);
    }
    section_list.back().size += 4;
-}
-
-void Assembler::Driver::set_TEXT(const uint32_t text, uint32_t offset)
-{
-   logger->logDebug("Setting DWORD in TEXT section", filename, scanner->lineno());
-   for (int i = 0; i < 4; i++)
-   {
-      TEXT[offset + i] = (text >> (i * 8)) & 0xFF;
-   }
 }
 
 void Assembler::Driver::append_DATA(const uint32_t data)

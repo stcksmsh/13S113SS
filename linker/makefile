@@ -16,7 +16,7 @@ LIBS= elf logger arguments
 LIB_OBJS=$(foreach lib,$(subst $(space),$(newline),$(LIBS)),../lib/$(lib).o)
 
 build: clean ${LINKER_OBJ}
-	@echo -n "${INDENT}Linking linker...  \n"
+	@echo -n "${INDENT}Linking linker...  "
 	@${CXX} ${CXXFLAGS} ${LIB_OBJS} ${LINKER_OBJ} -o ${LINKER_EXE}
 	@echo "Done."
 

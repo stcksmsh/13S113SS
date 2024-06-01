@@ -15,7 +15,7 @@ public:
         logger->logDebug("Linker object destroyed");
     }
 
-    void link(ELF &output, ELF &input);
+    void link(ELF &output, ELF input);
 
 private:
 

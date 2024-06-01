@@ -3,6 +3,19 @@
 
 #include <cstdint>
 
+/// @brief The program header flags
+enum Program_Header_Flags : uint32_t
+{
+    /// @brief The segment is executable
+    PF_X = 0x1,
+    /// @brief The segment is writable
+    PF_W = 0x2,
+    /// @brief The segment is readable
+    PF_R = 0x4,
+    /// @brief The segment is not part of the memory image of the program
+    PF_MASKPROC = 0xF0000000
+};
+
 /// @brief The program header of the ELF file
 struct Program_Header
 {
@@ -39,7 +52,7 @@ struct Program_Header
     /// @brief The size of the segment in memory
     uint32_t memsz = 0x0;
     /// @brief The flags of the segment (1,2,4 are executable, writable, readable, ORed together)
-    uint32_t flags = 0x5;
+    uint32_t flags = 0x0;
     /// @brief The alignment of the segment (0 or 1 for no alignment)
     uint32_t align = 0x0;
 };

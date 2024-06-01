@@ -49,6 +49,7 @@
         "functional": "cpp",
         "chrono": "cpp",
         "optional": "cpp",
-        "array": "cpp"
+        "array": "cpp",
+        "span": "cpp"
     }
 }

@@ -62,6 +62,7 @@ clean:
 	@echo "Done cleaning."
 
 commit: clean
+	@source updateLineCount.sh
 	@git add .
 	@git commit ./
 	@git push

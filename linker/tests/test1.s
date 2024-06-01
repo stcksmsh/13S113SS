@@ -5,6 +5,7 @@ EMPTY:  .skip 0x100
 MSG:    .ascii "Hello, World!\n"
 MSG2:   .word 0x0, MSG, tim_cfg, 0b1001
     .section my_code_main
+        beq %r1, %r2, [%r3 + handler]
         ld $init_sp, %sp
         ld $handler, %r1
         csrwr %r1, %handler
@@ -13,11 +14,11 @@ MSG2:   .word 0x0, MSG, tim_cfg, 0b1001
         st %r1, tim_cfg
 wait:   ld my_counter, %r1
         ld $5, %r2
-        bne %r1, %r2, wait
+        bne %r1, %r2, $wait
         halt
     .global my_counter
     .section my_data
         ld $my_counter, %r1
 my_counter:
-        .word 0
+        .word 0x7853412
     .end
