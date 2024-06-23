@@ -1,7 +1,7 @@
-include makefile.variable
-
-
 all: build test
+
+# The include directive is used after the 'all' rule to make sure that the 'all' rule is the first rule in the makefile. 
+include makefile.variable
 
 build: ${ASSEMBLER} ${LINKER} ${EMULATOR}
 

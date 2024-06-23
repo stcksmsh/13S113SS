@@ -93,7 +93,7 @@ void Assembler::Driver::parse_helper(std::istream &stream)
       STentry *entry = get_symbol(symbol);
       if (!entry || !entry->is_defined)
       {
-         logger->logError("Symbol '" + symbol + "' which is declared as extern is not defined");
+         logger->logWarning("Symbol '" + symbol + "' which is declared as global is not defined");
       }
       if (entry)
       {
@@ -106,7 +106,7 @@ void Assembler::Driver::parse_helper(std::istream &stream)
       STentry *entry = get_symbol(symbol);
       if (!entry)
       {
-         logger->logError("Symbol '" + symbol + "' which is declared as extern is not used");
+         logger->logWarning("Symbol '" + symbol + "' which is declared as extern is not used");
       }
       else
       {

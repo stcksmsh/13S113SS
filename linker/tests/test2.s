@@ -1,4 +1,5 @@
 .global handler
+.extern wait
 .section test2
 handler: .skip 0x10
 MSG3:    .ascii "Hello, World!\n"
@@ -7,4 +8,5 @@ MSG3:    .ascii "Hello, World!\n"
 .section testsec
     ld $MSG3, %r2
     call %r1
+    call $wait
     halt

@@ -5,20 +5,26 @@ include ../makefile.variable
 # Path: emulator/makefile
 
 EMULATOR_SRC=${wildcard src/*.cpp}
-EMULATOR_OBJ=${EMULATOR_SRC:.cpp=.o}
+EMULATOR_OBJ=${patsubst src/%.cpp,obj/%.o,${EMULATOR_SRC}}
 
-build: ${EMULATOR_OBJ}
-	@echo -n "${INDENT}Building emulator...  "
-	@${CXX} ${CXXFLAGS} -o ${EMULATOR} ${EMULATOR_OBJ}
+
+EMULATOR_EXE=emulator
+
+LIB_HEADERS= ../lib/inc
+LIBS= logger arguments
+LIB_OBJS=$(foreach lib,$(subst $(space),$(newline),$(LIBS)),../lib/$(lib).o)
+
+CXXFLAGS+= -I${LIB_HEADERS}
+
+build: clean ${EMULATOR_OBJ}
+	@echo -n "${INDENT}Linking emulator...  "
+	@${CXX} ${CXXFLAGS} ${LIB_OBJS} ${EMULATOR_OBJ} -o ${EMULATOR_EXE}
 	@echo "Done."
 
-${EMULATOR_OBJ}: ${EMULATOR_SRC} | ${OBJ_DIR}
-	@echo -n "${INDENT}Compiling $<...  "
+${OBJ_DIR}/%.o: ${SRC_DIR}/%.cpp
+	@echo -n "${INDENT}Building $@...  "
 	@${CXX} ${CXXFLAGS} -c $< -o $@
 	@echo "Done."
-
-${OBJ_DIR}:
-	@mkdir -p $@
 
 test: FORCE
 	@echo "${INDENT}Running emulator tests..."
@@ -27,5 +33,7 @@ test: FORCE
 
 clean:
 	@echo -n "${INDENT}Cleaning emulator...  "
-	@rm -f ${EMULATOR_OBJ} ${EMULATOR}
+	@rm -f ${SRC_DIR}/parser.cc ${SRC_DIR}/scanner.cc
+	@rm -f ${EMULATOR_EXE}
+	@rm -rdf ${OBJ_DIR}/*
 	@echo "Done."

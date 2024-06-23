@@ -3,6 +3,18 @@
 
 #include "linker.hpp"
 #include "arguments.hpp"
+#include <format>
+
+uint32_t stringToAddress(std::string str){
+    if(str.size() > 2 && str[0] == '0' && str[1] == 'x')
+        return std::stoul(str, nullptr, 16);
+    if(str.size() > 2 && str[0] == '0' && str[1] == 'b')
+        return std::stoul(str, nullptr, 2);
+    if(str.size() > 1 && str[0] == '0')
+        return std::stoul(str, nullptr, 8);
+    return std::stoul(str);
+
+}
 
 int main(int argc, const char **argv)
 {
@@ -10,15 +22,15 @@ int main(int argc, const char **argv)
         {"", "", "Links ELF object files into either an executable or a relocatable object file", -1, true, true, -1},
         {"output", "o", "Specifies the output file name", 1, false, false, -1},
         {"log-level", "l", "Specifies the log level: 0 - no logging, 1 - errors only, 2 - warnings, 3 - info, 4 - debug", 1, false, false, -1},
-        {"place", "p", "Specifies the address (arg2) at which the section (named arg1) is to start", 2, false, false, -1},
+        {"place", "p", "Specifies the address (arg2) at which the section (named arg1) is to start", 2, true, false, -1},
         {"hex", "x", "Makes the program output a memory hex dump", 0, false, false, 1},
         {"relocatable", "r", "Makes the program output a relocatable file (like the input files)", 0, false, false, 1},
     });
     
     if (args.parse(argc, argv) == EXIT_FAILURE)
         return EXIT_FAILURE;
-    
-    int log_level = 0;
+
+    int log_level = 1;
     std::string output_file_name;
     bool hex = false;
 
@@ -44,7 +56,12 @@ int main(int argc, const char **argv)
     std::vector<std::pair<std::string, uint32_t>> section_addresses;
     if (args.isPresent("place"))
         for (auto arg : args.getArguments("place"))
-            section_addresses.push_back({arg[0], std::stoi(arg[1])});
+            section_addresses.push_back({arg[0], stringToAddress(arg[1])});
+
+    for(auto section_address : section_addresses)
+        logger.logInfo("Section " + section_address.first + " placed at address 0x" + std::format("{:08x}", section_address.second));
+
+
 
     std::vector<std::string> elf_file_names;
     for(std::vector<std::string> names : args.getArguments())
@@ -97,14 +114,20 @@ int main(int argc, const char **argv)
         }
 
         input_elf.readFromStream(file);
+        if(logger.errorExists())
+        {
+            logger.logError("Reading failed on file: " + elf_file_names[i]);
+            return EXIT_FAILURE;
+        }
+
         file.close();
 
         linker.link(output_elf, input_elf);
-    }
-
-    if (logger.errorExists())
-    {
-        return EXIT_FAILURE;
+        if(logger.errorExists())
+        {
+            logger.logError("Linking failed on file: " + elf_file_names[i]);
+            return EXIT_FAILURE;
+        }
     }
 
     for (auto section_address : section_addresses)
@@ -112,17 +135,17 @@ int main(int argc, const char **argv)
         output_elf.setSectionAddress(section_address.first, section_address.second);
     }
 
-    if (hex)
-    {
+    if (hex){
         output_elf.memDump(output_file);
-        std::ofstream elfFile;
-        elfFile.open("test.o", std::ios::binary);
-        output_elf.createShared(elfFile);
-    }
-    else
-    {
-        std::cout << "Creating relocatable file" << std::endl;
+        std::ofstream output_file;
+        output_file.open("out.o", std::ios::binary | std::ios::trunc);
         output_elf.createShared(output_file);
+    }else        output_elf.createShared(output_file);
+
+    if(logger.errorExists())
+    {
+        logger.logError("Error while creating output file " + output_file_name);
+        return EXIT_FAILURE;
     }
 
     return 0;

@@ -1,3 +1,5 @@
+all: build test
+
 include ../makefile.variable
 
 # Path: assembler/makefile
@@ -5,19 +7,18 @@ include ../makefile.variable
 ASSEMBLER_SRC=${wildcard src/*.cpp}
 ASSEMBLER_OBJ=${patsubst src/%.cpp,obj/%.o,${ASSEMBLER_SRC}}
 
-LIBRARIES= ../lib/libelf.so
-LIB_HEADERS= ../lib/inc
 
 ASSEMBLER_EXE=assembler
 
 PARSER_FILE=src/parser.y
 SCANNER_FILE=src/scanner.l
 
-CXXFLAGS+= -I../lib/inc
 
+LIB_HEADERS= ../lib/inc
 LIBS= elf logger arguments
 LIB_OBJS=$(foreach lib,$(subst $(space),$(newline),$(LIBS)),../lib/$(lib).o)
 
+CXXFLAGS+= -I${LIB_HEADERS}
 
 build: clean parser scanner ${ASSEMBLER_OBJ}
 	@echo -n "${INDENT}Linking assembler...  "

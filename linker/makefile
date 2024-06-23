@@ -1,3 +1,5 @@
+all: build test
+
 include ../makefile.variable
 
 # Path: linker/makefile
@@ -5,15 +7,15 @@ include ../makefile.variable
 LINKER_SRC=${wildcard src/*.cpp}
 LINKER_OBJ=${patsubst src/%.cpp,obj/%.o,${LINKER_SRC}}
 
-LIBRARIES= ../lib/libelf.so
-LIB_HEADERS= ../lib/inc
 
 LINKER_EXE=linker
 
-CXXFLAGS+= -I../lib/inc
 
+LIB_HEADERS= ../lib/inc
 LIBS= elf logger arguments
 LIB_OBJS=$(foreach lib,$(subst $(space),$(newline),$(LIBS)),../lib/$(lib).o)
+
+CXXFLAGS+= -I${LIB_HEADERS}
 
 build: clean ${LINKER_OBJ}
 	@echo -n "${INDENT}Linking linker...  "

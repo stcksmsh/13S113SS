@@ -32,11 +32,11 @@ ELF::readFromStream(std::istream &stream)
     /// First we read the ELF headers
     { /// Read the ELF file
         logger->logInfo("Reading the ELF headers");
-        logger->logDebug("Reading the ELF file header");
+        logger->logInfo("Reading the ELF file header");
         stream.read((char *)&file_header, sizeof(ELF_Header));
 
 
-        logger->logDebug("Reading the program headers");
+        logger->logInfo("Reading the program headers");
         /// Then we read the program headers
         for (int i = 0; i < file_header.ph_num; i++)
         {
@@ -46,7 +46,7 @@ ELF::readFromStream(std::istream &stream)
         }
 
         /// Then we read the section headers
-        logger->logDebug("Reading the section headers");
+        logger->logInfo("Reading the section headers");
         stream.seekg(file_header.sh_offset);
         for (int i = 0; i < file_header.sh_num; i++)
         {
@@ -58,7 +58,7 @@ ELF::readFromStream(std::istream &stream)
 
         /// Then we read the section names
         /// First we need to find the shstrtab section
-        logger->logDebug("Reading the .shstrtab section");
+        logger->logInfo("Reading the .shstrtab section");
         Section_Header shstrtab_header = section_headers[file_header.sh_str_index];
         std::vector<char> shstrtab_data(shstrtab_header.size);
         stream.seekg(shstrtab_header.offset);
@@ -71,16 +71,16 @@ ELF::readFromStream(std::istream &stream)
             section_names.push_back(name);
         }
 
-        logger->logDebug("Creating the symbol table");
+        logger->logInfo("Creating the symbol table");
         /// Then we fill the symbol table
         /// We need the .strtab section to get the names of the symbols
-        logger->logDebug("Reading the .strtab section");
+        logger->logInfo("Reading the .strtab section");
         Section_Header strtab_header = section_headers[section_headers.size() - 3];
         std::vector<char> strtab_data(strtab_header.size);
         stream.seekg(strtab_header.offset);
         stream.read(strtab_data.data(), strtab_data.size());
         /// Then we need the symtab section to get the symbols
-        logger->logDebug("Reading the .symtab section");
+        logger->logInfo("Reading the .symtab section");
         Section_Header symtab_header = section_headers[section_headers.size() - 2];
         std::vector<char> symtab_data(symtab_header.size);
         stream.seekg(symtab_header.offset);
@@ -104,7 +104,7 @@ ELF::readFromStream(std::istream &stream)
             logger->logDebug("Added symbol " + name + " to the symbol table with value 0x" + std::format("{:x}", sym.value) + " and " + (sym_entry.is_local ? "local" : "global") + " binding");
         }
         
-        logger->logDebug("Creating the relocation table");
+        logger->logInfo("Creating the relocation table");
         /// And finally we fill the relocation table
         for (int i = 1; i < section_headers.size() - 3; i++)
         {
@@ -119,7 +119,6 @@ ELF::readFromStream(std::istream &stream)
                 rel_tab_entry rel;
                 memcpy(&rel, rel_data.data() + j * section_headers[i].entsize, section_headers[i].entsize);
                 std::string name(strtab_data.data() + symbol_table[rel_tab_entry_symbol(rel.info)].name);
-                logger->logDebug("Reading relocation " + std::to_string(j) + " for section " + section_names[i].substr(4) + " for symbol " + name);
                 add_relocation(name, section_names[i].substr(4), rel.offset, rel.addend);
             }
         }
@@ -529,14 +528,14 @@ ELF::memDump(std::ostream &stream){
         }
     }
 
-    { /// And then update all the relocations in the text TODO: Implement relocation handling in memdump
+    { /// And then update all the relocations in the text
         logger->logInfo("Applying relocations");
         for(int i = 0; i < relocation_table.size(); i ++){
             std::string section = relocation_table[i].section; /// The section in which the relocation is
             std::string source = relocation_table[i].name; /// The symbol which is being relocated
             uint32_t offset = relocation_table[i].offset; /// The offset in the section where the relocation is
             uint32_t addend = relocation_table[i].addend; /// The addend to add to the symbol value
-            int value = 0; /// The value of the symbol
+            int32_t value = 0; /// The value of the symbol
             for(int j = 0; j < symbol_table.size(); j++){
                 if(symbol_table[j].name == source){
                     value = symbol_table[j].value;
@@ -547,19 +546,20 @@ ELF::memDump(std::ostream &stream){
             for (int j = 0; j < section_headers.size(); j++)
             {
                 if(section_names[j] == section){
-                    logger->logDebug("Relocating symbol '" + source + "' in section '" + section + "'( offset 0x" + std::format("{:x}", section_headers[j].offset - sizeof(ELF_Header)) + ") at offset 0x" + std::format("{:x}", offset) + " to value 0x" + std::format("{:x}", value));
                     uint32_t *ptr = (uint32_t *)(binary_data.data() + (section_headers[j].offset - sizeof(ELF_Header)) + offset);
                     /// We need to set the last 12 bits to the value of the symbol
+                    /// It uses PC relative addressing, so we need to subtract the address of the instruction from the address of the symbol
                     /// If the signed value does not fit in 12 bits, we need to log an error
+                    value = value - (section_headers[j].addr  + offset);
                     if(value > 0x7ff)
-                        logger->logError("Relocation for symbol '" + source + "' in section '" + section + "' at offset 0x" + std::format("{:x}", offset) + " cannot be applied, because the value 0x" + std::format("{:x}", value) + " is too large");
+                        logger->logError("Relocation for symbol '" + source + "' in section '" + section + "' at offset 0x" + std::format("{:x}", offset) + " cannot be applied, because the value 0x" + std::format("{:03x}", value) + " is too large");
                     else if(value < -0x800)
-                        logger->logError("Relocation for symbol '" + source + "' in section '" + section + "' at offset 0x" + std::format("{:x}", offset) + " cannot be applied, because the value 0x" + std::format("{:x}", value) + " is too small");
+                        logger->logError("Relocation for symbol '" + source + "' in section '" + section + "' at offset 0x" + std::format("{:x}", offset) + " cannot be applied, because the value 0x" + std::format("{:03x}", value) + " is too small");
                     else{
+                        logger->logDebug("Relocating symbol '" + source + "' in section '" + section + "'( offset 0x" + std::format("{:x}", section_headers[j].addr) + ") at offset 0x" + std::format("{:x}", offset) + " to value 0x" + std::format("{:03x}", value));
                         /// Now convert it to a signed 12 bit value
-                        uint16_t signed_value = value < 0 ? 0x800 | (-value) : value;
                         *ptr = *ptr & 0xfffff000;
-                        *ptr = *ptr | (signed_value & 0xfff);
+                        *ptr = *ptr | (value & 0xfff);
                     }
                     break;
                 }
@@ -577,9 +577,16 @@ ELF::memDump(std::ostream &stream){
          * 0008:  08 09 0a 0b 0c 0d 0e 0f
          */
         uint32_t current_address = section_headers[set_section_indices[0]].addr;
+        // /// First if the start address is not aligned to 8 bytes, we need to print the first line
+        if(current_address % 8 != 0){
+            stream << std::format("{:04x}:  ", current_address & 0xfffffff8);
+        }
+        for(int i = current_address % 8; i > 0; i--){
+            stream << "-- ";
+        }
         for (int index : set_section_indices)
         {
-            logger->logInfo("Writing section " + section_names[index] + " to the stream");
+            logger->logDebug("Writing section " + section_names[index] + " to the stream from address 0x" + std::format("{:x}", section_headers[index].addr) + " to 0x" + std::format("{:x}", section_headers[index].addr + section_headers[index].size));
             uint32_t addr = section_headers[index].addr;
             uint32_t size = section_headers[index].size;
             uint32_t bin_dat_offset = section_headers[index].offset - sizeof(ELF_Header);
@@ -587,7 +594,7 @@ ELF::memDump(std::ostream &stream){
             /// First we finish the previous line (if it is not empty)
             while(current_address % 8 != 0 && byte < size){
                 if(current_address < addr){
-                    stream << "   ";
+                    stream << "-- ";
                 }else{
                     if(section_names[index] == ".bss"){
                         stream << "00 ";
@@ -598,6 +605,9 @@ ELF::memDump(std::ostream &stream){
                 }
                 current_address++;
             }
+            /// Now we need to skip lines with unused memory (if there are any)
+            if(current_address < (addr & 0xfffffff8)) current_address = addr & 0xfffffff8;
+
             /// Then we write the rest of the section
             while(byte < size){
                 if(current_address % 8 == 0){
@@ -606,17 +616,31 @@ ELF::memDump(std::ostream &stream){
                     }
                     stream << std::format("{:04x}:  ", current_address);
                 }
-                if(section_names[index] == ".bss"){
-                    stream << "00 ";
-                }else{
-                    stream << std::format("{:02x} ", (uint8_t)binary_data[bin_dat_offset + byte]);
+                if(current_address < addr){
+                    stream << "-- ";
+                }else {
+                    if(section_names[index] == ".bss"){
+                        stream << "00 ";
+                    }else{
+                        stream << std::format("{:02x} ", (uint8_t)binary_data[bin_dat_offset + byte]);
+                    }
+                    byte++;
                 }
-                byte++;
                 current_address++;
             }
         }
+        /// And finally we need to finish the last line
+        while(current_address % 8 != 0){
+            stream << "-- ";
+            current_address++;
+        }
     }
 
+    if(logger->errorExists()){
+        logger->logError("Errors occured while creating the memory dump");
+        return stream;
+    }
+    logger->logInfo("Successfully created the memory dump");
     return stream;
 }
 

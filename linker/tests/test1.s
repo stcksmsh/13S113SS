@@ -1,5 +1,6 @@
     .equ tim_cfg, 0xFFFFFF10
     .equ init_sp, 0xFFFFFF00
+    .global wait
     .extern handler
 EMPTY:  .skip 0x100
 MSG:    .ascii "Hello, World!\n"
