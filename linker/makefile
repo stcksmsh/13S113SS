@@ -22,10 +22,13 @@ build: clean ${LINKER_OBJ}
 	@${CXX} ${CXXFLAGS} ${LIB_OBJS} ${LINKER_OBJ} -o ${LINKER_EXE}
 	@echo "Done."
 
-${OBJ_DIR}/%.o: ${SRC_DIR}/%.cpp
+${OBJ_DIR}/%.o: ${SRC_DIR}/%.cpp ${OBJ_DIR}
 	@echo -n "${INDENT}Building $@...  "
 	@${CXX} ${CXXFLAGS} -c $< -o $@
 	@echo "Done."
+
+${OBJ_DIR}:
+	@mkdir -p ${OBJ_DIR}
 
 test: FORCE
 	@echo "${INDENT}Running linker tests..."

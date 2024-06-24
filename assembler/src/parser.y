@@ -1,6 +1,6 @@
 %skeleton "lalr1.cc"
 %language "c++"
-%require  "3.2"
+%require  "3.8"
 %define api.namespace {Assembler}
 /**
  * bison 3.3.2 change

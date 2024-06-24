@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef __DRIVER_H__
-#define __DRIVER_H__
+#ifndef __DRIVER_HPP__
+#define __DRIVER_HPP__
 
 #include <string>
 #include <cstddef>
@@ -216,4 +216,4 @@ namespace Assembler
 
 };
 
-#endif // __DRIVER_H__
+#endif // __DRIVER_HPP__

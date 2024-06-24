@@ -358,10 +358,8 @@ void Assembler::Driver::create_shared_file(const std::string &filename)
                break;
             }
          }
-         if(empty){
-            logger->logWarning("Section '" + symbol_table[j].name + "' in file '" + this->filename + "' is empty, skipping");
-            continue;
-         }
+         if(empty) continue; /// No need to log warning, as this case is already handled on line 339
+
       }
       elf.add_symbol(symbol_table[j].name, symbol_table[j].section, symbol_table[j].offset, symbol_table[j].local, symbol_table[j].is_section, symbol_table[j].is_const, !symbol_table[j].is_defined);
    }

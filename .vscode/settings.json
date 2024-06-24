@@ -50,6 +50,13 @@
         "chrono": "cpp",
         "optional": "cpp",
         "array": "cpp",
-        "span": "cpp"
+        "span": "cpp",
+        "charconv": "cpp",
+        "cstring": "cpp",
+        "ctime": "cpp",
+        "deque": "cpp",
+        "unordered_map": "cpp",
+        "numeric": "cpp",
+        "variant": "cpp"
     }
 }

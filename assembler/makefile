@@ -25,7 +25,7 @@ build: clean parser scanner ${ASSEMBLER_OBJ}
 	@${CXX} ${CXXFLAGS} ${LIB_OBJS} ${ASSEMBLER_OBJ} ${OBJ_DIR}/parser.o ${OBJ_DIR}/scanner.o -o ${ASSEMBLER_EXE}
 	@echo "Done."
 
-${OBJ_DIR}/%.o: ${SRC_DIR}/%.cpp
+${OBJ_DIR}/%.o: ${SRC_DIR}/%.cpp ${OBJ_DIR}
 	@echo -n "${INDENT}Building $@...  "
 	@${CXX} ${CXXFLAGS} -c $< -o $@
 	@echo "Done."
@@ -35,15 +35,18 @@ parser: ${PARSER_FILE}
 	@bison -t -d -o ${SRC_DIR}/parser.cc ${PARSER_FILE}
 	@mv ${SRC_DIR}/parser.hh ${INC_DIR}
 	@mv ${SRC_DIR}/location.hh ${INC_DIR}
-	@${CXX}  ${CXXFLAGS} -c ${SRC_DIR}/parser.cc -o ${OBJ_DIR}/parser.o
+	@${CXX} ${CXXFLAGS} -c ${SRC_DIR}/parser.cc -o ${OBJ_DIR}/parser.o
 	@echo "Done."
 
 scanner: ${SCANNER_FILE}
 	@echo -n "${INDENT}Building scanner...  "
 	@flex -o ${SRC_DIR}/scanner.cc ${SCANNER_FILE}
-	@${CXX}  ${CXXFLAGS} -c ${SRC_DIR}/scanner.cc -o ${OBJ_DIR}/scanner.o
+	@${CXX} ${CXXFLAGS} -c ${SRC_DIR}/scanner.cc -o ${OBJ_DIR}/scanner.o
 	@echo "Done."
 
+
+${OBJ_DIR}:
+	@mkdir -p ${OBJ_DIR}
 
 test: FORCE
 	@echo "${INDENT}Running assembler tests..."
@@ -53,6 +56,7 @@ test: FORCE
 clean:
 	@echo -n "${INDENT}Cleaning assembler...  "
 	@rm -f ${SRC_DIR}/parser.cc ${SRC_DIR}/scanner.cc
+	@rm -f ${INC_DIR}/parser.hh ${INC_DIR}/location.hh
 	@rm -f ${ASSEMBLER_EXE}
 	@rm -rdf ${OBJ_DIR}/*
 	@echo "Done."
