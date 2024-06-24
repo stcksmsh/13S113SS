@@ -28,10 +28,14 @@ public:
     void loadFromDump(std::string filename);
 
     /// @brief Print the memory
-    void print();
+    void printMemory();
+
+    /// @brief Print the registers
+    void printRegisters();
 
     /// @brief Run the emulator
-    void run();
+    /// @param entry The entry point of the program (@default is 0x40000000)
+    void run(uint32_t entry = 0x40000000);
 
 
 private:
@@ -133,20 +137,20 @@ private:
         uint32_t &SP() { return registers[14]; } 
 
         union Status{
-            struct{
-            uint32_t    Tr: 1, /// @brief The terminal interrupt mask bit
-                        Ti: 1, /// @brief The timer interrupt mask bit
+            struct{ /// @brief The fields of the status register, interupt priority is timer > terminal > error > software
+            uint32_t    Ti: 1, /// @brief The timer interrupt mask bit
+                        Tr: 1, /// @brief The terminal interrupt mask bit
                         I: 1,  /// @brief The global interrupt mask bit
-                        N: 1,  /// @brief The negative flag
-                        Z: 1,  /// @brief The zero flag
-                        C: 1,  /// @brief The carry flag
-                        unused : 26;  /// @brief Unused bits
+                        Ii: 1, /// @brief The timer interrupt flag
+                        It: 1, /// @brief The terminal interrupt flag
+                        Is: 1, /// @brief The software interrupt flag
+                        Ie: 1, /// @brief The error interrupt flag
+                        unused: 25; /// @brief Unused bits
 
             } fields;
             uint32_t raw;
         };
         
-
         /// @brief Gets a reference to the status register
         /// @return A reference to the status register
         Status &SR() { return status; }
@@ -171,9 +175,6 @@ private:
         uint32_t cause;
 
     } registers;
-
-    
-
 };
 
 #endif // __EMULATOR_HPP__

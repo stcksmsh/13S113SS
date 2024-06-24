@@ -1,12 +1,8 @@
-.global handler
-.extern wait
-.section test2
-handler: .skip 0x10
-MSG3:    .ascii "Hello, World!\n"
-.section my_code_main
-    ld $handler, %r1
-.section testsec
-    ld $MSG3, %r2
-    call %r1
-    call $wait
+.global test, dat
+.section testing
+test: ld $14, %r3
+    ld $100, %r4
+    mul %r3, %r4
+    ld dat, %r5
     halt
+dat: .ascii "Hello, World!\n"

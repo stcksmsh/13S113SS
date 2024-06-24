@@ -143,6 +143,7 @@ Linker::link(ELF &output, ELF input)
                 if(symbol.is_extern && output.symbol_table[symbol_index].is_extern){
                     logger->logDebug("Symbol '" + symbol.name + "' which is extern in section '" + section_name + "' is also extern in section '" + output.symbol_table[symbol_index].section + "'");
                     /// The symbol is extern in both the input and output files, do nothing
+                    /// TODO: Handle this case
                 }
             }else{
                 /// The symbol is not present in the output file, add it
