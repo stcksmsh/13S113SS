@@ -1,6 +1,6 @@
 /**
  * @file main.cpp
- * @author Kosta Vukicevic (stcksmsh@gmail.com)
+ * @author Kosta Vukicevic (107367925+stcksmsh@users.noreply.github.com)
  * @brief The `main` function for the assembler, handles command line arguments and file input, invokes the `Driver` class
  * @version 0.1
  * @date 2024-05-15

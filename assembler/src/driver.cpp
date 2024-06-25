@@ -1,6 +1,6 @@
 /**
  * @file driver.cpp
- * @author Kosta Vukicevic (stcksmsh@gmail.com)
+ * @author Kosta Vukicevic (107367925+stcksmsh@users.noreply.github.com)
  * @brief Driver class implementation file, used for parsing input files, main class of assembler
  * @version 0.1
  * @date 2024-05-15

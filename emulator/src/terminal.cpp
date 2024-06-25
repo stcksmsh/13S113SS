@@ -1,6 +1,6 @@
 /**
  * @file terminal.cpp
- * @author Kosta Vukicevic (stcksmsh@gmail.com)
+ * @author Kosta Vukicevic (107367925+stcksmsh@users.noreply.github.com)
  * @brief The implementation of the Terminal class (used for MMIO operations in the emulator)
  * @version 0.1
  * @date 2024-06-25

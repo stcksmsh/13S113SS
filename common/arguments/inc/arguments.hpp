@@ -1,6 +1,6 @@
 /**
  * @file arguments.hpp
- * @author Kosta Vukicevic (stcksmsh@gmail.com)
+ * @author Kosta Vukicevic (107367925+stcksmsh@users.noreply.github.com)
  * @brief A class for easier argument handling
  * @version 0.1
  * @date 2024-05-22

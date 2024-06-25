@@ -1,6 +1,6 @@
 /**
  * @file emulator.cpp
- * @author Kosta Vukicevic (stcksmsh@gmail.com)
+ * @author Kosta Vukicevic (107367925+stcksmsh@users.noreply.github.com)
  * @brief Implementation of the Emulator class
  * @version 0.1
  * @date 2024-06-24

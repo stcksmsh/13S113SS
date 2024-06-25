@@ -1,6 +1,6 @@
 /**
  * @file emulator.hpp
- * @author Kosta Vukicevic (stcksmsh@gmail.com)
+ * @author Kosta Vukicevic (107367925+stcksmsh@users.noreply.github.com)
  * @brief 
  * @version 0.1
  * @date 2024-06-24
