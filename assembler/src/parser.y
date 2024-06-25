@@ -32,6 +32,10 @@
          } fields;
          uint32_t raw = 0;
       };
+      struct extended_instruction{
+         instruction inst;
+         uint32_t extension;
+      };
    }
 
 // The following definitions is missing when %locations isn't used
@@ -113,8 +117,8 @@
 
 /* Type tokens */
 
-%token <uint32_t>                   NUMBER      "literal"
-%token <int>                        GPR         "general purpose register"
+%token <int32_t>                    NUMBER      "literal"
+%token <uint8_t>                    GPR         "general purpose register"
 %token <Assembler::csr_type>        CSR         "control and status register"
 %token <std::string>                SYMBOL      "symbol"
 %token <std::string>                LABEL       "label"
@@ -127,7 +131,7 @@
 
 %type <std::vector<uint32_t>>       symbol_or_literal_list "symbol_or_literal_list"
 
-%type <Assembler::instruction>      operand     "operand"
+%type <Assembler::extended_instruction>      operand     "operand"
 
 %type <uint32_t>                    expression  "expression"
 
@@ -159,12 +163,37 @@ instruction:
      HALT                               { Assembler::instruction inst; inst.fields.OC = Opcode::HALT; driver.append_TEXT(inst.raw); }
    | INT                                { Assembler::instruction inst; inst.fields.OC = Opcode::INT; driver.append_TEXT(inst.raw); }
    | IRET                               { Assembler::instruction inst; inst.fields.OC = Opcode::IRET; driver.append_TEXT(inst.raw); }
-   | CALL operand                       { $2.fields.OC = Opcode::CALL; driver.append_TEXT($2.raw); }
+   | CALL operand                       { $2.inst.fields.OC = Opcode::CALL; 
+                                          driver.append_TEXT($2.inst.raw); 
+                                          if(($2.inst.fields.MOD & 0b100) == 0){
+                                             driver.append_TEXT($2.extension);
+                                          }
+                                        }
    | RET                                { Assembler::instruction inst; inst.fields.OC = Opcode::RET; driver.append_TEXT(inst.raw); }
-   | JMP operand                        { $2.fields.OC = Opcode::JMP; driver.append_TEXT($2.raw); }
-   | BEQ GPR COMMA GPR COMMA operand    { $6.fields.OC = Opcode::BEQ; $6.fields.RegA = $2; $6.fields.RegB = $4; driver.append_TEXT($6.raw); }
-   | BNE GPR COMMA GPR COMMA operand    { $6.fields.OC = Opcode::BNE; $6.fields.RegA = $2; $6.fields.RegB = $4; driver.append_TEXT($6.raw); }
-   | BGT GPR COMMA GPR COMMA operand    { $6.fields.OC = Opcode::BGT; $6.fields.RegA = $2; $6.fields.RegB = $4; driver.append_TEXT($6.raw); }
+   | JMP operand                        { $2.inst.fields.OC = Opcode::JMP; 
+                                          driver.append_TEXT($2.inst.raw);
+                                          if(($2.inst.fields.MOD & 0b100) == 0){
+                                             driver.append_TEXT($2.extension);
+                                          }
+                                        }
+   | BEQ GPR COMMA GPR COMMA operand    { $6.inst.fields.OC = Opcode::BEQ; $6.inst.fields.RegA = $2; $6.inst.fields.RegB = $4; 
+                                          driver.append_TEXT($6.inst.raw);
+                                          if(($6.inst.fields.MOD & 0b100) == 0){
+                                             driver.append_TEXT($6.extension);
+                                          }
+                                        }
+   | BNE GPR COMMA GPR COMMA operand    { $6.inst.fields.OC = Opcode::BNE; $6.inst.fields.RegA = $2; $6.inst.fields.RegB = $4; 
+                                          driver.append_TEXT($6.inst.raw);
+                                          if(($6.inst.fields.MOD & 0b100) == 0){
+                                             driver.append_TEXT($6.extension);
+                                          }
+                                        }
+   | BGT GPR COMMA GPR COMMA operand    { $6.inst.fields.OC = Opcode::BGT; $6.inst.fields.RegA = $2; $6.inst.fields.RegB = $4; 
+                                          driver.append_TEXT($6.inst.raw);
+                                          if(($6.inst.fields.MOD & 0b100) == 0){
+                                             driver.append_TEXT($6.extension);
+                                          }
+                                        }
    | PUSH GPR                           { Assembler::instruction inst; inst.fields.OC = Opcode::PUSH; inst.fields.RegA = $2; driver.append_TEXT(inst.raw); }
    | POP GPR                            { Assembler::instruction inst; inst.fields.OC = Opcode::POP; inst.fields.RegA = $2; driver.append_TEXT(inst.raw); }
    | XCHG GPR COMMA GPR                 { Assembler::instruction inst; inst.fields.OC = Opcode::XCHG; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
@@ -178,52 +207,73 @@ instruction:
    | XOR GPR COMMA GPR                  { Assembler::instruction inst; inst.fields.OC = Opcode::XOR; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
    | SHL GPR COMMA GPR                  { Assembler::instruction inst; inst.fields.OC = Opcode::SHL; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
    | SHR GPR COMMA GPR                  { Assembler::instruction inst; inst.fields.OC = Opcode::SHR; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
-   | LD operand COMMA GPR               { $2.fields.OC = Opcode::LD; $2.fields.RegA = $4; driver.append_TEXT($2.raw); }
-   | ST GPR COMMA operand               { $4.fields.OC = Opcode::ST; $4.fields.RegA = $2; driver.append_TEXT($4.raw); }
+   | LD operand COMMA GPR               { $2.inst.fields.OC = Opcode::LD; $2.inst.fields.RegA = $4; 
+                                          driver.append_TEXT($2.inst.raw);
+                                          if(($2.inst.fields.MOD & 0b100) == 0){
+                                             driver.append_TEXT($2.extension);
+                                          }
+                                        }
+   | ST GPR COMMA operand               { $4.inst.fields.OC = Opcode::ST; $4.inst.fields.RegA = $2;
+                                          driver.append_TEXT($4.inst.raw);
+                                          if(($4.inst.fields.MOD & 0b100) == 0){
+                                             driver.append_TEXT($4.extension);
+                                          }
+                                        }
    | CSRRD CSR COMMA GPR                { Assembler::instruction inst; inst.fields.OC = Opcode::CSRRD; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
    | CSRWR GPR COMMA CSR                { Assembler::instruction inst; inst.fields.OC = Opcode::CSRWR; inst.fields.RegA = $2; inst.fields.RegB = $4; driver.append_TEXT(inst.raw); }
    ;
 
 operand:  
-     DOLLAR NUMBER                      { $$.fields.MOD = Modifier::LIT_DIR; $$.fields.Disp = $2; }
-   | NUMBER                             { $$.fields.MOD = Modifier::LIT_IND; $$.fields.Disp = $1; }
-   | DOLLAR SYMBOL                      { $$.fields.MOD = Modifier::SYM_DIR;
+     DOLLAR NUMBER                      { $$.inst.fields.MOD = Modifier::LIT_DIR; $$.extension = $2; }
+   | NUMBER                             { $$.inst.fields.MOD = Modifier::LIT_IND; $$.extension = $1; }
+   | DOLLAR SYMBOL                      { $$.inst.fields.MOD = Modifier::SYM_DIR;
                                           Driver::STentry *entry = driver.get_symbol($2);
                                           if(!entry || !entry->is_defined){
                                              driver.forward_reference($2);
-                                             $$.fields.Disp = 0;
+                                             $$.extension = 0;
                                           }else{
                                              if(!entry->is_const){
                                                 driver.add_relocation($2);
                                              } 
-                                             $$.fields.Disp = entry->offset;
+                                             $$.extension = entry->offset;
                                           }
                                         }
-   | SYMBOL                             { $$.fields.MOD = Modifier::SYM_IND;
+   | SYMBOL                             { $$.inst.fields.MOD = Modifier::SYM_IND;
                                           Driver::STentry *entry = driver.get_symbol($1);
                                           if(!entry || !entry->is_defined){
                                              driver.forward_reference($1);
-                                             $$.fields.Disp = 0;
+                                             $$.extension = 0;
                                           }else{
                                              if(!entry->is_const){
                                                 driver.add_relocation($1);
                                              } 
-                                             $$.fields.Disp = entry->offset;
+                                             $$.extension = entry->offset;
                                           }
                                         }
-   | GPR                                { $$.fields.MOD = Modifier::REG_DIR; $$.fields.RegC = $1; }
-   | LBRACKET GPR RBRACKET              { $$.fields.MOD = Modifier::REG_IND; $$.fields.RegC = $2; }
-   | LBRACKET GPR PLUS NUMBER RBRACKET  { $$.fields.MOD = Modifier::REG_LIT_IND; $$.fields.RegC = $2; $$.fields.Disp = $4; }
-   | LBRACKET GPR PLUS SYMBOL RBRACKET  { $$.fields.MOD = Modifier::REG_SYM_IND; $$.fields.RegC = $2;
+   | GPR                                { $$.inst.fields.MOD = Modifier::REG_DIR; $$.inst.fields.RegC = $1; }
+   | LBRACKET GPR RBRACKET              { $$.inst.fields.MOD = Modifier::REG_IND; $$.inst.fields.RegC = $2; }
+   | LBRACKET GPR PLUS NUMBER RBRACKET  { $$.inst.fields.MOD = Modifier::REG_LIT_IND; $$.inst.fields.RegC = $2;
+                                          if(($4 > (1<<12-1)) || $4 < 0-(1<<12)){
+                                             driver.logger->logError("Literal value is out of range for REG_LIT_IND addressing", driver.filename, @3.begin.line);
+                                          }
+                                          else{
+                                             $$.inst.fields.Disp = $4;
+                                          }
+                                        }
+   | LBRACKET GPR PLUS SYMBOL RBRACKET  { $$.inst.fields.MOD = Modifier::REG_SYM_IND; $$.inst.fields.RegC = $2;
                                           Driver::STentry *entry = driver.get_symbol($4);
                                           if(!entry || !entry->is_defined){
-                                             driver.forward_reference($4);
-                                             $$.fields.Disp = 0;
-                                          }else{
+                                             driver.logger->logError("Symbol '" + $4 + "' is not defined at assembly time, which is required for REG_SYM_IND addressing", driver.filename, @3.begin.line);
+                                          }
+                                          else if(entry->offset > 1<<12-1 || entry->offset < -(1<<12)){
+                                             driver.logger->logError("Symbol '" + $4 + "' is out of range for REG_SYM_IND addressing", driver.filename, @3.begin.line);
+                                          }
+                                          else{
+
                                              if(!entry->is_const){
                                                 driver.add_relocation($4);
                                              }
-                                             $$.fields.Disp = entry->offset;
+                                             $$.inst.fields.Disp = entry->offset;
                                           }
                                         }
    ;

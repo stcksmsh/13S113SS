@@ -25,6 +25,7 @@ int main(int argc, const char **argv)
         {"place", "p", "Specifies the address (arg2) at which the section (named arg1) is to start", 2, true, false, -1},
         {"hex", "x", "Makes the program output a memory hex dump", 0, false, false, 1},
         {"relocatable", "r", "Makes the program output a relocatable file (like the input files)", 0, false, false, 1},
+		{"log-file", "f", "Specifies the log file", 1, false, false, -1}
     });
     
     if (args.parse(argc, argv) == EXIT_FAILURE)
@@ -36,7 +37,15 @@ int main(int argc, const char **argv)
 
     if (args.isPresent("log-level"))
         log_level = std::stoi(args.getArguments("log-level")[0][0]);
-    Logger logger(log_level, true);
+
+    std::ostream &logger_stream = std::cout;
+	std::ofstream log_file;
+	if (args.isPresent("log-file"))
+	{
+		log_file.open(args.getArguments("log-file")[0][0]);
+		logger_stream.rdbuf(log_file.rdbuf());
+	}
+    Logger logger(log_level, true, logger_stream);
 
     if (args.isPresent("hex"))
     {
@@ -137,9 +146,14 @@ int main(int argc, const char **argv)
 
     if (hex){
         output_elf.memDump(output_file);
-        std::ofstream output_file;
-        output_file.open("out.o", std::ios::binary | std::ios::trunc);
-        output_elf.createShared(output_file);
+        // std::ofstream output_elf_file;
+        // output_elf_file.open(output_file_name + ".elf", std::ios::binary | std::ios::trunc);
+        // if (!output_elf_file.good())
+        // {
+        //     std::cerr << "Unable to open file: " << output_file_name + ".elf" << "\n";
+        //     return EXIT_FAILURE;
+        // }
+        // output_elf.createShared(output_elf_file);
     }else        output_elf.createShared(output_file);
 
     if(logger.errorExists())
@@ -147,6 +161,9 @@ int main(int argc, const char **argv)
         logger.logError("Error while creating output file " + output_file_name);
         return EXIT_FAILURE;
     }
+
+    if (log_file.is_open())
+		log_file.close();
 
     return 0;
 }

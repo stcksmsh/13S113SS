@@ -4,5 +4,7 @@ test: ld $14, %r3
     ld $100, %r4
     mul %r3, %r4
     ld dat, %r5
-    halt
+loop:
+    jmp $loop
+end: halt
 dat: .ascii "Hello, World!\n"

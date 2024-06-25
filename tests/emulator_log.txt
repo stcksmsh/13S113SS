@@ -1,0 +1,959 @@
+[1m[32mINFO[0m: Reading memory dump from program.hex
+[1m[36mDEBUG[0m: Reading line at address 40000000
+[1m[36mDEBUG[0m: Reading line at address 40000008
+[1m[36mDEBUG[0m: Reading line at address 40000010
+[1m[36mDEBUG[0m: Reading line at address 40000018
+[1m[36mDEBUG[0m: Reading line at address 40000020
+[1m[36mDEBUG[0m: Reading line at address 40000028
+[1m[36mDEBUG[0m: Reading line at address 40000030
+[1m[36mDEBUG[0m: Reading line at address 40000038
+[1m[36mDEBUG[0m: Reading line at address 40000040
+[1m[36mDEBUG[0m: Reading line at address 40000048
+[1m[36mDEBUG[0m: Reading line at address 40000050
+[1m[36mDEBUG[0m: Reading line at address 40000058
+[1m[36mDEBUG[0m: Reading line at address 40000060
+[1m[36mDEBUG[0m: Reading line at address 40000068
+[1m[36mDEBUG[0m: Reading line at address 40000070
+[1m[36mDEBUG[0m: Reading line at address 40000078
+[1m[36mDEBUG[0m: Reading line at address 40000080
+[1m[36mDEBUG[0m: Reading line at address 40000088
+[1m[36mDEBUG[0m: Reading line at address 40000090
+[1m[36mDEBUG[0m: Reading line at address 40000098
+[1m[36mDEBUG[0m: Reading line at address 400000a0
+[1m[36mDEBUG[0m: Reading line at address 400000a8
+[1m[36mDEBUG[0m: Reading line at address 400000b0
+[1m[36mDEBUG[0m: Reading line at address 400000b8
+[1m[36mDEBUG[0m: Reading line at address 400000c0
+[1m[36mDEBUG[0m: Reading line at address 400000c8
+[1m[36mDEBUG[0m: Reading line at address 400000d0
+[1m[36mDEBUG[0m: Reading line at address 400000d8
+[1m[36mDEBUG[0m: Reading line at address 400000e0
+[1m[36mDEBUG[0m: Reading line at address 400000e8
+[1m[36mDEBUG[0m: Reading line at address 400000f0
+[1m[36mDEBUG[0m: Reading line at address 400000f8
+[1m[36mDEBUG[0m: Reading line at address 40000100
+[1m[36mDEBUG[0m: Reading line at address 40000108
+[1m[36mDEBUG[0m: Reading line at address 40000110
+[1m[36mDEBUG[0m: Reading line at address 40000118
+[1m[36mDEBUG[0m: Uninitialized memory found at address 4000011c from 40000118
+[1m[32mINFO[0m: Loading memory from 40000000 to 4000011c
+[1m[36mDEBUG[0m: Reading line at address f0000000
+[1m[36mDEBUG[0m: Reading line at address f0000008
+[1m[36mDEBUG[0m: Reading line at address f0000010
+[1m[36mDEBUG[0m: Reading line at address f0000018
+[1m[36mDEBUG[0m: Reading line at address f0000020
+[1m[36mDEBUG[0m: Reading line at address f0000028
+[1m[36mDEBUG[0m: Reading line at address f0000030
+[1m[36mDEBUG[0m: Reading line at address f0000038
+[1m[36mDEBUG[0m: Reading line at address f0000040
+[1m[36mDEBUG[0m: Reading line at address f0000048
+[1m[36mDEBUG[0m: Reading line at address f0000050
+[1m[36mDEBUG[0m: Reading line at address f0000058
+[1m[36mDEBUG[0m: Reading line at address f0000060
+[1m[36mDEBUG[0m: Reading line at address f0000068
+[1m[36mDEBUG[0m: Reading line at address f0000070
+[1m[36mDEBUG[0m: Reading line at address f0000078
+[1m[36mDEBUG[0m: Reading line at address f0000080
+[1m[36mDEBUG[0m: Reading line at address f0000088
+[1m[36mDEBUG[0m: Reading line at address f0000090
+[1m[36mDEBUG[0m: Reading line at address f0000098
+[1m[36mDEBUG[0m: Reading line at address f00000a0
+[1m[36mDEBUG[0m: Reading line at address f00000a8
+[1m[36mDEBUG[0m: Reading line at address f00000b0
+[1m[36mDEBUG[0m: Reading line at address f00000b8
+[1m[36mDEBUG[0m: Reading line at address f00000c0
+[1m[36mDEBUG[0m: Reading line at address f00000c8
+[1m[36mDEBUG[0m: Reading line at address f00000d0
+[1m[36mDEBUG[0m: Reading line at address f00000d8
+[1m[36mDEBUG[0m: Reading line at address f00000e0
+[1m[36mDEBUG[0m: Reading line at address f00000e8
+[1m[36mDEBUG[0m: Reading line at address f00000f0
+[1m[36mDEBUG[0m: Reading line at address f00000f8
+[1m[36mDEBUG[0m: Reading line at address f0000100
+[1m[36mDEBUG[0m: Reading line at address f0000108
+[1m[36mDEBUG[0m: Reading line at address f0000110
+[1m[36mDEBUG[0m: Reading line at address f0000118
+[1m[36mDEBUG[0m: Reading line at address f0000120
+[1m[36mDEBUG[0m: Uninitialized memory found at address f0000124 from f0000120
+[1m[32mINFO[0m: Loading memory from f0000000 to f0000124
+[1m[32mINFO[0m: Starting emulator at entry point 40000000
+[1m[32mINFO[0m: PC: 40000000
+[1m[36mDEBUG[0m: Getting memory at address 40000000
+[1m[36mDEBUG[0m: Found value e0b0
+[1m[32mINFO[0m: Instruction: b0e00000
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: LIT_DIR
+[1m[36mDEBUG[0m: Getting memory at address 40000004
+[1m[36mDEBUG[0m: Found value fefeffff
+[1m[36mDEBUG[0m: Fetched extended literal fffffefe
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 40000008
+[1m[36mDEBUG[0m: Getting memory at address 40000008
+[1m[36mDEBUG[0m: Found value 10b1
+[1m[32mINFO[0m: Instruction: b1100000
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: SYM_DIR
+[1m[36mDEBUG[0m: Getting memory at address 4000000c
+[1m[36mDEBUG[0m: Found value 600000f0
+[1m[36mDEBUG[0m: Fetched extended symbol f0000060
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 40000010
+[1m[36mDEBUG[0m: Getting memory at address 40000010
+[1m[36mDEBUG[0m: Found value 11c8
+[1m[32mINFO[0m: Instruction: c8110000
+[1m[32mINFO[0m: CSRWR
+[1m[36mDEBUG[0m: Setting handler to f0000060
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 40000014
+[1m[36mDEBUG[0m: Getting memory at address 40000014
+[1m[36mDEBUG[0m: Found value 8
+[1m[32mINFO[0m: Instruction: 08000000
+[1m[32mINFO[0m: INT
+[1m[36mDEBUG[0m: Setting memory at address fffffefa to 7
+[1m[36mDEBUG[0m: Created new memory segment from fffffefa to fffffefe
+[1m[36mDEBUG[0m: Setting memory at address fffffef6 to 40000018
+[1m[36mDEBUG[0m: Left extended memory segment from fffffefa to fffffefe by 4 bytes
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000060
+[1m[36mDEBUG[0m: Getting memory at address f0000060
+[1m[36mDEBUG[0m: Found value 1048
+[1m[32mINFO[0m: Instruction: 48100000
+[1m[32mINFO[0m: PUSH
+[1m[36mDEBUG[0m: Setting memory at address fffffef2 to f0000060
+[1m[36mDEBUG[0m: Left extended memory segment from fffffef6 to fffffefe by 4 bytes
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000064
+[1m[36mDEBUG[0m: Getting memory at address f0000064
+[1m[36mDEBUG[0m: Found value 2048
+[1m[32mINFO[0m: Instruction: 48200000
+[1m[32mINFO[0m: PUSH
+[1m[36mDEBUG[0m: Setting memory at address fffffeee to 0
+[1m[36mDEBUG[0m: Left extended memory segment from fffffef2 to fffffefe by 4 bytes
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000068
+[1m[36mDEBUG[0m: Getting memory at address f0000068
+[1m[36mDEBUG[0m: Found value 21c0
+[1m[32mINFO[0m: Instruction: c0210000
+[1m[32mINFO[0m: CSRRD
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f000006c
+[1m[36mDEBUG[0m: Getting memory at address f000006c
+[1m[36mDEBUG[0m: Found value 20b0
+[1m[32mINFO[0m: Instruction: b0200000
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: LIT_DIR
+[1m[36mDEBUG[0m: Getting memory at address f0000070
+[1m[36mDEBUG[0m: Found value 2000000
+[1m[36mDEBUG[0m: Fetched extended literal 2
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000074
+[1m[36mDEBUG[0m: Getting memory at address f0000074
+[1m[36mDEBUG[0m: Found value 1231
+[1m[32mINFO[0m: Instruction: 31120000
+[1m[32mINFO[0m: BEQ
+[1m[36mDEBUG[0m: SYM_DIR
+[1m[36mDEBUG[0m: Getting memory at address f0000078
+[1m[36mDEBUG[0m: Found value a80000f0
+[1m[36mDEBUG[0m: Fetched extended symbol f00000a8
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f000007c
+[1m[36mDEBUG[0m: Getting memory at address f000007c
+[1m[36mDEBUG[0m: Found value 20b0
+[1m[32mINFO[0m: Instruction: b0200000
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: LIT_DIR
+[1m[36mDEBUG[0m: Getting memory at address f0000080
+[1m[36mDEBUG[0m: Found value 3000000
+[1m[36mDEBUG[0m: Fetched extended literal 3
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000084
+[1m[36mDEBUG[0m: Getting memory at address f0000084
+[1m[36mDEBUG[0m: Found value 1231
+[1m[32mINFO[0m: Instruction: 31120000
+[1m[32mINFO[0m: BEQ
+[1m[36mDEBUG[0m: SYM_DIR
+[1m[36mDEBUG[0m: Getting memory at address f0000088
+[1m[36mDEBUG[0m: Found value b80000f0
+[1m[36mDEBUG[0m: Fetched extended symbol f00000b8
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f000008c
+[1m[36mDEBUG[0m: Getting memory at address f000008c
+[1m[36mDEBUG[0m: Found value 20b0
+[1m[32mINFO[0m: Instruction: b0200000
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: LIT_DIR
+[1m[36mDEBUG[0m: Getting memory at address f0000090
+[1m[36mDEBUG[0m: Found value 4000000
+[1m[36mDEBUG[0m: Fetched extended literal 4
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000094
+[1m[36mDEBUG[0m: Getting memory at address f0000094
+[1m[36mDEBUG[0m: Found value 1231
+[1m[32mINFO[0m: Instruction: 31120000
+[1m[32mINFO[0m: BEQ
+[1m[36mDEBUG[0m: SYM_DIR
+[1m[36mDEBUG[0m: Getting memory at address f0000098
+[1m[36mDEBUG[0m: Found value c80000f0
+[1m[36mDEBUG[0m: Fetched extended symbol f00000c8
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f00000c8
+[1m[36mDEBUG[0m: Getting memory at address f00000c8
+[1m[36mDEBUG[0m: Found value 19
+[1m[32mINFO[0m: Instruction: 19000000
+[1m[32mINFO[0m: CALL
+[1m[36mDEBUG[0m: SYM_DIR
+[1m[36mDEBUG[0m: Getting memory at address f00000cc
+[1m[36mDEBUG[0m: Found value fc0000f0
+[1m[36mDEBUG[0m: Fetched extended symbol f00000fc
+[1m[36mDEBUG[0m: Setting memory at address fffffeea to f00000d0
+[1m[36mDEBUG[0m: Left extended memory segment from fffffeee to fffffefe by 4 bytes
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f00000fc
+[1m[36mDEBUG[0m: Getting memory at address f00000fc
+[1m[36mDEBUG[0m: Found value 1048
+[1m[32mINFO[0m: Instruction: 48100000
+[1m[32mINFO[0m: PUSH
+[1m[36mDEBUG[0m: Setting memory at address fffffee6 to 4
+[1m[36mDEBUG[0m: Left extended memory segment from fffffeea to fffffefe by 4 bytes
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000100
+[1m[36mDEBUG[0m: Getting memory at address f0000100
+[1m[36mDEBUG[0m: Found value 2048
+[1m[32mINFO[0m: Instruction: 48200000
+[1m[32mINFO[0m: PUSH
+[1m[36mDEBUG[0m: Setting memory at address fffffee2 to 4
+[1m[36mDEBUG[0m: Left extended memory segment from fffffee6 to fffffefe by 4 bytes
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000104
+[1m[36mDEBUG[0m: Getting memory at address f0000104
+[1m[36mDEBUG[0m: Found value 10b0
+[1m[32mINFO[0m: Instruction: b0100000
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: LIT_DIR
+[1m[36mDEBUG[0m: Getting memory at address f0000108
+[1m[36mDEBUG[0m: Found value cdab0000
+[1m[36mDEBUG[0m: Fetched extended literal abcd
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f000010c
+[1m[36mDEBUG[0m: Getting memory at address f000010c
+[1m[36mDEBUG[0m: Found value 20b1
+[1m[32mINFO[0m: Instruction: b1200000
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: SYM_DIR
+[1m[36mDEBUG[0m: Getting memory at address f0000110
+[1m[36mDEBUG[0m: Found value d80000f0
+[1m[36mDEBUG[0m: Fetched extended symbol f00000d8
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000114
+[1m[36mDEBUG[0m: Getting memory at address f0000114
+[1m[36mDEBUG[0m: Found value 2010bc
+[1m[32mINFO[0m: Instruction: bc102000
+[1m[32mINFO[0m: ST
+[1m[36mDEBUG[0m: REG_DIR
+[1m[36mDEBUG[0m: Setting memory at address f00000d8 to abcd
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000118
+[1m[36mDEBUG[0m: Getting memory at address f0000118
+[1m[36mDEBUG[0m: Found value 2050
+[1m[32mINFO[0m: Instruction: 50200000
+[1m[32mINFO[0m: POP
+[1m[36mDEBUG[0m: Getting memory at address fffffee2
+[1m[36mDEBUG[0m: Found value 4
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f000011c
+[1m[36mDEBUG[0m: Getting memory at address f000011c
+[1m[36mDEBUG[0m: Found value 1050
+[1m[32mINFO[0m: Instruction: 50100000
+[1m[32mINFO[0m: POP
+[1m[36mDEBUG[0m: Getting memory at address fffffee6
+[1m[36mDEBUG[0m: Found value 4
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000120
+[1m[36mDEBUG[0m: Getting memory at address f0000120
+[1m[36mDEBUG[0m: Found value 20
+[1m[32mINFO[0m: Instruction: 20000000
+[1m[32mINFO[0m: RET
+[1m[36mDEBUG[0m: Getting memory at address fffffeea
+[1m[36mDEBUG[0m: Found value f00000d0
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f00000d0
+[1m[36mDEBUG[0m: Getting memory at address f00000d0
+[1m[36mDEBUG[0m: Found value 29
+[1m[32mINFO[0m: Instruction: 29000000
+[1m[32mINFO[0m: JMP
+[1m[36mDEBUG[0m: SYM_DIR
+[1m[36mDEBUG[0m: Getting memory at address f00000d4
+[1m[36mDEBUG[0m: Found value 9c0000f0
+[1m[36mDEBUG[0m: Fetched extended symbol f000009c
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f000009c
+[1m[36mDEBUG[0m: Getting memory at address f000009c
+[1m[36mDEBUG[0m: Found value 2050
+[1m[32mINFO[0m: Instruction: 50200000
+[1m[32mINFO[0m: POP
+[1m[36mDEBUG[0m: Getting memory at address fffffeee
+[1m[36mDEBUG[0m: Found value 0
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f00000a0
+[1m[36mDEBUG[0m: Getting memory at address f00000a0
+[1m[36mDEBUG[0m: Found value 1050
+[1m[32mINFO[0m: Instruction: 50100000
+[1m[32mINFO[0m: POP
+[1m[36mDEBUG[0m: Getting memory at address fffffef2
+[1m[36mDEBUG[0m: Found value f0000060
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f00000a4
+[1m[36mDEBUG[0m: Getting memory at address f00000a4
+[1m[36mDEBUG[0m: Found value 10
+[1m[32mINFO[0m: Instruction: 10000000
+[1m[32mINFO[0m: IRET
+[1m[36mDEBUG[0m: Getting memory at address fffffef6
+[1m[36mDEBUG[0m: Found value 40000018
+[1m[36mDEBUG[0m: Getting memory at address fffffefa
+[1m[36mDEBUG[0m: Found value 7
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 40000018
+[1m[36mDEBUG[0m: Getting memory at address 40000018
+[1m[36mDEBUG[0m: Found value 10b0
+[1m[32mINFO[0m: Instruction: b0100000
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: LIT_DIR
+[1m[36mDEBUG[0m: Getting memory at address 4000001c
+[1m[36mDEBUG[0m: Found value 1000000
+[1m[36mDEBUG[0m: Fetched extended literal 1
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 40000020
+[1m[36mDEBUG[0m: Getting memory at address 40000020
+[1m[36mDEBUG[0m: Found value 1048
+[1m[32mINFO[0m: Instruction: 48100000
+[1m[32mINFO[0m: PUSH
+[1m[36mDEBUG[0m: Setting memory at address fffffefa to 1
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 40000024
+[1m[36mDEBUG[0m: Getting memory at address 40000024
+[1m[36mDEBUG[0m: Found value 10b0
+[1m[32mINFO[0m: Instruction: b0100000
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: LIT_DIR
+[1m[36mDEBUG[0m: Getting memory at address 40000028
+[1m[36mDEBUG[0m: Found value 1000000
+[1m[36mDEBUG[0m: Fetched extended literal 1
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 4000002c
+[1m[36mDEBUG[0m: Getting memory at address 4000002c
+[1m[36mDEBUG[0m: Found value 1048
+[1m[32mINFO[0m: Instruction: 48100000
+[1m[32mINFO[0m: PUSH
+[1m[36mDEBUG[0m: Setting memory at address fffffef6 to 1
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 40000030
+[1m[36mDEBUG[0m: Getting memory at address 40000030
+[1m[36mDEBUG[0m: Found value 18
+[1m[32mINFO[0m: Instruction: 18000000
+[1m[32mINFO[0m: CALL
+[1m[36mDEBUG[0m: LIT_DIR
+[1m[36mDEBUG[0m: Getting memory at address 40000034
+[1m[36mDEBUG[0m: Found value f0
+[1m[36mDEBUG[0m: Fetched extended literal f0000000
+[1m[36mDEBUG[0m: Setting memory at address fffffef2 to 40000038
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000000
+[1m[36mDEBUG[0m: Getting memory at address f0000000
+[1m[36mDEBUG[0m: Found value 2048
+[1m[32mINFO[0m: Instruction: 48200000
+[1m[32mINFO[0m: PUSH
+[1m[36mDEBUG[0m: Setting memory at address fffffeee to 0
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000004
+[1m[36mDEBUG[0m: Getting memory at address f0000004
+[1m[36mDEBUG[0m: Found value 8e010b6
+[1m[32mINFO[0m: Instruction: b610e008
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: REG_LIT_IND
+[1m[36mDEBUG[0m: Register: 14
+[1m[36mDEBUG[0m: Register value: fffffeee
+[1m[36mDEBUG[0m: Displacement: 00000008
+[1m[36mDEBUG[0m: Getting memory at address fffffef6
+[1m[36mDEBUG[0m: Found value 1
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000008
+[1m[36mDEBUG[0m: Getting memory at address f0000008
+[1m[36mDEBUG[0m: Found value ce020b6
+[1m[32mINFO[0m: Instruction: b620e00c
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: REG_LIT_IND
+[1m[36mDEBUG[0m: Register: 14
+[1m[36mDEBUG[0m: Register value: fffffeee
+[1m[36mDEBUG[0m: Displacement: 0000000c
+[1m[36mDEBUG[0m: Getting memory at address fffffefa
+[1m[36mDEBUG[0m: Found value 1
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f000000c
+[1m[36mDEBUG[0m: Getting memory at address f000000c
+[1m[36mDEBUG[0m: Found value 2160
+[1m[32mINFO[0m: Instruction: 60210000
+[1m[32mINFO[0m: ADD
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000010
+[1m[36mDEBUG[0m: Getting memory at address f0000010
+[1m[36mDEBUG[0m: Found value 2050
+[1m[32mINFO[0m: Instruction: 50200000
+[1m[32mINFO[0m: POP
+[1m[36mDEBUG[0m: Getting memory at address fffffeee
+[1m[36mDEBUG[0m: Found value 0
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000014
+[1m[36mDEBUG[0m: Getting memory at address f0000014
+[1m[36mDEBUG[0m: Found value 20
+[1m[32mINFO[0m: Instruction: 20000000
+[1m[32mINFO[0m: RET
+[1m[36mDEBUG[0m: Getting memory at address fffffef2
+[1m[36mDEBUG[0m: Found value 40000038
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 40000038
+[1m[36mDEBUG[0m: Getting memory at address 40000038
+[1m[36mDEBUG[0m: Found value 10b9
+[1m[32mINFO[0m: Instruction: b9100000
+[1m[32mINFO[0m: ST
+[1m[36mDEBUG[0m: SYM_DIR
+[1m[36mDEBUG[0m: Getting memory at address 4000003c
+[1m[36mDEBUG[0m: Found value dc0000f0
+[1m[36mDEBUG[0m: Fetched extended symbol f00000dc
+[1m[36mDEBUG[0m: Setting memory at address f00000dc to 2
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 40000040
+[1m[36mDEBUG[0m: Getting memory at address 40000040
+[1m[36mDEBUG[0m: Found value 10b0
+[1m[32mINFO[0m: Instruction: b0100000
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: LIT_DIR
+[1m[36mDEBUG[0m: Getting memory at address 40000044
+[1m[36mDEBUG[0m: Found value 2000000
+[1m[36mDEBUG[0m: Fetched extended literal 2
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 40000048
+[1m[36mDEBUG[0m: Getting memory at address 40000048
+[1m[36mDEBUG[0m: Found value 1048
+[1m[32mINFO[0m: Instruction: 48100000
+[1m[32mINFO[0m: PUSH
+[1m[36mDEBUG[0m: Setting memory at address fffffef2 to 2
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 4000004c
+[1m[36mDEBUG[0m: Getting memory at address 4000004c
+[1m[36mDEBUG[0m: Found value 10b0
+[1m[32mINFO[0m: Instruction: b0100000
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: LIT_DIR
+[1m[36mDEBUG[0m: Getting memory at address 40000050
+[1m[36mDEBUG[0m: Found value 1000000
+[1m[36mDEBUG[0m: Fetched extended literal 1
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 40000054
+[1m[36mDEBUG[0m: Getting memory at address 40000054
+[1m[36mDEBUG[0m: Found value 1048
+[1m[32mINFO[0m: Instruction: 48100000
+[1m[32mINFO[0m: PUSH
+[1m[36mDEBUG[0m: Setting memory at address fffffeee to 1
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 40000058
+[1m[36mDEBUG[0m: Getting memory at address 40000058
+[1m[36mDEBUG[0m: Found value 19
+[1m[32mINFO[0m: Instruction: 19000000
+[1m[32mINFO[0m: CALL
+[1m[36mDEBUG[0m: SYM_DIR
+[1m[36mDEBUG[0m: Getting memory at address 4000005c
+[1m[36mDEBUG[0m: Found value f0
+[1m[36mDEBUG[0m: Fetched extended symbol f0000000
+[1m[36mDEBUG[0m: Setting memory at address fffffeea to 40000060
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000000
+[1m[36mDEBUG[0m: Getting memory at address f0000000
+[1m[36mDEBUG[0m: Found value 2048
+[1m[32mINFO[0m: Instruction: 48200000
+[1m[32mINFO[0m: PUSH
+[1m[36mDEBUG[0m: Setting memory at address fffffee6 to 0
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000004
+[1m[36mDEBUG[0m: Getting memory at address f0000004
+[1m[36mDEBUG[0m: Found value 8e010b6
+[1m[32mINFO[0m: Instruction: b610e008
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: REG_LIT_IND
+[1m[36mDEBUG[0m: Register: 14
+[1m[36mDEBUG[0m: Register value: fffffee6
+[1m[36mDEBUG[0m: Displacement: 00000008
+[1m[36mDEBUG[0m: Getting memory at address fffffeee
+[1m[36mDEBUG[0m: Found value 1
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000008
+[1m[36mDEBUG[0m: Getting memory at address f0000008
+[1m[36mDEBUG[0m: Found value ce020b6
+[1m[32mINFO[0m: Instruction: b620e00c
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: REG_LIT_IND
+[1m[36mDEBUG[0m: Register: 14
+[1m[36mDEBUG[0m: Register value: fffffee6
+[1m[36mDEBUG[0m: Displacement: 0000000c
+[1m[36mDEBUG[0m: Getting memory at address fffffef2
+[1m[36mDEBUG[0m: Found value 2
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f000000c
+[1m[36mDEBUG[0m: Getting memory at address f000000c
+[1m[36mDEBUG[0m: Found value 2160
+[1m[32mINFO[0m: Instruction: 60210000
+[1m[32mINFO[0m: ADD
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000010
+[1m[36mDEBUG[0m: Getting memory at address f0000010
+[1m[36mDEBUG[0m: Found value 2050
+[1m[32mINFO[0m: Instruction: 50200000
+[1m[32mINFO[0m: POP
+[1m[36mDEBUG[0m: Getting memory at address fffffee6
+[1m[36mDEBUG[0m: Found value 0
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000014
+[1m[36mDEBUG[0m: Getting memory at address f0000014
+[1m[36mDEBUG[0m: Found value 20
+[1m[32mINFO[0m: Instruction: 20000000
+[1m[32mINFO[0m: RET
+[1m[36mDEBUG[0m: Getting memory at address fffffeea
+[1m[36mDEBUG[0m: Found value 40000060
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 40000060
+[1m[36mDEBUG[0m: Getting memory at address 40000060
+[1m[36mDEBUG[0m: Found value 10b9
+[1m[32mINFO[0m: Instruction: b9100000
+[1m[32mINFO[0m: ST
+[1m[36mDEBUG[0m: SYM_DIR
+[1m[36mDEBUG[0m: Getting memory at address 40000064
+[1m[36mDEBUG[0m: Found value e00000f0
+[1m[36mDEBUG[0m: Fetched extended symbol f00000e0
+[1m[36mDEBUG[0m: Setting memory at address f00000e0 to 3
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 40000068
+[1m[36mDEBUG[0m: Getting memory at address 40000068
+[1m[36mDEBUG[0m: Found value 10b0
+[1m[32mINFO[0m: Instruction: b0100000
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: LIT_DIR
+[1m[36mDEBUG[0m: Getting memory at address 4000006c
+[1m[36mDEBUG[0m: Found value 7000000
+[1m[36mDEBUG[0m: Fetched extended literal 7
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 40000070
+[1m[36mDEBUG[0m: Getting memory at address 40000070
+[1m[36mDEBUG[0m: Found value 1048
+[1m[32mINFO[0m: Instruction: 48100000
+[1m[32mINFO[0m: PUSH
+[1m[36mDEBUG[0m: Setting memory at address fffffeea to 7
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 40000074
+[1m[36mDEBUG[0m: Getting memory at address 40000074
+[1m[36mDEBUG[0m: Found value 10b0
+[1m[32mINFO[0m: Instruction: b0100000
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: LIT_DIR
+[1m[36mDEBUG[0m: Getting memory at address 40000078
+[1m[36mDEBUG[0m: Found value b000000
+[1m[36mDEBUG[0m: Fetched extended literal b
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 4000007c
+[1m[36mDEBUG[0m: Getting memory at address 4000007c
+[1m[36mDEBUG[0m: Found value 1048
+[1m[32mINFO[0m: Instruction: 48100000
+[1m[32mINFO[0m: PUSH
+[1m[36mDEBUG[0m: Setting memory at address fffffee6 to b
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 40000080
+[1m[36mDEBUG[0m: Getting memory at address 40000080
+[1m[36mDEBUG[0m: Found value 19
+[1m[32mINFO[0m: Instruction: 19000000
+[1m[32mINFO[0m: CALL
+[1m[36mDEBUG[0m: SYM_DIR
+[1m[36mDEBUG[0m: Getting memory at address 40000084
+[1m[36mDEBUG[0m: Found value 180000f0
+[1m[36mDEBUG[0m: Fetched extended symbol f0000018
+[1m[36mDEBUG[0m: Setting memory at address fffffee2 to 40000088
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000018
+[1m[36mDEBUG[0m: Getting memory at address f0000018
+[1m[36mDEBUG[0m: Found value 2048
+[1m[32mINFO[0m: Instruction: 48200000
+[1m[32mINFO[0m: PUSH
+[1m[36mDEBUG[0m: Setting memory at address fffffede to 0
+[1m[36mDEBUG[0m: Left extended memory segment from fffffee2 to fffffefe by 4 bytes
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f000001c
+[1m[36mDEBUG[0m: Getting memory at address f000001c
+[1m[36mDEBUG[0m: Found value 8e010b6
+[1m[32mINFO[0m: Instruction: b610e008
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: REG_LIT_IND
+[1m[36mDEBUG[0m: Register: 14
+[1m[36mDEBUG[0m: Register value: fffffede
+[1m[36mDEBUG[0m: Displacement: 00000008
+[1m[36mDEBUG[0m: Getting memory at address fffffee6
+[1m[36mDEBUG[0m: Found value b
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000020
+[1m[36mDEBUG[0m: Getting memory at address f0000020
+[1m[36mDEBUG[0m: Found value ce020b6
+[1m[32mINFO[0m: Instruction: b620e00c
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: REG_LIT_IND
+[1m[36mDEBUG[0m: Register: 14
+[1m[36mDEBUG[0m: Register value: fffffede
+[1m[36mDEBUG[0m: Displacement: 0000000c
+[1m[36mDEBUG[0m: Getting memory at address fffffeea
+[1m[36mDEBUG[0m: Found value 7
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000024
+[1m[36mDEBUG[0m: Getting memory at address f0000024
+[1m[36mDEBUG[0m: Found value 2168
+[1m[32mINFO[0m: Instruction: 68210000
+[1m[32mINFO[0m: SUB
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000028
+[1m[36mDEBUG[0m: Getting memory at address f0000028
+[1m[36mDEBUG[0m: Found value 2050
+[1m[32mINFO[0m: Instruction: 50200000
+[1m[32mINFO[0m: POP
+[1m[36mDEBUG[0m: Getting memory at address fffffede
+[1m[36mDEBUG[0m: Found value 0
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f000002c
+[1m[36mDEBUG[0m: Getting memory at address f000002c
+[1m[36mDEBUG[0m: Found value 20
+[1m[32mINFO[0m: Instruction: 20000000
+[1m[32mINFO[0m: RET
+[1m[36mDEBUG[0m: Getting memory at address fffffee2
+[1m[36mDEBUG[0m: Found value 40000088
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 40000088
+[1m[36mDEBUG[0m: Getting memory at address 40000088
+[1m[36mDEBUG[0m: Found value 10b9
+[1m[32mINFO[0m: Instruction: b9100000
+[1m[32mINFO[0m: ST
+[1m[36mDEBUG[0m: SYM_DIR
+[1m[36mDEBUG[0m: Getting memory at address 4000008c
+[1m[36mDEBUG[0m: Found value e40000f0
+[1m[36mDEBUG[0m: Fetched extended symbol f00000e4
+[1m[36mDEBUG[0m: Setting memory at address f00000e4 to 4
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 40000090
+[1m[36mDEBUG[0m: Getting memory at address 40000090
+[1m[36mDEBUG[0m: Found value 10b0
+[1m[32mINFO[0m: Instruction: b0100000
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: LIT_DIR
+[1m[36mDEBUG[0m: Getting memory at address 40000094
+[1m[36mDEBUG[0m: Found value 5000000
+[1m[36mDEBUG[0m: Fetched extended literal 5
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 40000098
+[1m[36mDEBUG[0m: Getting memory at address 40000098
+[1m[36mDEBUG[0m: Found value 1048
+[1m[32mINFO[0m: Instruction: 48100000
+[1m[32mINFO[0m: PUSH
+[1m[36mDEBUG[0m: Setting memory at address fffffee2 to 5
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 4000009c
+[1m[36mDEBUG[0m: Getting memory at address 4000009c
+[1m[36mDEBUG[0m: Found value 10b0
+[1m[32mINFO[0m: Instruction: b0100000
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: LIT_DIR
+[1m[36mDEBUG[0m: Getting memory at address 400000a0
+[1m[36mDEBUG[0m: Found value 19000000
+[1m[36mDEBUG[0m: Fetched extended literal 19
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 400000a4
+[1m[36mDEBUG[0m: Getting memory at address 400000a4
+[1m[36mDEBUG[0m: Found value 1048
+[1m[32mINFO[0m: Instruction: 48100000
+[1m[32mINFO[0m: PUSH
+[1m[36mDEBUG[0m: Setting memory at address fffffede to 19
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 400000a8
+[1m[36mDEBUG[0m: Getting memory at address 400000a8
+[1m[36mDEBUG[0m: Found value 19
+[1m[32mINFO[0m: Instruction: 19000000
+[1m[32mINFO[0m: CALL
+[1m[36mDEBUG[0m: SYM_DIR
+[1m[36mDEBUG[0m: Getting memory at address 400000ac
+[1m[36mDEBUG[0m: Found value 480000f0
+[1m[36mDEBUG[0m: Fetched extended symbol f0000048
+[1m[36mDEBUG[0m: Setting memory at address fffffeda to 400000b0
+[1m[36mDEBUG[0m: Left extended memory segment from fffffede to fffffefe by 4 bytes
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000048
+[1m[36mDEBUG[0m: Getting memory at address f0000048
+[1m[36mDEBUG[0m: Found value 2048
+[1m[32mINFO[0m: Instruction: 48200000
+[1m[32mINFO[0m: PUSH
+[1m[36mDEBUG[0m: Setting memory at address fffffed6 to 0
+[1m[36mDEBUG[0m: Left extended memory segment from fffffeda to fffffefe by 4 bytes
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f000004c
+[1m[36mDEBUG[0m: Getting memory at address f000004c
+[1m[36mDEBUG[0m: Found value 8e010b6
+[1m[32mINFO[0m: Instruction: b610e008
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: REG_LIT_IND
+[1m[36mDEBUG[0m: Register: 14
+[1m[36mDEBUG[0m: Register value: fffffed6
+[1m[36mDEBUG[0m: Displacement: 00000008
+[1m[36mDEBUG[0m: Getting memory at address fffffede
+[1m[36mDEBUG[0m: Found value 19
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000050
+[1m[36mDEBUG[0m: Getting memory at address f0000050
+[1m[36mDEBUG[0m: Found value ce020b6
+[1m[32mINFO[0m: Instruction: b620e00c
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: REG_LIT_IND
+[1m[36mDEBUG[0m: Register: 14
+[1m[36mDEBUG[0m: Register value: fffffed6
+[1m[36mDEBUG[0m: Displacement: 0000000c
+[1m[36mDEBUG[0m: Getting memory at address fffffee2
+[1m[36mDEBUG[0m: Found value 5
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000054
+[1m[36mDEBUG[0m: Getting memory at address f0000054
+[1m[36mDEBUG[0m: Found value 2178
+[1m[32mINFO[0m: Instruction: 78210000
+[1m[32mINFO[0m: DIV
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000058
+[1m[36mDEBUG[0m: Getting memory at address f0000058
+[1m[36mDEBUG[0m: Found value 2050
+[1m[32mINFO[0m: Instruction: 50200000
+[1m[32mINFO[0m: POP
+[1m[36mDEBUG[0m: Getting memory at address fffffed6
+[1m[36mDEBUG[0m: Found value 0
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f000005c
+[1m[36mDEBUG[0m: Getting memory at address f000005c
+[1m[36mDEBUG[0m: Found value 20
+[1m[32mINFO[0m: Instruction: 20000000
+[1m[32mINFO[0m: RET
+[1m[36mDEBUG[0m: Getting memory at address fffffeda
+[1m[36mDEBUG[0m: Found value 400000b0
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 400000b0
+[1m[36mDEBUG[0m: Getting memory at address 400000b0
+[1m[36mDEBUG[0m: Found value 10b9
+[1m[32mINFO[0m: Instruction: b9100000
+[1m[32mINFO[0m: ST
+[1m[36mDEBUG[0m: SYM_DIR
+[1m[36mDEBUG[0m: Getting memory at address 400000b4
+[1m[36mDEBUG[0m: Found value e80000f0
+[1m[36mDEBUG[0m: Fetched extended symbol f00000e8
+[1m[36mDEBUG[0m: Setting memory at address f00000e8 to 5
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 400000b8
+[1m[36mDEBUG[0m: Getting memory at address 400000b8
+[1m[36mDEBUG[0m: Found value 10b0
+[1m[32mINFO[0m: Instruction: b0100000
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: LIT_DIR
+[1m[36mDEBUG[0m: Getting memory at address 400000bc
+[1m[36mDEBUG[0m: Found value 4000000
+[1m[36mDEBUG[0m: Fetched extended literal 4
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 400000c0
+[1m[36mDEBUG[0m: Getting memory at address 400000c0
+[1m[36mDEBUG[0m: Found value 1048
+[1m[32mINFO[0m: Instruction: 48100000
+[1m[32mINFO[0m: PUSH
+[1m[36mDEBUG[0m: Setting memory at address fffffeda to 4
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 400000c4
+[1m[36mDEBUG[0m: Getting memory at address 400000c4
+[1m[36mDEBUG[0m: Found value 10b0
+[1m[32mINFO[0m: Instruction: b0100000
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: LIT_DIR
+[1m[36mDEBUG[0m: Getting memory at address 400000c8
+[1m[36mDEBUG[0m: Found value 18000000
+[1m[36mDEBUG[0m: Fetched extended literal 18
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 400000cc
+[1m[36mDEBUG[0m: Getting memory at address 400000cc
+[1m[36mDEBUG[0m: Found value 1048
+[1m[32mINFO[0m: Instruction: 48100000
+[1m[32mINFO[0m: PUSH
+[1m[36mDEBUG[0m: Setting memory at address fffffed6 to 18
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 400000d0
+[1m[36mDEBUG[0m: Getting memory at address 400000d0
+[1m[36mDEBUG[0m: Found value 19
+[1m[32mINFO[0m: Instruction: 19000000
+[1m[32mINFO[0m: CALL
+[1m[36mDEBUG[0m: SYM_DIR
+[1m[36mDEBUG[0m: Getting memory at address 400000d4
+[1m[36mDEBUG[0m: Found value 480000f0
+[1m[36mDEBUG[0m: Fetched extended symbol f0000048
+[1m[36mDEBUG[0m: Setting memory at address fffffed2 to 400000d8
+[1m[36mDEBUG[0m: Left extended memory segment from fffffed6 to fffffefe by 4 bytes
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000048
+[1m[36mDEBUG[0m: Getting memory at address f0000048
+[1m[36mDEBUG[0m: Found value 2048
+[1m[32mINFO[0m: Instruction: 48200000
+[1m[32mINFO[0m: PUSH
+[1m[36mDEBUG[0m: Setting memory at address fffffece to 0
+[1m[36mDEBUG[0m: Left extended memory segment from fffffed2 to fffffefe by 4 bytes
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f000004c
+[1m[36mDEBUG[0m: Getting memory at address f000004c
+[1m[36mDEBUG[0m: Found value 8e010b6
+[1m[32mINFO[0m: Instruction: b610e008
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: REG_LIT_IND
+[1m[36mDEBUG[0m: Register: 14
+[1m[36mDEBUG[0m: Register value: fffffece
+[1m[36mDEBUG[0m: Displacement: 00000008
+[1m[36mDEBUG[0m: Getting memory at address fffffed6
+[1m[36mDEBUG[0m: Found value 18
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000050
+[1m[36mDEBUG[0m: Getting memory at address f0000050
+[1m[36mDEBUG[0m: Found value ce020b6
+[1m[32mINFO[0m: Instruction: b620e00c
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: REG_LIT_IND
+[1m[36mDEBUG[0m: Register: 14
+[1m[36mDEBUG[0m: Register value: fffffece
+[1m[36mDEBUG[0m: Displacement: 0000000c
+[1m[36mDEBUG[0m: Getting memory at address fffffeda
+[1m[36mDEBUG[0m: Found value 4
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000054
+[1m[36mDEBUG[0m: Getting memory at address f0000054
+[1m[36mDEBUG[0m: Found value 2178
+[1m[32mINFO[0m: Instruction: 78210000
+[1m[32mINFO[0m: DIV
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f0000058
+[1m[36mDEBUG[0m: Getting memory at address f0000058
+[1m[36mDEBUG[0m: Found value 2050
+[1m[32mINFO[0m: Instruction: 50200000
+[1m[32mINFO[0m: POP
+[1m[36mDEBUG[0m: Getting memory at address fffffece
+[1m[36mDEBUG[0m: Found value 0
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: f000005c
+[1m[36mDEBUG[0m: Getting memory at address f000005c
+[1m[36mDEBUG[0m: Found value 20
+[1m[32mINFO[0m: Instruction: 20000000
+[1m[32mINFO[0m: RET
+[1m[36mDEBUG[0m: Getting memory at address fffffed2
+[1m[36mDEBUG[0m: Found value 400000d8
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 400000d8
+[1m[36mDEBUG[0m: Getting memory at address 400000d8
+[1m[36mDEBUG[0m: Found value 10b9
+[1m[32mINFO[0m: Instruction: b9100000
+[1m[32mINFO[0m: ST
+[1m[36mDEBUG[0m: SYM_DIR
+[1m[36mDEBUG[0m: Getting memory at address 400000dc
+[1m[36mDEBUG[0m: Found value ec0000f0
+[1m[36mDEBUG[0m: Fetched extended symbol f00000ec
+[1m[36mDEBUG[0m: Setting memory at address f00000ec to 6
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 400000e0
+[1m[36mDEBUG[0m: Getting memory at address 400000e0
+[1m[36mDEBUG[0m: Found value 10b3
+[1m[32mINFO[0m: Instruction: b3100000
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: SYM_IND
+[1m[36mDEBUG[0m: Getting memory at address 400000e4
+[1m[36mDEBUG[0m: Found value d80000f0
+[1m[36mDEBUG[0m: Fetched extended symbol f00000d8
+[1m[36mDEBUG[0m: Getting memory at address f00000d8
+[1m[36mDEBUG[0m: Found value abcd
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 400000e8
+[1m[36mDEBUG[0m: Getting memory at address 400000e8
+[1m[36mDEBUG[0m: Found value 20b3
+[1m[32mINFO[0m: Instruction: b3200000
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: SYM_IND
+[1m[36mDEBUG[0m: Getting memory at address 400000ec
+[1m[36mDEBUG[0m: Found value dc0000f0
+[1m[36mDEBUG[0m: Fetched extended symbol f00000dc
+[1m[36mDEBUG[0m: Getting memory at address f00000dc
+[1m[36mDEBUG[0m: Found value 2
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 400000f0
+[1m[36mDEBUG[0m: Getting memory at address 400000f0
+[1m[36mDEBUG[0m: Found value 30b3
+[1m[32mINFO[0m: Instruction: b3300000
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: SYM_IND
+[1m[36mDEBUG[0m: Getting memory at address 400000f4
+[1m[36mDEBUG[0m: Found value e00000f0
+[1m[36mDEBUG[0m: Fetched extended symbol f00000e0
+[1m[36mDEBUG[0m: Getting memory at address f00000e0
+[1m[36mDEBUG[0m: Found value 3
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 400000f8
+[1m[36mDEBUG[0m: Getting memory at address 400000f8
+[1m[36mDEBUG[0m: Found value 40b3
+[1m[32mINFO[0m: Instruction: b3400000
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: SYM_IND
+[1m[36mDEBUG[0m: Getting memory at address 400000fc
+[1m[36mDEBUG[0m: Found value e40000f0
+[1m[36mDEBUG[0m: Fetched extended symbol f00000e4
+[1m[36mDEBUG[0m: Getting memory at address f00000e4
+[1m[36mDEBUG[0m: Found value 4
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 40000100
+[1m[36mDEBUG[0m: Getting memory at address 40000100
+[1m[36mDEBUG[0m: Found value 50b3
+[1m[32mINFO[0m: Instruction: b3500000
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: SYM_IND
+[1m[36mDEBUG[0m: Getting memory at address 40000104
+[1m[36mDEBUG[0m: Found value e80000f0
+[1m[36mDEBUG[0m: Fetched extended symbol f00000e8
+[1m[36mDEBUG[0m: Getting memory at address f00000e8
+[1m[36mDEBUG[0m: Found value 5
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 40000108
+[1m[36mDEBUG[0m: Getting memory at address 40000108
+[1m[36mDEBUG[0m: Found value 60b3
+[1m[32mINFO[0m: Instruction: b3600000
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: SYM_IND
+[1m[36mDEBUG[0m: Getting memory at address 4000010c
+[1m[36mDEBUG[0m: Found value ec0000f0
+[1m[36mDEBUG[0m: Fetched extended symbol f00000ec
+[1m[36mDEBUG[0m: Getting memory at address f00000ec
+[1m[36mDEBUG[0m: Found value 6
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 40000110
+[1m[36mDEBUG[0m: Getting memory at address 40000110
+[1m[36mDEBUG[0m: Found value 70b3
+[1m[32mINFO[0m: Instruction: b3700000
+[1m[32mINFO[0m: LD
+[1m[36mDEBUG[0m: SYM_IND
+[1m[36mDEBUG[0m: Getting memory at address 40000114
+[1m[36mDEBUG[0m: Found value f00000f0
+[1m[36mDEBUG[0m: Fetched extended symbol f00000f0
+[1m[36mDEBUG[0m: Getting memory at address f00000f0
+[1m[36mDEBUG[0m: Found value 0
+[1m[36mDEBUG[0m: Handling interrupts
+[1m[32mINFO[0m: PC: 40000118
+[1m[36mDEBUG[0m: Getting memory at address 40000118
+[1m[36mDEBUG[0m: Found value 0
+[1m[32mINFO[0m: Instruction: 00000000
+[1m[32mINFO[0m: HALT
+[1m[36mDEBUG[0m: Handling interrupts
+Emulated processor state:
+ R0: 00000000	 R1: 0000abcd	 R2: 00000002	 R3: 00000003
+ R4: 00000004	 R5: 00000005	 R6: 00000006	 R7: 00000000
+ R8: 00000000	 R9: 00000000	R10: 00000000	R11: 00000000
+R12: 00000000	R13: 00000000	R14: fffffed6	R15: 4000011c

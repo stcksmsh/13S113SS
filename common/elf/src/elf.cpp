@@ -101,7 +101,7 @@ ELF::readFromStream(std::istream &stream)
             sym_entry.is_extern = !sym_entry.is_local && sym.shndx == 0;
             sym_entry.section = section_names[sym.shndx];
             symbol_table.push_back(sym_entry);
-            logger->logDebug("Added symbol " + name + " to the symbol table with value 0x" + std::format("{:x}", sym.value) + " and " + (sym_entry.is_local ? "local" : "global") + " binding");
+            logger->logDebug("Added symbol '" + name + "' from section '" + sym_entry.section + "' to the symbol table with value 0x" + std::format("{:x}", sym.value) + " and " + (sym_entry.is_local ? "local" : "global") + " binding");
         }
         
         logger->logInfo("Creating the relocation table");
@@ -220,6 +220,7 @@ ELF::createShared(std::ostream &stream)
                     break;
                 }
             }
+
             logger->logDebug("Adding symbol '" + symbol_table[i].name + "' to symtab with value 0x" + std::format("{:x}", symbol_table[i].value) + " and " + (symbol_table[i].is_local ? "local" : "global") + " binding");
             symtab.push_back(sym);
         }
@@ -314,7 +315,7 @@ ELF::createShared(std::ostream &stream)
 
     { /// Then we need to update the symbols ndx due to the added rel sections
         int disp = 0;
-        for(int i = 3; i < section_names.size(); i++){
+        for(int i = 0; i < section_names.size(); i++){
             if(section_headers[i].type == Section_Header::Section_Type::SHT_RELA){
                 disp++;
                 continue;
@@ -468,6 +469,19 @@ ELF::createShared(std::ostream &stream)
     return stream;
 };
 
+/// @brief The instruction (taken from parser.y)
+union instruction{
+    struct{
+    uint32_t Disp: 12,
+                RegC: 4,
+                RegB: 4,
+                RegA: 4,
+                MOD: 3,
+                OC: 5;
+    } fields;
+    uint32_t raw = 0;
+};
+
 std::ostream &
 ELF::memDump(std::ostream &stream){
     logger->logInfo("Creating executable memory dump\n----------------------------------");
@@ -519,6 +533,7 @@ ELF::memDump(std::ostream &stream){
                 logger->logError("Symbol '" + symbol_table[i].name + "' is external so it cannot be used in an executable");
                 continue;
             }
+            logger->logDebug("Updating symbol '" + symbol_table[i].name + "' from section '" + symbol_table[i].section + "'");
             for( int j = 0; j < section_headers.size(); j ++){
                 if(section_names[j] == symbol_table[i].section){
                     symbol_table[i].value += section_headers[j].addr;
@@ -536,8 +551,10 @@ ELF::memDump(std::ostream &stream){
             uint32_t offset = relocation_table[i].offset; /// The offset in the section where the relocation is
             uint32_t addend = relocation_table[i].addend; /// The addend to add to the symbol value
             int32_t value = 0; /// The value of the symbol
+            logger->logDebug("Applying relocation for symbol '" + source + "' in section '" + section + "' at offset 0x" + std::format("{:x}", offset) + " with addend 0x" + std::format("{:x}", addend));
             for(int j = 0; j < symbol_table.size(); j++){
                 if(symbol_table[j].name == source){
+                    logger->logDebug("Symbol '" + source + "' found in symbol table with value 0x" + std::format("{:x}", symbol_table[j].value));
                     value = symbol_table[j].value;
                     break;
                 }
@@ -546,20 +563,31 @@ ELF::memDump(std::ostream &stream){
             for (int j = 0; j < section_headers.size(); j++)
             {
                 if(section_names[j] == section){
+                    instruction inst;
                     uint32_t *ptr = (uint32_t *)(binary_data.data() + (section_headers[j].offset - sizeof(ELF_Header)) + offset);
-                    /// We need to set the last 12 bits to the value of the symbol
-                    /// It uses PC relative addressing, so we need to subtract the address of the instruction from the address of the symbol
-                    /// If the signed value does not fit in 12 bits, we need to log an error
-                    value = value - (section_headers[j].addr  + offset);
-                    if(value > 0x7ff)
-                        logger->logError("Relocation for symbol '" + source + "' in section '" + section + "' at offset 0x" + std::format("{:x}", offset) + " cannot be applied, because the value 0x" + std::format("{:03x}", value) + " is too large");
-                    else if(value < -0x800)
-                        logger->logError("Relocation for symbol '" + source + "' in section '" + section + "' at offset 0x" + std::format("{:x}", offset) + " cannot be applied, because the value 0x" + std::format("{:03x}", value) + " is too small");
-                    else{
-                        logger->logDebug("Relocating symbol '" + source + "' in section '" + section + "'( offset 0x" + std::format("{:x}", section_headers[j].addr) + ") at offset 0x" + std::format("{:x}", offset) + " to value 0x" + std::format("{:03x}", value));
-                        /// Now convert it to a signed 12 bit value
-                        *ptr = *ptr & 0xfffff000;
-                        *ptr = *ptr | (value & 0xfff);
+                    inst.raw =*ptr;
+                    if((inst.fields.MOD & 0b100) == 0){
+                        /// If the addressing mode is `LIT_DIR`, `LIT_IND`, SYM_DIR` or `SYM_IND`, then the displacement is the followint 4 bytes
+                        /// We need to set these 4 bytes to the value of the symbol
+                        /// No PC relative addressing is used, simple absolute addressing
+                        uint32_t *disp_ptr = (uint32_t *)(binary_data.data() + (section_headers[j].offset - sizeof(ELF_Header)) + offset + 4);
+                        *disp_ptr = value;
+                    }else{
+                        /// Now there are two things 
+                        /// We need to set the last 12 bits to the value of the symbol
+                        /// It uses PC relative addressing, so we need to subtract the address of the instruction from the address of the symbol
+                        /// If the signed value does not fit in 12 bits, we need to log an error
+                        value = value - (section_headers[j].addr  + offset);
+                        if(value > 0x7ff)
+                            logger->logError("Relocation for symbol '" + source + "' in section '" + section + "' at offset 0x" + std::format("{:x}", offset) + " cannot be applied, because the value 0x" + std::format("{:03x}", value) + " is too large");
+                        else if(value < -0x800)
+                            logger->logError("Relocation for symbol '" + source + "' in section '" + section + "' at offset 0x" + std::format("{:x}", offset) + " cannot be applied, because the value 0x" + std::format("{:03x}", value) + " is too small");
+                        else{
+                            logger->logDebug("Relocating symbol '" + source + "' in section '" + section + "'( offset 0x" + std::format("{:x}", section_headers[j].addr) + ") at offset 0x" + std::format("{:x}", offset) + " to value 0x" + std::format("{:03x}", value));
+                            /// Now convert it to a signed 12 bit value
+                            *ptr = *ptr & 0xfffff000;
+                            *ptr = *ptr | (value & 0xfff);
+                        }
                     }
                     break;
                 }

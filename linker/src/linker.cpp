@@ -77,8 +77,8 @@ Linker::link(ELF &output, ELF input)
             {
                 if(symbol.section != section_name || symbol.is_extern || symbol.is_section || symbol.is_extern)
                     continue;
-                logger->logDebug("Symbol '" + symbol.name + "' shifted by " + std::to_string(input.section_headers[i].size) + " bytes");
-                symbol.value += input.section_headers[i].size;
+                symbol.value += output.section_headers[index].size;
+                logger->logDebug("Symbol '" + symbol.name + "' shifted by " + std::to_string(output.section_headers[index].size) + " bytes, new value: " + std::to_string(symbol.value));
             }
             /// Now update the relevant input files relocation entries, they will be added to the output file later
             logger->logInfo("Updating relocation entries in the input file");
@@ -121,7 +121,20 @@ Linker::link(ELF &output, ELF input)
                 }
                 if(symbol.is_extern && !output.symbol_table[symbol_index].is_extern){
                     logger->logDebug("Symbol '" + symbol.name + "' which is extern is defined in section '" + output.symbol_table[symbol_index].section + "'");
-                    /// TODO: Handle this case
+                    /// The symbol is extern in the input file, and defined in the output file, update the input file
+                    symbol.section = output.symbol_table[symbol_index].section;
+                    symbol.value = output.symbol_table[symbol_index].value;
+                    symbol.is_extern = false;
+                    logger->logInfo("Updating relocation entries for symbol '" + symbol.name + "'");
+                    for(auto &relocation : input.relocation_table)
+                    {
+                        if(relocation.name == symbol.name)
+                        {
+                            logger->logDebug("Updating relocation entry at offset " + std::to_string(relocation.offset));
+                            relocation.name = symbol.section;
+                            relocation.addend = symbol.value;
+                        }
+                    }
                 }
                 if(!symbol.is_extern && output.symbol_table[symbol_index].is_extern){
                     logger->logDebug("Symbol '" + symbol.name + "' which is defined in section '" + section_name + "' is extern");
@@ -134,7 +147,7 @@ Linker::link(ELF &output, ELF input)
                     {
                         if(relocation.name == symbol.name)
                         {
-                            logger->logDebug("Updating relocation entry at offset " + std::to_string(relocation.offset));
+                            logger->logDebug("Updating relocation entry at offset " + std::to_string(relocation.offset) + " in section '" + relocation.section + "' to addend " + std::to_string(symbol.value));
                             relocation.name = section_name;
                             relocation.addend = symbol.value;
                         }
@@ -142,8 +155,8 @@ Linker::link(ELF &output, ELF input)
                 }
                 if(symbol.is_extern && output.symbol_table[symbol_index].is_extern){
                     logger->logDebug("Symbol '" + symbol.name + "' which is extern in section '" + section_name + "' is also extern in section '" + output.symbol_table[symbol_index].section + "'");
-                    /// The symbol is extern in both the input and output files, do nothing
-                    /// TODO: Handle this case
+                    /// The symbol is extern in both the input and output files, skip it? TODO: Check this
+
                 }
             }else{
                 /// The symbol is not present in the output file, add it

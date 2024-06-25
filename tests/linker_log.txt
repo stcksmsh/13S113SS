@@ -1,0 +1,466 @@
+[1m[32mINFO[0m: Section my_code placed at address 0x40000000
+[1m[32mINFO[0m: Section math placed at address 0xf0000000
+[1m[36mDEBUG[0m: Linker object created
+[1m[32mINFO[0m: Linking 6 files
+[1m[32mINFO[0m: Reading ELF file from stream
+----------------------------------
+[1m[36mDEBUG[0m: Cleared all data structures
+[1m[32mINFO[0m: Reading the ELF headers
+[1m[32mINFO[0m: Reading the ELF file header
+[1m[32mINFO[0m: Reading the program headers
+[1m[32mINFO[0m: Reading the section headers
+[1m[36mDEBUG[0m: Reading section header 0
+[1m[36mDEBUG[0m: Reading section header 1
+[1m[36mDEBUG[0m: Reading section header 2
+[1m[36mDEBUG[0m: Reading section header 3
+[1m[36mDEBUG[0m: Reading section header 4
+[1m[36mDEBUG[0m: Reading section header 5
+[1m[32mINFO[0m: Reading the .shstrtab section
+[1m[36mDEBUG[0m: Reading section name 0: 
+[1m[36mDEBUG[0m: Reading section name 1: my_handler
+[1m[36mDEBUG[0m: Reading section name 2: .relmy_handler
+[1m[36mDEBUG[0m: Reading section name 3: .strtab
+[1m[36mDEBUG[0m: Reading section name 4: .symtab
+[1m[36mDEBUG[0m: Reading section name 5: .shstrtab
+[1m[32mINFO[0m: Creating the symbol table
+[1m[32mINFO[0m: Reading the .strtab section
+[1m[32mINFO[0m: Reading the .symtab section
+[1m[36mDEBUG[0m: Added symbol '' from section '' to the symbol table with value 0x0 and local binding
+[1m[36mDEBUG[0m: Added symbol 'my_handler' from section 'my_handler' to the symbol table with value 0x0 and local binding
+[1m[36mDEBUG[0m: Added symbol 'handle_timer' from section 'my_handler' to the symbol table with value 0x48 and local binding
+[1m[36mDEBUG[0m: Added symbol 'handle_terminal' from section 'my_handler' to the symbol table with value 0x58 and local binding
+[1m[36mDEBUG[0m: Added symbol 'handle_software' from section 'my_handler' to the symbol table with value 0x68 and local binding
+[1m[36mDEBUG[0m: Added symbol 'finish' from section 'my_handler' to the symbol table with value 0x3c and local binding
+[1m[36mDEBUG[0m: Added symbol 'handler' from section 'my_handler' to the symbol table with value 0x0 and global binding
+[1m[36mDEBUG[0m: Added symbol 'isr_timer' from section '' to the symbol table with value 0x0 and global binding
+[1m[36mDEBUG[0m: Added symbol 'isr_terminal' from section '' to the symbol table with value 0x0 and global binding
+[1m[36mDEBUG[0m: Added symbol 'isr_software' from section '' to the symbol table with value 0x0 and global binding
+[1m[32mINFO[0m: Creating the relocation table
+[1m[36mDEBUG[0m: Reading relocations for section .relmy_handler
+[1m[36mDEBUG[0m: Adding relocation for symbol 'my_handler' in section 'my_handler' at offset 0x14
+[1m[36mDEBUG[0m: Adding relocation for symbol 'my_handler' in section 'my_handler' at offset 0x24
+[1m[36mDEBUG[0m: Adding relocation for symbol 'my_handler' in section 'my_handler' at offset 0x34
+[1m[36mDEBUG[0m: Adding relocation for symbol 'isr_timer' in section 'my_handler' at offset 0x48
+[1m[36mDEBUG[0m: Adding relocation for symbol 'my_handler' in section 'my_handler' at offset 0x50
+[1m[36mDEBUG[0m: Adding relocation for symbol 'isr_terminal' in section 'my_handler' at offset 0x58
+[1m[36mDEBUG[0m: Adding relocation for symbol 'my_handler' in section 'my_handler' at offset 0x60
+[1m[36mDEBUG[0m: Adding relocation for symbol 'isr_software' in section 'my_handler' at offset 0x68
+[1m[36mDEBUG[0m: Adding relocation for symbol 'my_handler' in section 'my_handler' at offset 0x70
+[1m[32mINFO[0m: Finished reading ELF file
+[1m[36mDEBUG[0m: Read 0 program headers, 6 section headers, 0 bytes of binary data, 10 symbols and 9 relocations
+[1m[32mINFO[0m: Removing the .strtab, .symtab and .shstrtab sections
+[1m[32mINFO[0m: Removing the .rel sections
+[1m[36mDEBUG[0m: Removing .relmy_handler section
+[1m[36mDEBUG[0m: Reading the binary data
+[1m[32mINFO[0m: Finished deserializing ELF file
+[1m[32mINFO[0m: Reading ELF file from stream
+----------------------------------
+[1m[36mDEBUG[0m: Cleared all data structures
+[1m[32mINFO[0m: Reading the ELF headers
+[1m[32mINFO[0m: Reading the ELF file header
+[1m[32mINFO[0m: Reading the program headers
+[1m[32mINFO[0m: Reading the section headers
+[1m[36mDEBUG[0m: Reading section header 0
+[1m[36mDEBUG[0m: Reading section header 1
+[1m[36mDEBUG[0m: Reading section header 2
+[1m[36mDEBUG[0m: Reading section header 3
+[1m[36mDEBUG[0m: Reading section header 4
+[1m[32mINFO[0m: Reading the .shstrtab section
+[1m[36mDEBUG[0m: Reading section name 0: 
+[1m[36mDEBUG[0m: Reading section name 1: math
+[1m[36mDEBUG[0m: Reading section name 2: .strtab
+[1m[36mDEBUG[0m: Reading section name 3: .symtab
+[1m[36mDEBUG[0m: Reading section name 4: .shstrtab
+[1m[32mINFO[0m: Creating the symbol table
+[1m[32mINFO[0m: Reading the .strtab section
+[1m[32mINFO[0m: Reading the .symtab section
+[1m[36mDEBUG[0m: Added symbol '' from section '' to the symbol table with value 0x0 and local binding
+[1m[36mDEBUG[0m: Added symbol 'math' from section 'math' to the symbol table with value 0x0 and local binding
+[1m[36mDEBUG[0m: Added symbol 'mathAdd' from section 'math' to the symbol table with value 0x0 and global binding
+[1m[36mDEBUG[0m: Added symbol 'mathSub' from section 'math' to the symbol table with value 0x18 and global binding
+[1m[36mDEBUG[0m: Added symbol 'mathMul' from section 'math' to the symbol table with value 0x30 and global binding
+[1m[36mDEBUG[0m: Added symbol 'mathDiv' from section 'math' to the symbol table with value 0x48 and global binding
+[1m[32mINFO[0m: Creating the relocation table
+[1m[32mINFO[0m: Finished reading ELF file
+[1m[36mDEBUG[0m: Read 0 program headers, 5 section headers, 0 bytes of binary data, 6 symbols and 0 relocations
+[1m[32mINFO[0m: Removing the .strtab, .symtab and .shstrtab sections
+[1m[32mINFO[0m: Removing the .rel sections
+[1m[36mDEBUG[0m: Reading the binary data
+[1m[32mINFO[0m: Finished deserializing ELF file
+[1m[32mINFO[0m: Merging ELFs
+------------------------------------
+[1m[36mDEBUG[0m: Input ELF file has 2 sections
+[1m[32mINFO[0m: Processing section: math
+[1m[36mDEBUG[0m: Section 'math' not found in the output file
+[1m[36mDEBUG[0m: Section 'math' added to the output file
+[1m[36mDEBUG[0m: Symbol 'mathAdd' with value 0 added to the output file
+[1m[36mDEBUG[0m: Symbol 'mathSub' with value 24 added to the output file
+[1m[36mDEBUG[0m: Symbol 'mathMul' with value 48 added to the output file
+[1m[36mDEBUG[0m: Symbol 'mathDiv' with value 72 added to the output file
+[1m[32mINFO[0m: Adding the input files relocation entries to the output file
+[1m[32mINFO[0m: Reading ELF file from stream
+----------------------------------
+[1m[36mDEBUG[0m: Cleared all data structures
+[1m[32mINFO[0m: Reading the ELF headers
+[1m[32mINFO[0m: Reading the ELF file header
+[1m[32mINFO[0m: Reading the program headers
+[1m[32mINFO[0m: Reading the section headers
+[1m[36mDEBUG[0m: Reading section header 0
+[1m[36mDEBUG[0m: Reading section header 1
+[1m[36mDEBUG[0m: Reading section header 2
+[1m[36mDEBUG[0m: Reading section header 3
+[1m[36mDEBUG[0m: Reading section header 4
+[1m[36mDEBUG[0m: Reading section header 5
+[1m[36mDEBUG[0m: Reading section header 6
+[1m[32mINFO[0m: Reading the .shstrtab section
+[1m[36mDEBUG[0m: Reading section name 0: 
+[1m[36mDEBUG[0m: Reading section name 1: .data
+[1m[36mDEBUG[0m: Reading section name 2: my_code
+[1m[36mDEBUG[0m: Reading section name 3: .relmy_code
+[1m[36mDEBUG[0m: Reading section name 4: .strtab
+[1m[36mDEBUG[0m: Reading section name 5: .symtab
+[1m[36mDEBUG[0m: Reading section name 6: .shstrtab
+[1m[32mINFO[0m: Creating the symbol table
+[1m[32mINFO[0m: Reading the .strtab section
+[1m[32mINFO[0m: Reading the .symtab section
+[1m[36mDEBUG[0m: Added symbol '' from section '' to the symbol table with value 0x0 and local binding
+[1m[36mDEBUG[0m: Added symbol '.data' from section '.data' to the symbol table with value 0x0 and local binding
+[1m[36mDEBUG[0m: Added symbol 'my_code' from section 'my_code' to the symbol table with value 0x0 and local binding
+[1m[36mDEBUG[0m: Added symbol 'my_start' from section 'my_code' to the symbol table with value 0x0 and global binding
+[1m[36mDEBUG[0m: Added symbol 'handler' from section '' to the symbol table with value 0x0 and global binding
+[1m[36mDEBUG[0m: Added symbol 'value2' from section '.data' to the symbol table with value 0x4 and global binding
+[1m[36mDEBUG[0m: Added symbol 'mathAdd' from section '' to the symbol table with value 0x0 and global binding
+[1m[36mDEBUG[0m: Added symbol 'value3' from section '.data' to the symbol table with value 0x8 and global binding
+[1m[36mDEBUG[0m: Added symbol 'mathSub' from section '' to the symbol table with value 0x0 and global binding
+[1m[36mDEBUG[0m: Added symbol 'value4' from section '.data' to the symbol table with value 0xc and global binding
+[1m[36mDEBUG[0m: Added symbol 'mathDiv' from section '' to the symbol table with value 0x0 and global binding
+[1m[36mDEBUG[0m: Added symbol 'value5' from section '.data' to the symbol table with value 0x10 and global binding
+[1m[36mDEBUG[0m: Added symbol 'value6' from section '.data' to the symbol table with value 0x14 and global binding
+[1m[36mDEBUG[0m: Added symbol 'value1' from section '.data' to the symbol table with value 0x0 and global binding
+[1m[36mDEBUG[0m: Added symbol 'value7' from section '.data' to the symbol table with value 0x18 and global binding
+[1m[32mINFO[0m: Creating the relocation table
+[1m[36mDEBUG[0m: Reading relocations for section .relmy_code
+[1m[36mDEBUG[0m: Adding relocation for symbol 'handler' in section 'my_code' at offset 0x8
+[1m[36mDEBUG[0m: Adding relocation for symbol '.data' in section 'my_code' at offset 0x38
+[1m[36mDEBUG[0m: Adding relocation for symbol 'mathAdd' in section 'my_code' at offset 0x58
+[1m[36mDEBUG[0m: Adding relocation for symbol '.data' in section 'my_code' at offset 0x60
+[1m[36mDEBUG[0m: Adding relocation for symbol 'mathSub' in section 'my_code' at offset 0x80
+[1m[36mDEBUG[0m: Adding relocation for symbol '.data' in section 'my_code' at offset 0x88
+[1m[36mDEBUG[0m: Adding relocation for symbol 'mathDiv' in section 'my_code' at offset 0xa8
+[1m[36mDEBUG[0m: Adding relocation for symbol '.data' in section 'my_code' at offset 0xb0
+[1m[36mDEBUG[0m: Adding relocation for symbol 'mathDiv' in section 'my_code' at offset 0xd0
+[1m[36mDEBUG[0m: Adding relocation for symbol '.data' in section 'my_code' at offset 0xd8
+[1m[36mDEBUG[0m: Adding relocation for symbol '.data' in section 'my_code' at offset 0xe0
+[1m[36mDEBUG[0m: Adding relocation for symbol '.data' in section 'my_code' at offset 0xe8
+[1m[36mDEBUG[0m: Adding relocation for symbol '.data' in section 'my_code' at offset 0xf0
+[1m[36mDEBUG[0m: Adding relocation for symbol '.data' in section 'my_code' at offset 0xf8
+[1m[36mDEBUG[0m: Adding relocation for symbol '.data' in section 'my_code' at offset 0x100
+[1m[36mDEBUG[0m: Adding relocation for symbol '.data' in section 'my_code' at offset 0x108
+[1m[36mDEBUG[0m: Adding relocation for symbol '.data' in section 'my_code' at offset 0x110
+[1m[32mINFO[0m: Finished reading ELF file
+[1m[36mDEBUG[0m: Read 0 program headers, 7 section headers, 0 bytes of binary data, 15 symbols and 17 relocations
+[1m[32mINFO[0m: Removing the .strtab, .symtab and .shstrtab sections
+[1m[32mINFO[0m: Removing the .rel sections
+[1m[36mDEBUG[0m: Removing .relmy_code section
+[1m[36mDEBUG[0m: Reading the binary data
+[1m[32mINFO[0m: Finished deserializing ELF file
+[1m[32mINFO[0m: Merging ELFs
+------------------------------------
+[1m[36mDEBUG[0m: Input ELF file has 3 sections
+[1m[32mINFO[0m: Processing section: .data
+[1m[36mDEBUG[0m: Section '.data' not found in the output file
+[1m[36mDEBUG[0m: Section '.data' added to the output file
+[1m[36mDEBUG[0m: Symbol 'value2' with value 4 added to the output file
+[1m[36mDEBUG[0m: Symbol 'value3' with value 8 added to the output file
+[1m[36mDEBUG[0m: Symbol 'value4' with value 12 added to the output file
+[1m[36mDEBUG[0m: Symbol 'value5' with value 16 added to the output file
+[1m[36mDEBUG[0m: Symbol 'value6' with value 20 added to the output file
+[1m[36mDEBUG[0m: Symbol 'value1' with value 0 added to the output file
+[1m[36mDEBUG[0m: Symbol 'value7' with value 24 added to the output file
+[1m[32mINFO[0m: Processing section: my_code
+[1m[36mDEBUG[0m: Section 'my_code' not found in the output file
+[1m[36mDEBUG[0m: Section 'my_code' added to the output file
+[1m[36mDEBUG[0m: Symbol 'my_start' with value 0 added to the output file
+[1m[32mINFO[0m: Adding the input files relocation entries to the output file
+[1m[36mDEBUG[0m: Relocation entry for symbol 'handler' at offset 8 added to the output file
+[1m[36mDEBUG[0m: Relocation entry for symbol '.data' at offset 56 added to the output file
+[1m[36mDEBUG[0m: Relocation entry for symbol 'mathAdd' at offset 88 added to the output file
+[1m[36mDEBUG[0m: Relocation entry for symbol '.data' at offset 96 added to the output file
+[1m[36mDEBUG[0m: Relocation entry for symbol 'mathSub' at offset 128 added to the output file
+[1m[36mDEBUG[0m: Relocation entry for symbol '.data' at offset 136 added to the output file
+[1m[36mDEBUG[0m: Relocation entry for symbol 'mathDiv' at offset 168 added to the output file
+[1m[36mDEBUG[0m: Relocation entry for symbol '.data' at offset 176 added to the output file
+[1m[36mDEBUG[0m: Relocation entry for symbol 'mathDiv' at offset 208 added to the output file
+[1m[36mDEBUG[0m: Relocation entry for symbol '.data' at offset 216 added to the output file
+[1m[36mDEBUG[0m: Relocation entry for symbol '.data' at offset 224 added to the output file
+[1m[36mDEBUG[0m: Relocation entry for symbol '.data' at offset 232 added to the output file
+[1m[36mDEBUG[0m: Relocation entry for symbol '.data' at offset 240 added to the output file
+[1m[36mDEBUG[0m: Relocation entry for symbol '.data' at offset 248 added to the output file
+[1m[36mDEBUG[0m: Relocation entry for symbol '.data' at offset 256 added to the output file
+[1m[36mDEBUG[0m: Relocation entry for symbol '.data' at offset 264 added to the output file
+[1m[36mDEBUG[0m: Relocation entry for symbol '.data' at offset 272 added to the output file
+[1m[32mINFO[0m: Reading ELF file from stream
+----------------------------------
+[1m[36mDEBUG[0m: Cleared all data structures
+[1m[32mINFO[0m: Reading the ELF headers
+[1m[32mINFO[0m: Reading the ELF file header
+[1m[32mINFO[0m: Reading the program headers
+[1m[32mINFO[0m: Reading the section headers
+[1m[36mDEBUG[0m: Reading section header 0
+[1m[36mDEBUG[0m: Reading section header 1
+[1m[36mDEBUG[0m: Reading section header 2
+[1m[36mDEBUG[0m: Reading section header 3
+[1m[36mDEBUG[0m: Reading section header 4
+[1m[32mINFO[0m: Reading the .shstrtab section
+[1m[36mDEBUG[0m: Reading section name 0: 
+[1m[36mDEBUG[0m: Reading section name 1: isr
+[1m[36mDEBUG[0m: Reading section name 2: .strtab
+[1m[36mDEBUG[0m: Reading section name 3: .symtab
+[1m[36mDEBUG[0m: Reading section name 4: .shstrtab
+[1m[32mINFO[0m: Creating the symbol table
+[1m[32mINFO[0m: Reading the .strtab section
+[1m[32mINFO[0m: Reading the .symtab section
+[1m[36mDEBUG[0m: Added symbol '' from section '' to the symbol table with value 0x0 and local binding
+[1m[36mDEBUG[0m: Added symbol 'isr' from section 'isr' to the symbol table with value 0x0 and local binding
+[1m[36mDEBUG[0m: Added symbol 'isr_terminal' from section 'isr' to the symbol table with value 0x0 and global binding
+[1m[32mINFO[0m: Creating the relocation table
+[1m[32mINFO[0m: Finished reading ELF file
+[1m[36mDEBUG[0m: Read 0 program headers, 5 section headers, 0 bytes of binary data, 3 symbols and 0 relocations
+[1m[32mINFO[0m: Removing the .strtab, .symtab and .shstrtab sections
+[1m[32mINFO[0m: Removing the .rel sections
+[1m[36mDEBUG[0m: Reading the binary data
+[1m[32mINFO[0m: Finished deserializing ELF file
+[1m[32mINFO[0m: Merging ELFs
+------------------------------------
+[1m[36mDEBUG[0m: Input ELF file has 2 sections
+[1m[32mINFO[0m: Processing section: isr
+[1m[36mDEBUG[0m: Section 'isr' not found in the output file
+[1m[36mDEBUG[0m: Section 'isr' added to the output file
+[1m[36mDEBUG[0m: Symbol 'isr_terminal' already present in the output file at index 8
+[1m[36mDEBUG[0m: Symbol 'isr_terminal' which is defined in section 'isr' is extern
+[1m[32mINFO[0m: Updating relocation entries for symbol 'isr_terminal'
+[1m[36mDEBUG[0m: Updating relocation entry at offset 88 in section 'my_handler' to addend 0
+[1m[32mINFO[0m: Adding the input files relocation entries to the output file
+[1m[32mINFO[0m: Reading ELF file from stream
+----------------------------------
+[1m[36mDEBUG[0m: Cleared all data structures
+[1m[32mINFO[0m: Reading the ELF headers
+[1m[32mINFO[0m: Reading the ELF file header
+[1m[32mINFO[0m: Reading the program headers
+[1m[32mINFO[0m: Reading the section headers
+[1m[36mDEBUG[0m: Reading section header 0
+[1m[36mDEBUG[0m: Reading section header 1
+[1m[36mDEBUG[0m: Reading section header 2
+[1m[36mDEBUG[0m: Reading section header 3
+[1m[36mDEBUG[0m: Reading section header 4
+[1m[32mINFO[0m: Reading the .shstrtab section
+[1m[36mDEBUG[0m: Reading section name 0: 
+[1m[36mDEBUG[0m: Reading section name 1: isr
+[1m[36mDEBUG[0m: Reading section name 2: .strtab
+[1m[36mDEBUG[0m: Reading section name 3: .symtab
+[1m[36mDEBUG[0m: Reading section name 4: .shstrtab
+[1m[32mINFO[0m: Creating the symbol table
+[1m[32mINFO[0m: Reading the .strtab section
+[1m[32mINFO[0m: Reading the .symtab section
+[1m[36mDEBUG[0m: Added symbol '' from section '' to the symbol table with value 0x0 and local binding
+[1m[36mDEBUG[0m: Added symbol 'isr' from section 'isr' to the symbol table with value 0x0 and local binding
+[1m[36mDEBUG[0m: Added symbol 'isr_timer' from section 'isr' to the symbol table with value 0x0 and global binding
+[1m[32mINFO[0m: Creating the relocation table
+[1m[32mINFO[0m: Finished reading ELF file
+[1m[36mDEBUG[0m: Read 0 program headers, 5 section headers, 0 bytes of binary data, 3 symbols and 0 relocations
+[1m[32mINFO[0m: Removing the .strtab, .symtab and .shstrtab sections
+[1m[32mINFO[0m: Removing the .rel sections
+[1m[36mDEBUG[0m: Reading the binary data
+[1m[32mINFO[0m: Finished deserializing ELF file
+[1m[32mINFO[0m: Merging ELFs
+------------------------------------
+[1m[36mDEBUG[0m: Input ELF file has 2 sections
+[1m[32mINFO[0m: Processing section: isr
+[1m[36mDEBUG[0m: Section 'isr' already present in the output file at index 5
+[1m[36mDEBUG[0m: Merging section 'isr'
+[1m[32mINFO[0m: Shifting section headers
+[1m[32mINFO[0m: Shifting symbols
+[1m[36mDEBUG[0m: Symbol 'isr_timer' shifted by 4 bytes, new value: 4
+[1m[32mINFO[0m: Updating relocation entries in the input file
+[1m[36mDEBUG[0m: Symbol 'isr_timer' already present in the output file at index 7
+[1m[36mDEBUG[0m: Symbol 'isr_timer' which is defined in section 'isr' is extern
+[1m[32mINFO[0m: Updating relocation entries for symbol 'isr_timer'
+[1m[36mDEBUG[0m: Updating relocation entry at offset 72 in section 'my_handler' to addend 4
+[1m[32mINFO[0m: Adding the input files relocation entries to the output file
+[1m[32mINFO[0m: Reading ELF file from stream
+----------------------------------
+[1m[36mDEBUG[0m: Cleared all data structures
+[1m[32mINFO[0m: Reading the ELF headers
+[1m[32mINFO[0m: Reading the ELF file header
+[1m[32mINFO[0m: Reading the program headers
+[1m[32mINFO[0m: Reading the section headers
+[1m[36mDEBUG[0m: Reading section header 0
+[1m[36mDEBUG[0m: Reading section header 1
+[1m[36mDEBUG[0m: Reading section header 2
+[1m[36mDEBUG[0m: Reading section header 3
+[1m[36mDEBUG[0m: Reading section header 4
+[1m[36mDEBUG[0m: Reading section header 5
+[1m[32mINFO[0m: Reading the .shstrtab section
+[1m[36mDEBUG[0m: Reading section name 0: 
+[1m[36mDEBUG[0m: Reading section name 1: isr
+[1m[36mDEBUG[0m: Reading section name 2: .relisr
+[1m[36mDEBUG[0m: Reading section name 3: .strtab
+[1m[36mDEBUG[0m: Reading section name 4: .symtab
+[1m[36mDEBUG[0m: Reading section name 5: .shstrtab
+[1m[32mINFO[0m: Creating the symbol table
+[1m[32mINFO[0m: Reading the .strtab section
+[1m[32mINFO[0m: Reading the .symtab section
+[1m[36mDEBUG[0m: Added symbol '' from section '' to the symbol table with value 0x0 and local binding
+[1m[36mDEBUG[0m: Added symbol 'isr' from section 'isr' to the symbol table with value 0x0 and local binding
+[1m[36mDEBUG[0m: Added symbol 'isr_software' from section 'isr' to the symbol table with value 0x0 and global binding
+[1m[36mDEBUG[0m: Added symbol 'value1' from section '' to the symbol table with value 0x0 and global binding
+[1m[32mINFO[0m: Creating the relocation table
+[1m[36mDEBUG[0m: Reading relocations for section .relisr
+[1m[36mDEBUG[0m: Adding relocation for symbol 'value1' in section 'isr' at offset 0x10
+[1m[32mINFO[0m: Finished reading ELF file
+[1m[36mDEBUG[0m: Read 0 program headers, 6 section headers, 0 bytes of binary data, 4 symbols and 1 relocations
+[1m[32mINFO[0m: Removing the .strtab, .symtab and .shstrtab sections
+[1m[32mINFO[0m: Removing the .rel sections
+[1m[36mDEBUG[0m: Removing .relisr section
+[1m[36mDEBUG[0m: Reading the binary data
+[1m[32mINFO[0m: Finished deserializing ELF file
+[1m[32mINFO[0m: Merging ELFs
+------------------------------------
+[1m[36mDEBUG[0m: Input ELF file has 2 sections
+[1m[32mINFO[0m: Processing section: isr
+[1m[36mDEBUG[0m: Section 'isr' already present in the output file at index 5
+[1m[36mDEBUG[0m: Merging section 'isr'
+[1m[32mINFO[0m: Shifting section headers
+[1m[32mINFO[0m: Shifting symbols
+[1m[36mDEBUG[0m: Symbol 'isr_software' shifted by 8 bytes, new value: 8
+[1m[32mINFO[0m: Updating relocation entries in the input file
+[1m[36mDEBUG[0m: Updating relocation entry in section 'isr' at offset 16
+[1m[36mDEBUG[0m: Symbol 'isr_software' already present in the output file at index 9
+[1m[36mDEBUG[0m: Symbol 'isr_software' which is defined in section 'isr' is extern
+[1m[32mINFO[0m: Updating relocation entries for symbol 'isr_software'
+[1m[36mDEBUG[0m: Updating relocation entry at offset 104 in section 'my_handler' to addend 8
+[1m[32mINFO[0m: Adding the input files relocation entries to the output file
+[1m[36mDEBUG[0m: Relocation entry for symbol 'value1' at offset 24 added to the output file
+[1m[32mINFO[0m: Setting the address of section my_code to 0x40000000
+[1m[32mINFO[0m: Setting the address of section math to 0xf0000000
+[1m[32mINFO[0m: Creating executable memory dump
+----------------------------------
+[1m[32mINFO[0m: Setting the start addresses of the sections
+[1m[36mDEBUG[0m: Section my_code has been set to address 0x40000000 by user
+[1m[36mDEBUG[0m: Section math has been set to address 0xf0000000 by user
+[1m[36mDEBUG[0m: Section my_handler has been set to address 0xf0000060 by the system
+[1m[36mDEBUG[0m: Section .data has been set to address 0xf00000d8 by the system
+[1m[36mDEBUG[0m: Section isr has been set to address 0xf00000f4 by the system
+[1m[32mINFO[0m: Updating the symbol table
+[1m[36mDEBUG[0m: Updating symbol 'my_handler' from section 'my_handler'
+[1m[36mDEBUG[0m: Updating symbol 'my_handler' to address 0xf0000060
+[1m[36mDEBUG[0m: Updating symbol 'handle_timer' from section 'my_handler'
+[1m[36mDEBUG[0m: Updating symbol 'handle_timer' to address 0xf00000a8
+[1m[36mDEBUG[0m: Updating symbol 'handle_terminal' from section 'my_handler'
+[1m[36mDEBUG[0m: Updating symbol 'handle_terminal' to address 0xf00000b8
+[1m[36mDEBUG[0m: Updating symbol 'handle_software' from section 'my_handler'
+[1m[36mDEBUG[0m: Updating symbol 'handle_software' to address 0xf00000c8
+[1m[36mDEBUG[0m: Updating symbol 'finish' from section 'my_handler'
+[1m[36mDEBUG[0m: Updating symbol 'finish' to address 0xf000009c
+[1m[36mDEBUG[0m: Updating symbol 'handler' from section 'my_handler'
+[1m[36mDEBUG[0m: Updating symbol 'handler' to address 0xf0000060
+[1m[36mDEBUG[0m: Updating symbol 'isr_timer' from section 'isr'
+[1m[36mDEBUG[0m: Updating symbol 'isr_timer' to address 0xf00000f8
+[1m[36mDEBUG[0m: Updating symbol 'isr_terminal' from section 'isr'
+[1m[36mDEBUG[0m: Updating symbol 'isr_terminal' to address 0xf00000f4
+[1m[36mDEBUG[0m: Updating symbol 'isr_software' from section 'isr'
+[1m[36mDEBUG[0m: Updating symbol 'isr_software' to address 0xf00000fc
+[1m[36mDEBUG[0m: Updating symbol 'math' from section 'math'
+[1m[36mDEBUG[0m: Updating symbol 'math' to address 0xf0000000
+[1m[36mDEBUG[0m: Updating symbol 'mathAdd' from section 'math'
+[1m[36mDEBUG[0m: Updating symbol 'mathAdd' to address 0xf0000000
+[1m[36mDEBUG[0m: Updating symbol 'mathSub' from section 'math'
+[1m[36mDEBUG[0m: Updating symbol 'mathSub' to address 0xf0000018
+[1m[36mDEBUG[0m: Updating symbol 'mathMul' from section 'math'
+[1m[36mDEBUG[0m: Updating symbol 'mathMul' to address 0xf0000030
+[1m[36mDEBUG[0m: Updating symbol 'mathDiv' from section 'math'
+[1m[36mDEBUG[0m: Updating symbol 'mathDiv' to address 0xf0000048
+[1m[36mDEBUG[0m: Updating symbol '.data' from section '.data'
+[1m[36mDEBUG[0m: Updating symbol '.data' to address 0xf00000d8
+[1m[36mDEBUG[0m: Updating symbol 'value2' from section '.data'
+[1m[36mDEBUG[0m: Updating symbol 'value2' to address 0xf00000dc
+[1m[36mDEBUG[0m: Updating symbol 'value3' from section '.data'
+[1m[36mDEBUG[0m: Updating symbol 'value3' to address 0xf00000e0
+[1m[36mDEBUG[0m: Updating symbol 'value4' from section '.data'
+[1m[36mDEBUG[0m: Updating symbol 'value4' to address 0xf00000e4
+[1m[36mDEBUG[0m: Updating symbol 'value5' from section '.data'
+[1m[36mDEBUG[0m: Updating symbol 'value5' to address 0xf00000e8
+[1m[36mDEBUG[0m: Updating symbol 'value6' from section '.data'
+[1m[36mDEBUG[0m: Updating symbol 'value6' to address 0xf00000ec
+[1m[36mDEBUG[0m: Updating symbol 'value1' from section '.data'
+[1m[36mDEBUG[0m: Updating symbol 'value1' to address 0xf00000d8
+[1m[36mDEBUG[0m: Updating symbol 'value7' from section '.data'
+[1m[36mDEBUG[0m: Updating symbol 'value7' to address 0xf00000f0
+[1m[36mDEBUG[0m: Updating symbol 'my_code' from section 'my_code'
+[1m[36mDEBUG[0m: Updating symbol 'my_code' to address 0x40000000
+[1m[36mDEBUG[0m: Updating symbol 'my_start' from section 'my_code'
+[1m[36mDEBUG[0m: Updating symbol 'my_start' to address 0x40000000
+[1m[36mDEBUG[0m: Updating symbol 'isr' from section 'isr'
+[1m[36mDEBUG[0m: Updating symbol 'isr' to address 0xf00000f4
+[1m[32mINFO[0m: Applying relocations
+[1m[36mDEBUG[0m: Applying relocation for symbol 'my_handler' in section 'my_handler' at offset 0x14 with addend 0x48
+[1m[36mDEBUG[0m: Symbol 'my_handler' found in symbol table with value 0xf0000060
+[1m[36mDEBUG[0m: Applying relocation for symbol 'my_handler' in section 'my_handler' at offset 0x24 with addend 0x58
+[1m[36mDEBUG[0m: Symbol 'my_handler' found in symbol table with value 0xf0000060
+[1m[36mDEBUG[0m: Applying relocation for symbol 'my_handler' in section 'my_handler' at offset 0x34 with addend 0x68
+[1m[36mDEBUG[0m: Symbol 'my_handler' found in symbol table with value 0xf0000060
+[1m[36mDEBUG[0m: Applying relocation for symbol 'isr' in section 'my_handler' at offset 0x48 with addend 0x4
+[1m[36mDEBUG[0m: Symbol 'isr' found in symbol table with value 0xf00000f4
+[1m[36mDEBUG[0m: Applying relocation for symbol 'my_handler' in section 'my_handler' at offset 0x50 with addend 0x3c
+[1m[36mDEBUG[0m: Symbol 'my_handler' found in symbol table with value 0xf0000060
+[1m[36mDEBUG[0m: Applying relocation for symbol 'isr' in section 'my_handler' at offset 0x58 with addend 0x0
+[1m[36mDEBUG[0m: Symbol 'isr' found in symbol table with value 0xf00000f4
+[1m[36mDEBUG[0m: Applying relocation for symbol 'my_handler' in section 'my_handler' at offset 0x60 with addend 0x3c
+[1m[36mDEBUG[0m: Symbol 'my_handler' found in symbol table with value 0xf0000060
+[1m[36mDEBUG[0m: Applying relocation for symbol 'isr' in section 'my_handler' at offset 0x68 with addend 0x8
+[1m[36mDEBUG[0m: Symbol 'isr' found in symbol table with value 0xf00000f4
+[1m[36mDEBUG[0m: Applying relocation for symbol 'my_handler' in section 'my_handler' at offset 0x70 with addend 0x3c
+[1m[36mDEBUG[0m: Symbol 'my_handler' found in symbol table with value 0xf0000060
+[1m[36mDEBUG[0m: Applying relocation for symbol 'handler' in section 'my_code' at offset 0x8 with addend 0x0
+[1m[36mDEBUG[0m: Symbol 'handler' found in symbol table with value 0xf0000060
+[1m[36mDEBUG[0m: Applying relocation for symbol '.data' in section 'my_code' at offset 0x38 with addend 0x4
+[1m[36mDEBUG[0m: Symbol '.data' found in symbol table with value 0xf00000d8
+[1m[36mDEBUG[0m: Applying relocation for symbol 'mathAdd' in section 'my_code' at offset 0x58 with addend 0x0
+[1m[36mDEBUG[0m: Symbol 'mathAdd' found in symbol table with value 0xf0000000
+[1m[36mDEBUG[0m: Applying relocation for symbol '.data' in section 'my_code' at offset 0x60 with addend 0x8
+[1m[36mDEBUG[0m: Symbol '.data' found in symbol table with value 0xf00000d8
+[1m[36mDEBUG[0m: Applying relocation for symbol 'mathSub' in section 'my_code' at offset 0x80 with addend 0x0
+[1m[36mDEBUG[0m: Symbol 'mathSub' found in symbol table with value 0xf0000018
+[1m[36mDEBUG[0m: Applying relocation for symbol '.data' in section 'my_code' at offset 0x88 with addend 0xc
+[1m[36mDEBUG[0m: Symbol '.data' found in symbol table with value 0xf00000d8
+[1m[36mDEBUG[0m: Applying relocation for symbol 'mathDiv' in section 'my_code' at offset 0xa8 with addend 0x0
+[1m[36mDEBUG[0m: Symbol 'mathDiv' found in symbol table with value 0xf0000048
+[1m[36mDEBUG[0m: Applying relocation for symbol '.data' in section 'my_code' at offset 0xb0 with addend 0x10
+[1m[36mDEBUG[0m: Symbol '.data' found in symbol table with value 0xf00000d8
+[1m[36mDEBUG[0m: Applying relocation for symbol 'mathDiv' in section 'my_code' at offset 0xd0 with addend 0x0
+[1m[36mDEBUG[0m: Symbol 'mathDiv' found in symbol table with value 0xf0000048
+[1m[36mDEBUG[0m: Applying relocation for symbol '.data' in section 'my_code' at offset 0xd8 with addend 0x14
+[1m[36mDEBUG[0m: Symbol '.data' found in symbol table with value 0xf00000d8
+[1m[36mDEBUG[0m: Applying relocation for symbol '.data' in section 'my_code' at offset 0xe0 with addend 0x0
+[1m[36mDEBUG[0m: Symbol '.data' found in symbol table with value 0xf00000d8
+[1m[36mDEBUG[0m: Applying relocation for symbol '.data' in section 'my_code' at offset 0xe8 with addend 0x4
+[1m[36mDEBUG[0m: Symbol '.data' found in symbol table with value 0xf00000d8
+[1m[36mDEBUG[0m: Applying relocation for symbol '.data' in section 'my_code' at offset 0xf0 with addend 0x8
+[1m[36mDEBUG[0m: Symbol '.data' found in symbol table with value 0xf00000d8
+[1m[36mDEBUG[0m: Applying relocation for symbol '.data' in section 'my_code' at offset 0xf8 with addend 0xc
+[1m[36mDEBUG[0m: Symbol '.data' found in symbol table with value 0xf00000d8
+[1m[36mDEBUG[0m: Applying relocation for symbol '.data' in section 'my_code' at offset 0x100 with addend 0x10
+[1m[36mDEBUG[0m: Symbol '.data' found in symbol table with value 0xf00000d8
+[1m[36mDEBUG[0m: Applying relocation for symbol '.data' in section 'my_code' at offset 0x108 with addend 0x14
+[1m[36mDEBUG[0m: Symbol '.data' found in symbol table with value 0xf00000d8
+[1m[36mDEBUG[0m: Applying relocation for symbol '.data' in section 'my_code' at offset 0x110 with addend 0x18
+[1m[36mDEBUG[0m: Symbol '.data' found in symbol table with value 0xf00000d8
+[1m[36mDEBUG[0m: Applying relocation for symbol 'value1' in section 'isr' at offset 0x18 with addend 0x0
+[1m[36mDEBUG[0m: Symbol 'value1' found in symbol table with value 0xf00000d8
+[1m[32mINFO[0m: Writing the sections to the stream
+[1m[36mDEBUG[0m: Writing section my_code to the stream from address 0x40000000 to 0x4000011c
+[1m[36mDEBUG[0m: Writing section math to the stream from address 0xf0000000 to 0xf0000060
+[1m[36mDEBUG[0m: Writing section my_handler to the stream from address 0xf0000060 to 0xf00000d8
+[1m[36mDEBUG[0m: Writing section .data to the stream from address 0xf00000d8 to 0xf00000f4
+[1m[36mDEBUG[0m: Writing section isr to the stream from address 0xf00000f4 to 0xf0000124
+[1m[32mINFO[0m: Successfully created the memory dump
