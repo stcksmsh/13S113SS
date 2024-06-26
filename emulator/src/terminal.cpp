@@ -38,7 +38,7 @@ void Terminal::stop(){
     ::write(pipefd[1], ".", 1); // Write a byte to the pipe to wake up the thread
     inputThread.join();
     /// Reset terminal settings
-    struct termios old = {0};
+    struct termios old;
     if (tcgetattr(0, &old) < 0)
             perror("tcsetattr()");
     old.c_lflag |= ICANON;
@@ -50,7 +50,7 @@ void Terminal::stop(){
 void Terminal::threadFunc(void *arg){
     // Cast the argument to a Terminal object
     Terminal *terminal = (Terminal *)arg;
-    struct termios old = {0};
+    struct termios old;
     if (tcgetattr(0, &old) < 0)
             perror("tcsetattr()");
     old.c_lflag &= ~ICANON;

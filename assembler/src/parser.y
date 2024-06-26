@@ -253,7 +253,7 @@ operand:
    | GPR                                { $$.inst.fields.MOD = Modifier::REG_DIR; $$.inst.fields.RegC = $1; }
    | LBRACKET GPR RBRACKET              { $$.inst.fields.MOD = Modifier::REG_IND; $$.inst.fields.RegC = $2; }
    | LBRACKET GPR PLUS NUMBER RBRACKET  { $$.inst.fields.MOD = Modifier::REG_LIT_IND; $$.inst.fields.RegC = $2;
-                                          if(($4 > (1<<12-1)) || $4 < 0-(1<<12)){
+                                          if(($4 > (1<<12)-1) || $4 < 0-(1<<12)){
                                              driver.logger->logError("Literal value is out of range for REG_LIT_IND addressing", driver.filename, @3.begin.line);
                                           }
                                           else{
@@ -265,7 +265,7 @@ operand:
                                           if(!entry || !entry->is_defined){
                                              driver.logger->logError("Symbol '" + $4 + "' is not defined at assembly time, which is required for REG_SYM_IND addressing", driver.filename, @3.begin.line);
                                           }
-                                          else if(entry->offset > 1<<12-1 || entry->offset < -(1<<12)){
+                                          else if(entry->offset > (1<<12)-1){
                                              driver.logger->logError("Symbol '" + $4 + "' is out of range for REG_SYM_IND addressing", driver.filename, @3.begin.line);
                                           }
                                           else{
@@ -314,9 +314,7 @@ symbol_list:
 symbol_or_literal_list:
      NUMBER                             { $$ = std::vector<uint32_t>(); $$.push_back($1); }
    | SYMBOL                             { $$ = std::vector<uint32_t>();
-                                          Driver::STentry *entry = driver.get_symbol($1);
-                                          $$.push_back(driver.get_symbol($1)->offset);
-                                          
+                                          $$.push_back(driver.get_symbol($1)->offset);                                          
                                         }
    | symbol_or_literal_list COMMA NUMBER{ $$ = $1; $$.push_back($3); }
    | symbol_or_literal_list COMMA SYMBOL{ $$ = $1;

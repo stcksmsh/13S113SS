@@ -2,30 +2,42 @@
 
 void Logger::logError(const std::string &message, const std::string &file, const int line, const std::string &function)
 {
-    if (live && debugLevel >= 1)
-        stream << formatError(message, file, line, function) << std::endl;
-    errors.push_back(Message{message, file, line, function});
+    if( debugLevel >= 1 ){
+        if( live )
+            stream << formatError(message, file, line, function) << std::endl;
+        else
+            errors.push_back(Message{message, file, line, function});
+    }
 }
 
 void Logger::logWarning(const std::string &message, const std::string &file, const int line, const std::string &function)
 {
-    if (live && debugLevel >= 2)
-        stream << formatWarning(message, file, line, function) << std::endl;
-    warnings.push_back(Message{message, file, line, function});
+    if( debugLevel >= 2 ){
+        if( live )
+            stream << formatWarning(message, file, line, function) << std::endl;
+        else
+            warnings.push_back(Message{message, file, line, function});
+    }
 }
 
 void Logger::logInfo(const std::string &message, const std::string &file, const int line, const std::string &function)
 {
-    if (live && debugLevel >= 3)
-        stream << formatInfo(message, file, line, function) << std::endl;
-    infos.push_back(Message{message, file, line, function});
+    if( debugLevel >= 3 ){
+        if( live )
+            stream << formatInfo(message, file, line, function) << std::endl;
+        else
+            infos.push_back(Message{message, file, line, function});
+    }
 }
 
 void Logger::logDebug(const std::string &message, const std::string &file, const int line, const std::string &function)
 {
-    if (live && debugLevel >= 4)
-        stream << formatDebug(message, file, line, function) << std::endl;
-    debugs.push_back(Message{message, file, line, function});
+    if( debugLevel >= 4 ){
+        if( live )
+            stream << formatDebug(message, file, line, function) << std::endl;
+        else
+            debugs.push_back(Message{message, file, line, function});
+    }
 }
 
 

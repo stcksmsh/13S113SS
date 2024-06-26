@@ -111,7 +111,7 @@ int main(int argc, const char **argv)
     output_elf.readFromStream(file);
     file.close();
 
-    for (int i = 1; i < elf_file_names.size(); i++)
+    for (std::size_t i = 1; i < elf_file_names.size(); i++)
     {
         ELF input_elf(&logger);
         file.open(elf_file_names[i], std::ios::binary);
@@ -137,6 +137,7 @@ int main(int argc, const char **argv)
             logger.logError("Linking failed on file: " + elf_file_names[i]);
             return EXIT_FAILURE;
         }
+        /// TODO: test C fails on this loop???? WHY
     }
 
     for (auto section_address : section_addresses)

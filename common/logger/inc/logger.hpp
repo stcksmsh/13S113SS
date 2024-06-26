@@ -159,8 +159,8 @@ private:
         return formatted;
     }
 
-    int debugLevel = 0;
-    bool live = false;
+    bool live;
+    int debugLevel;
 
     struct Message
     {

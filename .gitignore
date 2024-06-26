@@ -2,3 +2,4 @@
 *.d
 *.pdf
 .vscode
+*.hex

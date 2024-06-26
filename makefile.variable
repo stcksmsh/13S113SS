@@ -12,11 +12,11 @@ INC_DIR=inc
 OBJ_DIR=obj
 
 CXX=g++
+#CXXFLAGS= -I${INC_DIR} -std=c++20 -Wall -Wextra -pedantic -g
 CXXFLAGS= -I${INC_DIR} -std=c++20
-#CXXFLAGS= -I${INC_DIR} -std=c++20 -fsanitize=address
 
 GCC=gcc
-CFLAGS=-I${INC_DIR} -Wall -Wextra
+CFLAGS=-I${INC_DIR} -Wall -Wextra -O0
 
 LD=gcc
 LDFLAGS=-lm

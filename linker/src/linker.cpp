@@ -6,12 +6,12 @@ Linker::link(ELF &output, ELF input)
 {
     logger->logInfo("Merging ELFs\n------------------------------------");
     logger->logDebug("Input ELF file has " + std::to_string(input.section_names.size()) + " sections");
-    for(int i = 1; i < input.section_names.size(); i++)
+    for(std::size_t i = 1; i < input.section_names.size(); i++)
     {
         std::string section_name = input.section_names[i];
         logger->logInfo("Processing section: " + section_name);
         /// Check whether the section is already present in the output file
-        int index = 0;
+        std::size_t index = 0;
         for(;index < output.section_names.size(); index++)
         {
             if(output.section_names[index] == section_name)
@@ -50,20 +50,32 @@ Linker::link(ELF &output, ELF input)
             if(section_name != ".bss"){ /// If the section is not .bss, then we need to copy its data to the output file and shift the data after the section to make space for the new section data
                 logger->logDebug("Merging section '" + section_name + "'");
                 /// First resize the output file to accomodate the new section data
-                output.binary_data.resize(output.binary_data.size() + input.section_headers[i].size);
-                /// Then shift the data after the section to make space for the new section data
-                char *dest = output.binary_data.data() + (output.section_headers[index].offset - sizeof(ELF_Header)) + output.section_headers[index].size + input.section_headers[i].size;
-                char *src = output.binary_data.data() + (output.section_headers[index].offset - sizeof(ELF_Header)) + output.section_headers[index].size;
-                std::size_t size = output.binary_data.size() - (output.section_headers[index].offset - sizeof(ELF_Header)) - output.section_headers[index].size + input.section_headers[i].size;
-                memmove(dest, src, size); /// THIS LINE IS THE PROBLEM
-                /// And finally copy the new section data to the output file
-                dest = output.binary_data.data() + (output.section_headers[index].offset - sizeof(ELF_Header))+ output.section_headers[index].size;
-                src = input.binary_data.data() + (input.section_headers[i].offset - sizeof(ELF_Header));
-                size = input.section_headers[i].size;
-                memcpy(dest, src, size);
+                // output.binary_data.resize(output.binary_data.size() + input.section_headers[i].size);
+
+                // char *src = output.binary_data.data() + (output.section_headers[index].offset - sizeof(ELF_Header)) + output.section_headers[index].size;
+                // char *dst = output.binary_data.data() + (output.section_headers[index].offset - sizeof(ELF_Header)) + output.section_headers[index].size + input.section_headers[i].size;
+
+                // std::size_t size = output.binary_data.size() -((output.section_headers[index].offset - sizeof(ELF_Header)) + output.section_headers[index].size);
+                // memmove(dst, src, size); /// TODO: This part is making all of the valgrind errors
+                // /// And finally copy the new section data to the output file
+                // dst = output.binary_data.data() + (output.section_headers[index].offset - sizeof(ELF_Header))+ output.section_headers[index].size;
+                // src = input.binary_data.data() + (input.section_headers[i].offset - sizeof(ELF_Header));
+                // size = input.section_headers[i].size;
+                // memcpy(dst, src, size);
+
+                /// just insert byte by byte
+                int src_index = input.section_headers[i].offset - sizeof(ELF_Header);
+                int dst_index = output.section_headers[index].offset - sizeof(ELF_Header) + output.section_headers[index].size;
+                for(std::size_t j = 0; j < input.section_headers[i].size; j++)
+                {
+                    output.binary_data.insert(output.binary_data.begin() + dst_index, input.binary_data[src_index]);
+                    src_index++;
+                    dst_index++;
+                }
+
                 /// Also shift the headers of the sections after the current section to the right by the size of the output section
                 logger->logInfo("Shifting section headers");
-                for(int j = 0; j < output.section_headers.size(); j++)
+                for(std::size_t j = 0; j < output.section_headers.size(); j++)
                 {
                     if(output.section_headers[j].offset <= output.section_headers[index].offset)
                         continue;
@@ -104,7 +116,7 @@ Linker::link(ELF &output, ELF input)
             if(symbol.section != section_name || symbol.is_section)
                 continue;
             /// Check if the symbol is already present in the output file
-            int symbol_index = 0;
+            std::size_t symbol_index = 0;
             for(;symbol_index < output.symbol_table.size(); symbol_index++)
             {
                 if(output.symbol_table[symbol_index].name == symbol.name)

@@ -30,10 +30,18 @@ handler:
     beq %r1, %r2, $time_handler
     jmp $end_handler
 time_handler:
+    ld cnt, %r1
+    ld $1, %r2
+    add %r2, %r1
+    st %r1, $cnt    
     ld $0x54000000, %r1
     st %r1, $TERM_OUT
     jmp $end_handler    
-term_handler:    
+term_handler:
+    ld cnt, %r1
+    ld $1, %r2
+    add %r2, %r1
+    st %r1, $cnt    
     ld TERM_IN, %r1
     st %r1, $TERM_OUT
     jmp $end_handler
@@ -41,3 +49,5 @@ end_handler:
     pop %r2
     pop %r1
     iret
+
+cnt: .word 0
