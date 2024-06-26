@@ -21,5 +21,5 @@ c: FORCE
 
 clean:
 	@echo -n "${INDENT}Cleaning tests...   "
-	@rm -f a/*.o a/program.hex b/*.o b/program.hex c/*.o c/program.hex
+	@rm -f *.o program.hex
 	@echo "${INDENT}Done."

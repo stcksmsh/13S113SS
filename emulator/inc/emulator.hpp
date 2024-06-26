@@ -76,6 +76,9 @@ private:
     /// @return The operand
     int32_t calculateOperand(instruction instr);    
 
+    /// @brief Calculate the destination address of an instruction (used for store instructions)
+    uint32_t calculateAddress(instruction instr);
+
     /// @brief Pushes a value onto the stack
     /// @param value The value to push onto the stack
     void push(uint32_t value);
