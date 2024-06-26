@@ -36,6 +36,12 @@
          instruction inst;
          uint32_t extension;
       };
+      struct EquStruct{
+         std::string name = "";     /// The name of the symbol
+         uint32_t value;            /// The value of the constant
+         char operation;            /// The operator to apply between this and the next constant ('+', '-')
+         EquStruct *next = nullptr; /// The next constant in the expression
+      };
    }
 
 // The following definitions is missing when %locations isn't used
@@ -133,7 +139,7 @@
 
 %type <Assembler::extended_instruction>      operand     "operand"
 
-%type <uint32_t>                    expression  "expression"
+%type <Assembler::EquStruct*>                    expression  "expression"
 
 %type <std::string>                 label   "label_type"
 /* End of file token */
@@ -147,6 +153,7 @@ program:
    /* empty */
    | program line
    | program END     { return 0; }
+   | program label END { return 0; }
    ;
 
 line:
@@ -234,7 +241,7 @@ operand:
                                           }else{
                                              if(!entry->is_const){
                                                 driver.add_relocation($2);
-                                             } 
+                                             }
                                              $$.extension = entry->offset;
                                           }
                                         }
@@ -283,9 +290,7 @@ directive:
      GLOBAL symbol_list                 { driver.add_global($2); }
    | EXTERN symbol_list                 { driver.add_extern($2); }
    | SECTION SYMBOL                     { driver.add_section($2); }
-   | EQU SYMBOL COMMA expression        { driver.insert_symbol($2, true, false, "", true);
-                                          driver.get_symbol($2)->offset = $4;
-                                        }
+   | EQU SYMBOL COMMA expression        { driver.add_equ($2, $4); }
    ;
 
 data_directive:
@@ -330,9 +335,14 @@ label:
    ;
 
 expression:
-     NUMBER                             { $$ = $1; }
-   | expression PLUS NUMBER             { $$ = $1 + $3; if($$ < $1) Parser::error(@2, "Overflow occured"); }
-   | expression MINUS NUMBER            { $$ = $1 - $3; if($$ > $1) Parser::error(@2, "Underflow occured"); }
+     NUMBER                             { $$ = new Assembler::EquStruct(); $$->value = $1; }
+   | SYMBOL                             { $$ = new Assembler::EquStruct(); $$->name = $1; }
+   | expression PLUS NUMBER         { $$ = $1; $$->operation = '+'; $$->next = new Assembler::EquStruct(); $$->next->value = $3; }
+   | expression MINUS NUMBER        { $$ = $1; $$->operation = '-'; $$->next = new Assembler::EquStruct(); $$->next->value = $3; }
+   | expression PLUS SYMBOL         { $$ = $1; $$->operation = '+'; $$->next = new Assembler::EquStruct(); $$->next->name = $3; }
+   | expression MINUS SYMBOL        { $$ = $1; $$->operation = '-'; $$->next = new Assembler::EquStruct(); $$->next->name = $3; }
+   ;
+
 
 %%
 
@@ -340,10 +350,4 @@ void
 Assembler::Parser::error( const location_type &l, const std::string &err_message )
 {
    driver.logger->logError(err_message, driver.filename, l.begin.line);
-   // std::cerr << "Error: " << err_message << " at " << l << std::endl;
-
-   /*
-
-
-   */
 }

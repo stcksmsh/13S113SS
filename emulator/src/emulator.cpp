@@ -14,6 +14,7 @@
 #include <format>
 #include "terminal.hpp"
 #include "timer.hpp"
+#include <cassert>
 
 
 Terminal *terminal;
@@ -563,6 +564,7 @@ void Emulator::loadMemory(uint32_t start, uint32_t end, std::vector<uint8_t> dat
     segment.start = start;
     segment.end = end;
     segment.data = data;
+    assert(segment.end - segment.start == segment.data.size());
     memory.push_back(segment);
 }
 
@@ -584,6 +586,7 @@ uint32_t Emulator::getMemory(uint32_t address)
     }
     std::size_t i = 0;
     for(;i < memory.size(); i++){
+        logger->logDebug("Checking memory segment from " + std::format("{:x}", memory[i].start) + " to " + std::format("{:x}", memory[i].end));
         if(address < memory[i].end) break;
     }
     if(i == memory.size()){
@@ -591,11 +594,17 @@ uint32_t Emulator::getMemory(uint32_t address)
         throw std::runtime_error("Memory access out of bounds");
     }
     if(address + 4 > memory[i].end){
-        logger->logError("Memory address " + std::format("{:x}", address) + " out of bounds");
-        throw std::runtime_error("Memory access out of bounds");
+        // If the whole value is not in the segment, pad with 0s
+        uint32_t value = 0;
+        for(int byte = 0; byte < 4; byte++){
+            if(address  + byte < memory[i].end){
+                value |= (uint32_t)memory[i].data[address - memory[i].start + byte] << (24 - byte * 8);
+            }
+        }
+        return value;
     }
     uint32_t value = (uint32_t)memory[i].data[address - memory[i].start] << 24 | (uint32_t)memory[i].data[address - memory[i].start + 1] << 16 | (uint32_t)memory[i].data[address - memory[i].start + 2] << 8 | (uint32_t)memory[i].data[address - memory[i].start + 3];
-    // logger->logDebug("Found value " + std::format("{:08x}", value));
+    logger->logDebug("Found value " + std::format("{:08x}", value));
     return value;
 }
 

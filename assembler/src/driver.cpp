@@ -117,6 +117,76 @@ void Assembler::Driver::parse_helper(std::istream &stream)
       }
    }
 
+   /// For each EQU symbol, resolve the expression
+   for (std::pair<std::string, EquStruct *> equ : equ_list)
+   {
+      logger->logInfo("Resolving EQU symbol '" + equ.first + "'");
+      int32_t value = 0;
+      EquStruct *seek = equ.second;
+      if(seek->name == ""){
+         value = seek->value;
+      }else{
+         STentry *entry = get_symbol(seek->name);
+         if(!entry){
+            logger->logError("Symbol '" + seek->name + "' not found", filename);
+         }
+         value = entry->offset;
+      }
+      char op;
+      while(seek->next){
+         op = seek->operation;
+         seek = seek->next;
+         int32_t nextValue = 0;
+         if(seek->name == ""){
+            nextValue = seek->value;
+         }else{
+            STentry *entry = get_symbol(seek->name);
+            if(!entry){
+               logger->logError("Symbol '" + seek->name + "' not found", filename);
+            }
+            nextValue = entry->offset;
+         }
+         switch(op){
+            case '+':
+               value += nextValue;
+               break;
+            case '-':
+               value -= nextValue;
+               break;
+            default:
+               logger->logError("Invalid operation '" + std::string(1, op) + "'", filename);
+         }
+      }
+      STentry *symbol = get_symbol(equ.first);
+      if(!symbol){
+         logger->logError("Symbol '" + equ.first + "' not found", filename);
+      }
+      symbol->offset = value;
+      symbol->is_defined = true;
+      symbol->is_const = true;
+      logger->logDebug("Resolved EQU symbol '" + equ.first + "' to 0x" + std::format("{:08x}", value), filename);
+      
+      /// Now delete the EQU struct
+      EquStruct *currentEqu = equ.second;
+      while(currentEqu){
+         EquStruct *next = currentEqu->next;
+         delete currentEqu;
+         currentEqu = next;
+      }
+
+      /// Now resolve all forward references
+      STentry::STforward_ref *currentRef = symbol->forward_refs;
+      symbol->forward_refs = nullptr;
+      while (currentRef)
+      {
+         logger->logDebug("Resolving forward reference in section '" + currentRef->section + "' at offset 0x" + std::format("{:x}", currentRef->offset), filename);
+         add_relocation(equ.first, currentRef->section, currentRef->offset);
+         STentry::STforward_ref *next = currentRef->next;
+         delete currentRef;
+         currentRef = next;
+      }
+   }
+
    /// If there are any local symbols that are not defined, throw an error
    for(STentry entry : symbol_table){
       if(entry.local && !entry.is_defined){
@@ -267,8 +337,9 @@ void Assembler::Driver::add_relocation(const std::string symbol, const std::stri
       logger->logDebug("Adding relocation for symbol '" + symbol + "' in section '" + section + "' at offset 0x" + std::format("{:x}", offset), filename, scanner->lineno());
       std::string current_section = section_list.back().name;
       uint32_t current_offset = section_list.back().size;
-      uint32_t symbol_offset = get_symbol(symbol)->offset;
-      std::string symbol_section = get_symbol(symbol)->section;
+      STentry *entry = get_symbol(symbol);
+      uint32_t symbol_offset = entry->offset;
+      std::string symbol_section = entry->section;
       Relocation new_relocation;
       new_relocation.src_section = symbol_section;
       new_relocation.src_offset = symbol_offset;
@@ -280,8 +351,13 @@ void Assembler::Driver::add_relocation(const std::string symbol, const std::stri
       /// This means that the method was invoked when a symbols forward reference was resolved
       logger->logDebug("Adding relocation for symbol '" + symbol + "' in section '" + section + "' at offset 0x" + std::format("{:x} while resolving its forward ref", offset), filename, scanner->lineno());
       Relocation new_relocation;
-      new_relocation.src_section = get_symbol(symbol)->section;
-      new_relocation.src_offset = get_symbol(symbol)->offset;
+      STentry *entry = get_symbol(symbol);
+      new_relocation.src_section = entry->section;
+      new_relocation.src_offset = entry->offset;
+      if(entry->is_const){
+         new_relocation.src_section = "";
+         new_relocation.src_offset = entry->offset;
+      }
       new_relocation.dst_section = section;
       new_relocation.dst_offset = offset;
       relocation_list.push_back(new_relocation);
@@ -306,6 +382,13 @@ void Assembler::Driver::add_global(const std::vector<std::string> &globals)
       logger->logDebug("Adding global symbol '" + globals[i] + "'", filename);
       global_list.push_back(globals[i]);
    }
+}
+
+void Assembler::Driver::add_equ(const std::string &name, EquStruct *equ)
+{
+   logger->logInfo("Adding EQU symbol '" + name + "'");
+   STentry *entry = insert_symbol(name, false);
+   equ_list.push_back(std::pair<std::string, EquStruct *>(name, equ));
 }
 
 void Assembler::Driver::create_shared_file(const std::string &filename)

@@ -147,14 +147,6 @@ int main(int argc, const char **argv)
 
     if (hex){
         output_elf.memDump(output_file);
-        // std::ofstream output_elf_file;
-        // output_elf_file.open(output_file_name + ".elf", std::ios::binary | std::ios::trunc);
-        // if (!output_elf_file.good())
-        // {
-        //     std::cerr << "Unable to open file: " << output_file_name + ".elf" << "\n";
-        //     return EXIT_FAILURE;
-        // }
-        // output_elf.createShared(output_elf_file);
     }else        output_elf.createShared(output_file);
 
     if(logger.errorExists())

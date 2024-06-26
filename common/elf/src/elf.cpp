@@ -554,12 +554,17 @@ ELF::memDump(std::ostream &stream){
             logger->logDebug("Applying relocation for symbol '" + source + "' in section '" + section + "' at offset 0x" + std::format("{:x}", offset) + " with addend 0x" + std::format("{:x}", addend));
             for(std::size_t j = 0; j < symbol_table.size(); j++){
                 if(symbol_table[j].name == source){
-                    logger->logDebug("Symbol '" + source + "' found in symbol table with value 0x" + std::format("{:x}", symbol_table[j].value));
-                    value = symbol_table[j].value;
-                    break;
+                    if(symbol_table[j].is_const){
+                        logger->logDebug("Symbol '" + source + "' found in symbol table with value 0x" + std::format("{:x}", symbol_table[j].value));
+                        value = symbol_table[j].value;
+                        break;
+                    }else{
+                        logger->logDebug("Symbol '" + source + "' found in symbol table with value 0x" + std::format("{:x}", symbol_table[j].value) + " adding addend 0x" + std::format("{:x}", addend));
+                        value = symbol_table[j].value + addend;
+                        break;
+                    }
                 }
             }
-            value = value + addend;
             for (std::size_t j = 0; j < section_headers.size(); j++)
             {
                 if(section_names[j] == section){
