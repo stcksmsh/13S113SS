@@ -1,6 +1,6 @@
 /**
  * @file scanner.hpp
- * @author Kosta Vukicevic (stcksmsh@gmail.com)
+ * @author Kosta Vukicevic (107367925+stcksmsh@users.noreply.github.com)
  * @brief Scanner class header file, allows C++ to interact with flex generated scanner
  * @version 0.1
  * @date 2024-05-15

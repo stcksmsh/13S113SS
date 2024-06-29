@@ -7,9 +7,6 @@ if [[ -z "${LOG_LEVEL}" ]]; then
 fi
 
 
-#Print contents of directory
-cd tests
-
 ${ASSEMBLER} -l 2 -o test1.o test1.s
 ${ASSEMBLER} -l 2 -o test2.o test2.s
 
@@ -19,4 +16,4 @@ echo "*********************************"
 echo "---------------------------------"
 ${LINKER} -l ${LOG_LEVEL} -p my_code_main 0x40000000 -x -o out.hex test1.o test2.o
 
-rm test1.o test2.o
+# rm test1.o test2.o

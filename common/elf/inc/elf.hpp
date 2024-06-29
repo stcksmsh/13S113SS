@@ -1,6 +1,6 @@
 /**
  * @file elf.hpp
- * @author Kosta Vukicevic (stcksmsh@gmail.com)
+ * @author Kosta Vukicevic (107367925+stcksmsh@users.noreply.github.com)
  * @brief ELF class header file, used for working with ELF files (serialization, deserialization)
  * @version 0.1
  * @date 2024-05-16

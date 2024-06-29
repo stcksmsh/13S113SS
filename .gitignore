@@ -1,4 +1,8 @@
+
 *.o
 *.d
 *.pdf
-.vscode
+.vscode/*
+*.hex
+*.zip
+tests/

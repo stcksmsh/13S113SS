@@ -32,7 +32,7 @@ ${OBJ_DIR}:
 
 test: FORCE
 	@echo "${INDENT}Running linker tests..."
-	@source tests/start.sh
+	@cd tests; source start.sh
 	@echo "${INDENT}Done."
 
 clean:

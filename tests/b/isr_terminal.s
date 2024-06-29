@@ -10,7 +10,7 @@ isr_terminal:
     push %r2
 
     ld 0xFFFFFF04, %r1 # term_in
-    ld $121, %r2 # character_offset
+    ld $0x79000000, %r2 # character_offset
     bne %r1, %r2, skip
 
     ld $message_start, %r1
@@ -25,6 +25,8 @@ isr_terminal:
     st %r2, 0xFFFFFF00 # term_out
     ld [%r1+4], %r2
     st %r2, 0xFFFFFF00 # term_out
+    ld [%r1+5], %r2
+    st %r2, 0xFFFFFF00 # term_out
 
     ld my_counter, %r1 
     ld $1, %r2
@@ -37,6 +39,6 @@ skip:
 
     ret
 message_start:
-.ascii "press"
+.ascii "press\n"
 
 .end

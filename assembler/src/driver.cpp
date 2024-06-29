@@ -1,6 +1,6 @@
 /**
  * @file driver.cpp
- * @author Kosta Vukicevic (stcksmsh@gmail.com)
+ * @author Kosta Vukicevic (107367925+stcksmsh@users.noreply.github.com)
  * @brief Driver class implementation file, used for parsing input files, main class of assembler
  * @version 0.1
  * @date 2024-05-15
@@ -88,6 +88,77 @@ void Assembler::Driver::parse_helper(std::istream &stream)
       logger->logError("Parse failed, exiting!!");
    }
 
+   /// For each EQU symbol, resolve the expression
+   for (std::pair<std::string, EquStruct *> equ : equ_list)
+   {
+      logger->logInfo("Resolving EQU symbol '" + equ.first + "'");
+      int32_t value = 0;
+      EquStruct *seek = equ.second;
+      if(seek->name == ""){
+         value = seek->value;
+      }else{
+         STentry *entry = get_symbol(seek->name);
+         if(!entry){
+            logger->logError("Symbol '" + seek->name + "' not found", filename);
+         }
+         value = entry->offset;
+      }
+      char op;
+      while(seek->next){
+         op = seek->operation;
+         seek = seek->next;
+         int32_t nextValue = 0;
+         if(seek->name == ""){
+            nextValue = seek->value;
+         }else{
+            STentry *entry = get_symbol(seek->name);
+            if(!entry){
+               logger->logError("Symbol '" + seek->name + "' not found", filename);
+            }
+            nextValue = entry->offset;
+         }
+         switch(op){
+            case '+':
+               value += nextValue;
+               break;
+            case '-':
+               value -= nextValue;
+               break;
+            default:
+               logger->logError("Invalid operation '" + std::string(1, op) + "'", filename);
+         }
+      }
+      STentry *symbol = get_symbol(equ.first);
+      if(!symbol){
+         logger->logError("Symbol '" + equ.first + "' not found", filename);
+      }
+      symbol->offset = value;
+      symbol->is_defined = true;
+      symbol->is_const = true;
+      logger->logDebug("Resolved EQU symbol '" + equ.first + "' to 0x" + std::format("{:08x}", value), filename);
+      
+      /// Now delete the EQU struct
+      EquStruct *currentEqu = equ.second;
+      while(currentEqu){
+         EquStruct *next = currentEqu->next;
+         delete currentEqu;
+         currentEqu = next;
+      }
+
+      /// Now resolve all forward references
+      STentry::STforward_ref *currentRef = symbol->forward_refs;
+      symbol->forward_refs = nullptr;
+      while (currentRef)
+      {
+         logger->logDebug("Resolving forward reference in section '" + currentRef->section + "' at offset 0x" + std::format("{:x}", currentRef->offset), filename);
+         add_relocation(equ.first, currentRef->section, currentRef->offset);
+         STentry::STforward_ref *next = currentRef->next;
+         delete currentRef;
+         currentRef = next;
+      }
+   }
+
+
    for (std::string symbol : global_list)
    {
       STentry *entry = get_symbol(symbol);
@@ -137,7 +208,7 @@ Assembler::Driver::insert_symbol(const std::string name, const bool is_defined, 
       section = section_list.back().name;
    }
    /// First check if the symbol is already in the table
-   for (int i = 0; i < symbol_table.size(); i++)
+   for (std::size_t i = 0; i < symbol_table.size(); i++)
    {
       if (symbol_table[i].name == name)
       {
@@ -184,7 +255,7 @@ Assembler::Driver::insert_symbol(const std::string name, const bool is_defined, 
 
 void Assembler::Driver::update_symbol(std::string name, std::string section){
    logger->logInfo("Updating symbol '" + name + "' to section '" + section + "'", filename, scanner->lineno());
-   for (int i = 0; i < symbol_table.size(); i++)
+   for (std::size_t i = 0; i < symbol_table.size(); i++)
    {
       if (symbol_table[i].name == name)
       {
@@ -194,7 +265,7 @@ void Assembler::Driver::update_symbol(std::string name, std::string section){
          }
          uint32_t new_offset = (section == ".data") ? DATA.size() : BSS;
          logger->logInfo("Updating relocations for symbol '" + name + "' in section '" + section + "'", filename, scanner->lineno());
-         for(int j = 0; j < relocation_list.size(); j++){
+         for(std::size_t j = 0; j < relocation_list.size(); j++){
             if (relocation_list[j].src_section == symbol_table[i].section && relocation_list[j].src_offset == symbol_table[i].offset)
             {
                logger->logDebug("Updating relocation in section '" + relocation_list[j].dst_section + "' at offset 0x" + std::format("{:x}", relocation_list[j].dst_offset) + " to point to section '" + section + "' at offset 0x" + std::format("{:x}", symbol_table[i].offset), filename, scanner->lineno());
@@ -214,7 +285,7 @@ Assembler::Driver::STentry *
 Assembler::Driver::get_symbol(const std::string name)
 {
    logger->logInfo("Getting symbol '" + name + "'");
-   for (int i = 0; i < symbol_table.size(); i++)
+   for (std::size_t i = 0; i < symbol_table.size(); i++)
    {
       if (symbol_table[i].name == name)
       {
@@ -232,7 +303,7 @@ void Assembler::Driver::forward_reference(const std::string name)
    logger->logInfo("Forward referencing symbol '" + name + "' in section '" + section_list.back().name, filename, scanner->lineno());
    std::string section = section_list.back().name;
    std::size_t offset = section_list.back().size;
-   for (int i = 0; i < symbol_table.size(); i++)
+   for (std::size_t i = 0; i < symbol_table.size(); i++)
    {
       if (symbol_table[i].name == name)
       {
@@ -267,8 +338,9 @@ void Assembler::Driver::add_relocation(const std::string symbol, const std::stri
       logger->logDebug("Adding relocation for symbol '" + symbol + "' in section '" + section + "' at offset 0x" + std::format("{:x}", offset), filename, scanner->lineno());
       std::string current_section = section_list.back().name;
       uint32_t current_offset = section_list.back().size;
-      uint32_t symbol_offset = get_symbol(symbol)->offset;
-      std::string symbol_section = get_symbol(symbol)->section;
+      STentry *entry = get_symbol(symbol);
+      uint32_t symbol_offset = entry->offset;
+      std::string symbol_section = entry->section;
       Relocation new_relocation;
       new_relocation.src_section = symbol_section;
       new_relocation.src_offset = symbol_offset;
@@ -280,8 +352,13 @@ void Assembler::Driver::add_relocation(const std::string symbol, const std::stri
       /// This means that the method was invoked when a symbols forward reference was resolved
       logger->logDebug("Adding relocation for symbol '" + symbol + "' in section '" + section + "' at offset 0x" + std::format("{:x} while resolving its forward ref", offset), filename, scanner->lineno());
       Relocation new_relocation;
-      new_relocation.src_section = get_symbol(symbol)->section;
-      new_relocation.src_offset = get_symbol(symbol)->offset;
+      STentry *entry = get_symbol(symbol);
+      new_relocation.src_section = entry->section;
+      new_relocation.src_offset = entry->offset;
+      if(entry->is_const){
+         new_relocation.src_section = "";
+         new_relocation.src_offset = entry->offset;
+      }
       new_relocation.dst_section = section;
       new_relocation.dst_offset = offset;
       relocation_list.push_back(new_relocation);
@@ -291,7 +368,7 @@ void Assembler::Driver::add_relocation(const std::string symbol, const std::stri
 void Assembler::Driver::add_extern(const std::vector<std::string> &externs)
 {
    logger->logInfo("Adding extern symbols", filename, scanner->lineno());
-   for (int i = 0; i < externs.size(); i++)
+   for (std::size_t i = 0; i < externs.size(); i++)
    {
       logger->logDebug("Adding extern symbol '" + externs[i] + "'");
       extern_list.push_back(externs[i]);
@@ -301,11 +378,18 @@ void Assembler::Driver::add_extern(const std::vector<std::string> &externs)
 void Assembler::Driver::add_global(const std::vector<std::string> &globals)
 {
    logger->logInfo("Adding global symbols", filename, scanner->lineno());
-   for (int i = 0; i < globals.size(); i++)
+   for (std::size_t i = 0; i < globals.size(); i++)
    {
       logger->logDebug("Adding global symbol '" + globals[i] + "'", filename);
       global_list.push_back(globals[i]);
    }
+}
+
+void Assembler::Driver::add_equ(const std::string &name, EquStruct *equ)
+{
+   logger->logInfo("Adding EQU symbol '" + name + "'");
+   STentry *entry = insert_symbol(name, false);
+   equ_list.push_back(std::pair<std::string, EquStruct *>(name, equ));
 }
 
 void Assembler::Driver::create_shared_file(const std::string &filename)
@@ -333,7 +417,7 @@ void Assembler::Driver::create_shared_file(const std::string &filename)
       elf.section_headers.back().size = BSS;
       elf.add_symbol(".bss", ".bss", 0, true, true, true);
    }
-   for (int i = 0; i < section_list.size(); i++)
+   for (std::size_t i = 0; i < section_list.size(); i++)
    {
       if(section_list[i].size == 0){
          logger->logWarning("Section '" + section_list[i].name + "' in file '" + this->filename + "' is empty, skipping");
@@ -347,12 +431,12 @@ void Assembler::Driver::create_shared_file(const std::string &filename)
       elf.add_section(name, data, Section_Header::Section_Type::SHT_PROGBITS, flags, 1);
    }
 
-   for (int j = 0; j < symbol_table.size(); j++)
+   for (std::size_t j = 0; j < symbol_table.size(); j++)
    {
       if(symbol_table[j].is_section){
          /// If the section size is 0, skip it
          bool empty = true;
-         for(int i = 0; i < section_list.size(); i++){
+         for(std::size_t i = 0; i < section_list.size(); i++){
             if(section_list[i].name == symbol_table[j].name){
                empty = section_list[i].size == 0;
                break;
@@ -365,7 +449,7 @@ void Assembler::Driver::create_shared_file(const std::string &filename)
    }
 
    /// Add relocations for undefined symbols
-   for (int j = 0; j < symbol_table.size(); j++)
+   for (std::size_t j = 0; j < symbol_table.size(); j++)
    {
       STentry::STforward_ref *current = symbol_table[j].forward_refs;
       while (current)
@@ -386,7 +470,7 @@ void Assembler::Driver::create_shared_file(const std::string &filename)
 void Assembler::Driver::add_section(std::string section_name)
 {
    logger->logInfo("Adding section '" + section_name + "'", filename, scanner->lineno());
-   for (int i = 0; i < section_list.size(); i++)
+   for (std::size_t i = 0; i < section_list.size(); i++)
    {
       if (section_list[i].name == section_name)
       {

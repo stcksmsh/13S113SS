@@ -1,6 +1,6 @@
 /**
  * @file logger.hpp
- * @author Kosta Vukicevic (stcksmsh@gmail.com)
+ * @author Kosta Vukicevic (107367925+stcksmsh@users.noreply.github.com)
  * @brief A class that logs messages to a stream
  * @version 0.1
  * @date 2024-05-22
@@ -159,8 +159,8 @@ private:
         return formatted;
     }
 
-    int debugLevel = 0;
-    bool live = false;
+    bool live;
+    int debugLevel;
 
     struct Message
     {

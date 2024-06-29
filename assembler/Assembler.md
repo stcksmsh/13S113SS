@@ -33,9 +33,13 @@
 
 ## Instruction format
 
-| 31 .. 27 | 26 .. 24 | 23 .. 20   | 19 .. 16   | 15 .. 12   | 11 .. 0      |
-| -------- | -------- | ---------- | ---------- | ---------- | ------------ |
+| 31 .. 27 | 26 .. 24 | 23 .. 20   | 19 .. 16   | 15 .. 12   | 10 .. 0                 |
+| -------- | -------- | ---------- | ---------- | ---------- | ----------------------- |
 | Opcode   | Modifier | Register A | Register B | Register C | Displacement |
+
+The displacement is calculated in two ways:
+    - If the addressing mode is `REG_SYM_IND` or `REG_LIT_IND` then the signed 11bit value of `Displacement` is used.
+    - If the addressing mode is `LIT_DIR`, `LIT_IND`, `SYM_DIR`, `SYM_IND` then the 4 bytes following the instruction are used as the displacement value.
 
 ### Opcodes
 
@@ -84,3 +88,4 @@ The modifiers specify how the `operand` is represented:
 | `[%<reg> + <symbol>]`  | 0b111    | The value in memory at address `<reg> + <symbol>`  |
 
 The register number (`<reg>`) from the `operand` is stored in `RegC`.
+4

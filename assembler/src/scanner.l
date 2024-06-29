@@ -87,39 +87,39 @@ using token = Assembler::Parser::token;
 
 
 "%r"[[:digit:]]+				{ 
-                                    yylval->build<int>( atoi(yytext + 2) );
+                                    yylval->build<uint8_t>( atoi(yytext + 2) );
                                     return token::GPR;
                                 }
 
-"%sp"                           { yylval->build<int>( 14 ); return token::GPR; }
-"%pc"                           { yylval->build<int>( 15 ); return token::GPR; }
+"%sp"                           { yylval->build<uint8_t>( 14 ); return token::GPR; }
+"%pc"                           { yylval->build<uint8_t>( 15 ); return token::GPR; }
 
 "%status"                       { yylval->build<Assembler::csr_type>( STATUS ); return token::CSR; }
 "%handler"                      { yylval->build<Assembler::csr_type>( HANDLER ); return token::CSR; }
 "%cause"                        { yylval->build<Assembler::csr_type>( CAUSE ); return token::CSR; }
 
 "0x"[0-9a-fA-F]+				{
-                                    yylval->build<uint32_t>( strtoll(yytext, NULL, 16) );
+                                    yylval->build<int32_t>( strtoll(yytext, NULL, 16) );
                                     return token::NUMBER;
                                 }
 
 "0b"[01]+						{   
-                                    yylval->build<uint32_t>( strtoll(yytext, NULL, 2) );
+                                    yylval->build<int32_t>( strtoll(yytext, NULL, 2) );
                                     return token::NUMBER;
                                 }
 
 "0"[0-7]+						{   
-                                    yylval->build<uint32_t>( strtoll(yytext, NULL, 8) );
+                                    yylval->build<int32_t>( strtoll(yytext, NULL, 8) );
                                     return token::NUMBER;
                                 }
 
 [1-9][0-9]*						{   
-                                    yylval->build<uint32_t>( atoi(yytext) );
+                                    yylval->build<int32_t>( atoi(yytext) );
                                     return token::NUMBER;
                                 }
 
 "0"								{   
-                                    yylval->build<uint32_t>( 0 );
+                                    yylval->build<int32_t>( 0 );
                                     return token::NUMBER;
                                 }
 

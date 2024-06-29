@@ -1,6 +1,6 @@
 /**
  * @file colors.h
- * @author Kosta Vukicevic (stcksmsh@gmail.com)
+ * @author Kosta Vukicevic (107367925+stcksmsh@users.noreply.github.com)
  * @brief Color definitions for output
  * @version 0.1
  * @date 2024-05-22

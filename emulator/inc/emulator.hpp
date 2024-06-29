@@ -1,6 +1,6 @@
 /**
  * @file emulator.hpp
- * @author Kosta Vukicevic (stcksmsh@gmail.com)
+ * @author Kosta Vukicevic (107367925+stcksmsh@users.noreply.github.com)
  * @brief 
  * @version 0.1
  * @date 2024-06-24
@@ -15,13 +15,17 @@
 #include "logger.hpp"
 #include <vector>
 #include <cstdint>
+#include <functional>
 
 class Emulator
 {
 public:
     /// @brief Emulator constructor
     /// @param logger The logger for the emulator
-    Emulator(Logger *logger): logger(logger), registers(logger) {}
+    Emulator(Logger *logger);
+
+    /// @brief Emulator destructor
+    ~Emulator();
 
     /// @brief Load memory from a memory dump file
     /// @param filename The filename of the memory dump file
@@ -55,8 +59,12 @@ private:
 
 
     /// @brief Step the emulator (execute one instruction)
-    /// @return Whether the emulator should continue running (0) or stop (1)
+    /// @return Whether the emulator should continue running (0), HALT (1), or ERROR (2)
     int step();
+
+    /// @brief Handles interrupts
+    void handleInterrupts();
+
 
     /// @brief Execute an instruction
     /// @param instr The instruction to execute
@@ -67,6 +75,23 @@ private:
     /// @param instr The instruction to calculate the operand from
     /// @return The operand
     int32_t calculateOperand(instruction instr);    
+
+    /// @brief Calculate the destination address of an instruction (used for store instructions)
+    uint32_t calculateAddress(instruction instr);
+
+
+    enum instructionErrorType{
+        UNKNOWN_INSTRUCTION,    /// @brief The instruction is unknown
+        UNKNOWN_MODIFIER,       /// @brief The modifier is unknown
+        DIVIDE_BY_ZERO,         /// @brief The instruction tried to divide by zero
+        ZERO_WRITE,             /// @brief The instruction tried to write to register 0
+        INVALID_ADDRESS,        /// @brief The instruction tried to access an invalid address
+        INVALID_CSR,            /// @brief The instruction tried to access an invalid CSR
+        INVALID_MODIFIER,       /// @brief The instruction tried to use a modifier that is not allowed for that instruction
+    };
+
+    /// @brief Handle an instruction error
+    void instructionError(instructionErrorType error, instruction instr);
 
     /// @brief Pushes a value onto the stack
     /// @param value The value to push onto the stack
@@ -117,11 +142,7 @@ private:
         /// @param index The index of the register to get
         /// @return A reference to the register
         uint32_t &operator[](int index) { 
-            if(index == 0){
-                logger->logError("Register 0 is wired to 0", __FILE__, __LINE__, __FUNCTION__);
-                throw std::runtime_error("Register 0 should not be accessed in this way, it is wired to 0");
-            }
-            if(index < 1 || index > 15){
+            if(index < 0 || index > 15){
                 logger->logError("Index out of bounds", __FILE__, __LINE__, __FUNCTION__);
                 return registers[0];
             }
@@ -136,19 +157,20 @@ private:
         /// @return A reference to the stack pointer
         uint32_t &SP() { return registers[14]; } 
 
+        /// @brief The status register (volatile so that the terminal and timer interrupts can be set from threads)
         union Status{
-            struct{ /// @brief The fields of the status register, interupt priority is timer > terminal > error > software
-            uint32_t    Ti: 1, /// @brief The timer interrupt mask bit
-                        Tr: 1, /// @brief The terminal interrupt mask bit
-                        I: 1,  /// @brief The global interrupt mask bit
-                        Ii: 1, /// @brief The timer interrupt flag
-                        It: 1, /// @brief The terminal interrupt flag
-                        Is: 1, /// @brief The software interrupt flag
-                        Ie: 1, /// @brief The error interrupt flag
-                        unused: 25; /// @brief Unused bits
+            volatile struct{ /// @brief The fields of the status register, interupt priority is timer > terminal > error > software
+            volatile uint32_t   TiE: 1, /// @brief The timer interrupt mask bit
+                                TeE: 1, /// @brief The terminal interrupt mask bit
+                                GlE: 1,  /// @brief The global interrupt mask bit
+                                TiR: 1, /// @brief The timer interrupt request flag
+                                TeR: 1, /// @brief The terminal interrupt request flag
+                                SoR: 1, /// @brief The software interrupt request flag
+                                ErR: 1, /// @brief The error interrupt request flag
+                                unused: 25; /// @brief Unused bits
 
             } fields;
-            uint32_t raw;
+            volatile uint32_t raw;
         };
         
         /// @brief Gets a reference to the status register
@@ -175,6 +197,22 @@ private:
         uint32_t cause;
 
     } registers;
+
+    /// @brief A struct representing a memory mapped register
+    struct memoryMappedRegister{
+        /// @brief The address of the memory mapped register
+        uint32_t address;
+        /// @brief The function to call when the memory mapped register is written to
+        std::function<void(uint32_t)> writeFunction;
+        /// @brief The function to call when the memory mapped register is read from
+        std::function<uint32_t()> readFunction;
+    };
+
+    /// @brief The memory mapped registers
+    std::vector<memoryMappedRegister> memoryMappedRegisters;
+
+    friend class Terminal;
+    friend class Timer;
 };
 
 #endif // __EMULATOR_HPP__

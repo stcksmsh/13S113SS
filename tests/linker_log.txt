@@ -1,0 +1,184 @@
+[1m[32mINFO[0m: Section code placed at address 0x40000000
+[1m[36mDEBUG[0m: Linker object created
+[1m[32mINFO[0m: Linking 4 files
+[1m[32mINFO[0m: Reading ELF file from stream
+----------------------------------
+[1m[36mDEBUG[0m: Cleared all data structures
+[1m[32mINFO[0m: Reading the ELF headers
+[1m[32mINFO[0m: Reading the ELF file header
+[1m[32mINFO[0m: Reading the program headers
+[1m[32mINFO[0m: Reading the section headers
+[1m[36mDEBUG[0m: Reading section header 0
+[1m[36mDEBUG[0m: Reading section header 1
+[1m[36mDEBUG[0m: Reading section header 2
+[1m[36mDEBUG[0m: Reading section header 3
+[1m[36mDEBUG[0m: Reading section header 4
+[1m[36mDEBUG[0m: Reading section header 5
+[1m[36mDEBUG[0m: Reading section header 6
+[1m[32mINFO[0m: Reading the .shstrtab section
+[1m[36mDEBUG[0m: Reading section name 0: 
+[1m[36mDEBUG[0m: Reading section name 1: .data
+[1m[36mDEBUG[0m: Reading section name 2: code
+[1m[36mDEBUG[0m: Reading section name 3: .relcode
+[1m[36mDEBUG[0m: Reading section name 4: .strtab
+[1m[36mDEBUG[0m: Reading section name 5: .symtab
+[1m[36mDEBUG[0m: Reading section name 6: .shstrtab
+[1m[32mINFO[0m: Creating the symbol table
+[1m[32mINFO[0m: Reading the .strtab section
+[1m[32mINFO[0m: Reading the .symtab section
+[1m[36mDEBUG[0m: Added symbol '' from section '' to the symbol table with value 0x0 and local binding
+[1m[36mDEBUG[0m: Added symbol '.data' from section '.data' to the symbol table with value 0x0 and local binding
+[1m[36mDEBUG[0m: Added symbol 'code' from section 'code' to the symbol table with value 0x0 and local binding
+[1m[36mDEBUG[0m: Added symbol 'initial_sp' from section 'code' to the symbol table with value 0xfffffefe and local binding
+[1m[36mDEBUG[0m: Added symbol 'timer_config' from section 'code' to the symbol table with value 0xffffff10 and local binding
+[1m[36mDEBUG[0m: Added symbol 'wait' from section 'code' to the symbol table with value 0x24 and local binding
+[1m[36mDEBUG[0m: Added symbol 'my_start' from section 'code' to the symbol table with value 0x0 and global binding
+[1m[36mDEBUG[0m: Added symbol 'handler' from section '' to the symbol table with value 0x0 and global binding
+[1m[36mDEBUG[0m: Added symbol 'my_counter' from section '.data' to the symbol table with value 0x0 and global binding
+[1m[32mINFO[0m: Creating the relocation table
+[1m[36mDEBUG[0m: Reading relocations for section .relcode
+[1m[36mDEBUG[0m: Adding relocation for symbol 'handler' in section 'code' at offset 0x8
+[1m[36mDEBUG[0m: Adding relocation for symbol '.data' in section 'code' at offset 0x24
+[1m[36mDEBUG[0m: Adding relocation for symbol 'code' in section 'code' at offset 0x34
+[1m[32mINFO[0m: Finished reading ELF file
+[1m[36mDEBUG[0m: Read 0 program headers, 7 section headers, 0 bytes of binary data, 9 symbols and 3 relocations
+[1m[32mINFO[0m: Removing the .strtab, .symtab and .shstrtab sections
+[1m[32mINFO[0m: Removing the .rel sections
+[1m[36mDEBUG[0m: Removing .relcode section
+[1m[36mDEBUG[0m: Reading the binary data
+[1m[32mINFO[0m: Finished deserializing ELF file
+[1m[32mINFO[0m: Reading ELF file from stream
+----------------------------------
+[1m[36mDEBUG[0m: Cleared all data structures
+[1m[32mINFO[0m: Reading the ELF headers
+[1m[32mINFO[0m: Reading the ELF file header
+[1m[32mINFO[0m: Reading the program headers
+[1m[32mINFO[0m: Reading the section headers
+[1m[36mDEBUG[0m: Reading section header 0
+[1m[36mDEBUG[0m: Reading section header 1
+[1m[36mDEBUG[0m: Reading section header 2
+[1m[36mDEBUG[0m: Reading section header 3
+[1m[36mDEBUG[0m: Reading section header 4
+[1m[36mDEBUG[0m: Reading section header 5
+[1m[32mINFO[0m: Reading the .shstrtab section
+[1m[36mDEBUG[0m: Reading section name 0: 
+[1m[36mDEBUG[0m: Reading section name 1: isr
+[1m[36mDEBUG[0m: Reading section name 2: .relisr
+[1m[36mDEBUG[0m: Reading section name 3: .strtab
+[1m[36mDEBUG[0m: Reading section name 4: .symtab
+[1m[36mDEBUG[0m: Reading section name 5: .shstrtab
+[1m[32mINFO[0m: Creating the symbol table
+[1m[32mINFO[0m: Reading the .strtab section
+[1m[32mINFO[0m: Reading the .symtab section
+[1m[36mDEBUG[0m: Added symbol '' from section '' to the symbol table with value 0x0 and local binding
+[1m[36mDEBUG[0m: Added symbol 'isr' from section 'isr' to the symbol table with value 0x0 and local binding
+[1m[36mDEBUG[0m: Added symbol 'isr_terminal' from section 'isr' to the symbol table with value 0x0 and global binding
+[1m[36mDEBUG[0m: Added symbol 'my_counter' from section '' to the symbol table with value 0x0 and global binding
+[1m[32mINFO[0m: Creating the relocation table
+[1m[36mDEBUG[0m: Reading relocations for section .relisr
+[1m[36mDEBUG[0m: Adding relocation for symbol 'my_counter' in section 'isr' at offset 0x24
+[1m[36mDEBUG[0m: Adding relocation for symbol 'my_counter' in section 'isr' at offset 0x38
+[1m[32mINFO[0m: Finished reading ELF file
+[1m[36mDEBUG[0m: Read 0 program headers, 6 section headers, 0 bytes of binary data, 4 symbols and 2 relocations
+[1m[32mINFO[0m: Removing the .strtab, .symtab and .shstrtab sections
+[1m[32mINFO[0m: Removing the .rel sections
+[1m[36mDEBUG[0m: Removing .relisr section
+[1m[36mDEBUG[0m: Reading the binary data
+[1m[32mINFO[0m: Finished deserializing ELF file
+[1m[32mINFO[0m: Merging ELFs
+------------------------------------
+[1m[36mDEBUG[0m: Input ELF file has 2 sections
+[1m[32mINFO[0m: Processing section: isr
+[1m[36mDEBUG[0m: Section 'isr' not found in the output file
+[1m[36mDEBUG[0m: Section 'isr' added to the output file
+[1m[36mDEBUG[0m: Symbol 'isr_terminal' with value 0 added to the output file
+[1m[32mINFO[0m: Adding the input files relocation entries to the output file
+[1m[36mDEBUG[0m: Relocation entry for symbol 'my_counter' at offset 36 added to the output file
+[1m[36mDEBUG[0m: finished
+[1m[36mDEBUG[0m: Relocation entry for symbol 'my_counter' at offset 56 added to the output file
+[1m[36mDEBUG[0m: finished
+[1m[36mDEBUG[0m: exit
+[1m[32mINFO[0m: Reading ELF file from stream
+----------------------------------
+[1m[36mDEBUG[0m: Cleared all data structures
+[1m[32mINFO[0m: Reading the ELF headers
+[1m[32mINFO[0m: Reading the ELF file header
+[1m[32mINFO[0m: Reading the program headers
+[1m[32mINFO[0m: Reading the section headers
+[1m[36mDEBUG[0m: Reading section header 0
+[1m[36mDEBUG[0m: Reading section header 1
+[1m[36mDEBUG[0m: Reading section header 2
+[1m[36mDEBUG[0m: Reading section header 3
+[1m[36mDEBUG[0m: Reading section header 4
+[1m[36mDEBUG[0m: Reading section header 5
+[1m[36mDEBUG[0m: Reading section header 6
+[1m[32mINFO[0m: Reading the .shstrtab section
+[1m[36mDEBUG[0m: Reading section name 0: 
+[1m[36mDEBUG[0m: Reading section name 1: .data
+[1m[36mDEBUG[0m: Reading section name 2: isr
+[1m[36mDEBUG[0m: Reading section name 3: .relisr
+[1m[36mDEBUG[0m: Reading section name 4: .strtab
+[1m[36mDEBUG[0m: Reading section name 5: .symtab
+[1m[36mDEBUG[0m: Reading section name 6: .shstrtab
+[1m[32mINFO[0m: Creating the symbol table
+[1m[32mINFO[0m: Reading the .strtab section
+[1m[32mINFO[0m: Reading the .symtab section
+[1m[36mDEBUG[0m: Added symbol '' from section '' to the symbol table with value 0x0 and local binding
+[1m[36mDEBUG[0m: Added symbol '.data' from section '.data' to the symbol table with value 0x0 and local binding
+[1m[36mDEBUG[0m: Added symbol 'isr' from section 'isr' to the symbol table with value 0x0 and local binding
+[1m[36mDEBUG[0m: Added symbol 'line_feed' from section 'isr' to the symbol table with value 0xa and local binding
+[1m[36mDEBUG[0m: Added symbol 'carriage_return' from section 'isr' to the symbol table with value 0xd and local binding
+[1m[36mDEBUG[0m: Added symbol 'message_len' from section 'isr' to the symbol table with value 0x10 and local binding
+[1m[36mDEBUG[0m: Added symbol 'loop' from section 'isr' to the symbol table with value 0x14 and local binding
+[1m[36mDEBUG[0m: Added symbol 'message_start' from section '.data' to the symbol table with value 0x0 and local binding
+[1m[36mDEBUG[0m: Added symbol 'isr_timer' from section 'isr' to the symbol table with value 0x0 and global binding
+[1m[32mINFO[0m: Creating the relocation table
+[1m[36mDEBUG[0m: Reading relocations for section .relisr
+[1m[36mDEBUG[0m: Adding relocation for symbol '.data' in section 'isr' at offset 0x14
+[1m[36mDEBUG[0m: Adding relocation for symbol 'isr' in section 'isr' at offset 0x40
+[1m[32mINFO[0m: Finished reading ELF file
+[1m[36mDEBUG[0m: Read 0 program headers, 7 section headers, 0 bytes of binary data, 9 symbols and 2 relocations
+[1m[32mINFO[0m: Removing the .strtab, .symtab and .shstrtab sections
+[1m[32mINFO[0m: Removing the .rel sections
+[1m[36mDEBUG[0m: Removing .relisr section
+[1m[36mDEBUG[0m: Reading the binary data
+[1m[32mINFO[0m: Finished deserializing ELF file
+[1m[32mINFO[0m: Merging ELFs
+------------------------------------
+[1m[36mDEBUG[0m: Input ELF file has 3 sections
+[1m[32mINFO[0m: Processing section: .data
+[1m[36mDEBUG[0m: Section '.data' already present in the output file at index 1
+[1m[36mDEBUG[0m: Merging section '.data'
+[1m[32mINFO[0m: Shifting section headers
+[1m[36mDEBUG[0m: Section header 'code' shifted by 16 bytes
+[1m[36mDEBUG[0m: Section header 'isr' shifted by 16 bytes
+[1m[32mINFO[0m: Shifting symbols
+[1m[36mDEBUG[0m: Symbol 'message_start' shifted by 4 bytes, new value: 4
+[1m[32mINFO[0m: Updating relocation entries in the input file
+[1m[36mDEBUG[0m: Updating relocation entry in section 'isr' at offset 20
+[1m[36mDEBUG[0m: Updating relocation entry in section 'isr' at offset 64
+[1m[36mDEBUG[0m: Symbol 'message_start' with value 4 added to the output file
+[1m[32mINFO[0m: Processing section: isr
+[1m[36mDEBUG[0m: Section 'isr' already present in the output file at index 3
+[1m[36mDEBUG[0m: Merging section 'isr'
+[1m[32mINFO[0m: Shifting section headers
+[1m[32mINFO[0m: Shifting symbols
+[1m[36mDEBUG[0m: Symbol 'line_feed' shifted by 76 bytes, new value: 86
+[1m[36mDEBUG[0m: Symbol 'carriage_return' shifted by 76 bytes, new value: 89
+[1m[36mDEBUG[0m: Symbol 'message_len' shifted by 76 bytes, new value: 92
+[1m[36mDEBUG[0m: Symbol 'loop' shifted by 76 bytes, new value: 96
+[1m[36mDEBUG[0m: Symbol 'isr_timer' shifted by 76 bytes, new value: 76
+[1m[32mINFO[0m: Updating relocation entries in the input file
+[1m[36mDEBUG[0m: Updating relocation entry in section 'isr' at offset 20
+[1m[36mDEBUG[0m: Updating relocation entry in section 'isr' at offset 64
+[1m[36mDEBUG[0m: Symbol 'line_feed' with value 86 added to the output file
+[1m[36mDEBUG[0m: Symbol 'carriage_return' with value 89 added to the output file
+[1m[36mDEBUG[0m: Symbol 'message_len' with value 92 added to the output file
+[1m[36mDEBUG[0m: Symbol 'loop' with value 96 added to the output file
+[1m[36mDEBUG[0m: Symbol 'isr_timer' with value 76 added to the output file
+[1m[32mINFO[0m: Adding the input files relocation entries to the output file
+[1m[36mDEBUG[0m: Relocation entry for symbol '.data' at offset 96 added to the output file
+[1m[36mDEBUG[0m: finished
+[1m[36mDEBUG[0m: Relocation entry for symbol 'isr' at offset 140 added to the output file
+[1m[36mDEBUG[0m: finished
+[1m[36mDEBUG[0m: exit

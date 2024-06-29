@@ -1,6 +1,6 @@
 /**
  * @file driver.hpp
- * @author Kosta Vukicevic (stcksmsh@gmail.com)
+ * @author Kosta Vukicevic (107367925+stcksmsh@users.noreply.github.com)
  * @brief Driver class header file, used for parsing input files, main class of assembler
  * @version 0.1
  * @date 2024-05-15
@@ -133,6 +133,9 @@ namespace Assembler
       /// @brief Add a global symbol to the symbol table
       void add_global(const std::vector<std::string> &globals);
 
+      /// @brief Add an equ to the equ list
+      void add_equ(const std::string &name, EquStruct *equ);
+
       /// @brief Create an ELF file from the parsed data
       /// @param filename The name of the file to create
       void create_shared_file(const std::string &filename);
@@ -185,6 +188,8 @@ namespace Assembler
       /// @brief The global list
       std::vector<std::string> global_list;
 
+      /// @brief The equ list
+      std::vector<std::pair<std::string, EquStruct *>> equ_list;
       
       /// @brief The relocation list
       struct Relocation {
