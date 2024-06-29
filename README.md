@@ -502,4 +502,4 @@ Commands to assemble, link and emulate this example are:
 
 
 
-[Line-badge]: https://img.shields.io/badge/Lines-5160-f89820?style=for-the-badge
+[Line-badge]: https://img.shields.io/badge/Lines-5173-f89820?style=for-the-badge

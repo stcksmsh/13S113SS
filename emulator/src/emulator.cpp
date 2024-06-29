@@ -186,8 +186,17 @@ void Emulator::printRegisters(){
 void Emulator::run(uint32_t entry){
     logger->logInfo("Starting emulator at entry point " + std::format("{:x}", entry));
     registers.PC() = entry;
-    while(step() == 0);
-    std::cout << "-----------------------------------------------------------------\nEmulated processor executed halt instruction" << std::endl;
+    int retval;
+    do{
+        retval = step();
+     }while(retval == 0);
+    std::cout << "-----------------------------------------------------------------" << std::endl;
+    if(retval == 1){
+        std::cout << "Emulated processor executed halt instruction" << std::endl;
+    }
+    if(retval == 2){
+        std::cout << "Emulated processor encountered an error at PC " << std::format("{:x}", registers.PC()) << std::endl;
+    }
 }
 
 /// @brief The opcode enum (taken from parser.y)
@@ -246,6 +255,9 @@ int Emulator::step(){
     instruction instr;
     /// Fetch and decode the instruction
     instr.raw = getMemory(registers.PC());
+    if(instr.raw == 0xffffffff){
+        return 2;
+    }
     instr.raw = __builtin_bswap32(instr.raw);
     logger->logInfo("Instruction: " + std::format("{:08x}", instr.raw));
     /// Automatically increment the PC
@@ -636,10 +648,10 @@ void Emulator::instructionError(instructionErrorType error, instruction instr){
             logger->logError("Unknown error at PC " + std::format("{:x}", registers.PC() - 4));
             break;
     }
-    push(registers.PC());
-    registers.PC() = registers.HR();
     push(registers.SR().raw);
     registers.SR().raw &= ~0x1;
+    push(registers.PC());
+    registers.PC() = registers.HR();
     registers.CS() = 1;
 }
 
@@ -681,16 +693,16 @@ uint32_t Emulator::getMemory(uint32_t address)
             }
         }
         instructionError(instructionErrorType::INVALID_ADDRESS, {0});
-        return 0;
+        return 0xffffffff;
     }
     std::size_t i = 0;
     for(;i < memory.size(); i++){
         logger->logDebug("Checking memory segment from " + std::format("{:x}", memory[i].start) + " to " + std::format("{:x}", memory[i].end));
         if(address < memory[i].end) break;
     }
-    if(i == memory.size()){
+    if(i == memory.size() || address < memory[i].start){
         instructionError(instructionErrorType::INVALID_ADDRESS, {0});
-        return 0;
+        return 0xffffffff;
     }
     if(address + 4 > memory[i].end){
         // If the whole value is not in the segment, pad with 0s

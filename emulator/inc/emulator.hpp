@@ -59,7 +59,7 @@ private:
 
 
     /// @brief Step the emulator (execute one instruction)
-    /// @return Whether the emulator should continue running (0) or stop (1)
+    /// @return Whether the emulator should continue running (0), HALT (1), or ERROR (2)
     int step();
 
     /// @brief Handles interrupts

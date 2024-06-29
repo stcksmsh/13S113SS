@@ -7,6 +7,7 @@
 .equ line_feed, 0xA
 .equ carriage_return, 0xD
 .equ message_len, message_end - message_start
+.global line_feed, carriage_return
 .global isr_timer
 isr_timer:
     push %r1

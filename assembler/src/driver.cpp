@@ -88,35 +88,6 @@ void Assembler::Driver::parse_helper(std::istream &stream)
       logger->logError("Parse failed, exiting!!");
    }
 
-   for (std::string symbol : global_list)
-   {
-      STentry *entry = get_symbol(symbol);
-      if (!entry || !entry->is_defined)
-      {
-         logger->logWarning("Symbol '" + symbol + "' which is declared as global is not defined");
-      }
-      if (entry)
-      {
-         entry->local = false;
-      }
-   }
-
-   for (std::string symbol : extern_list)
-   {
-      STentry *entry = get_symbol(symbol);
-      if (!entry)
-      {
-         logger->logWarning("Symbol '" + symbol + "' which is declared as extern is not used");
-      }
-      else
-      {
-         if(entry->is_defined){
-            logger->logError("Symbol '" + symbol + "' which is declared as extern is defined");
-         }
-         entry->local = false;
-      }
-   }
-
    /// For each EQU symbol, resolve the expression
    for (std::pair<std::string, EquStruct *> equ : equ_list)
    {
@@ -184,6 +155,36 @@ void Assembler::Driver::parse_helper(std::istream &stream)
          STentry::STforward_ref *next = currentRef->next;
          delete currentRef;
          currentRef = next;
+      }
+   }
+
+
+   for (std::string symbol : global_list)
+   {
+      STentry *entry = get_symbol(symbol);
+      if (!entry || !entry->is_defined)
+      {
+         logger->logWarning("Symbol '" + symbol + "' which is declared as global is not defined");
+      }
+      if (entry)
+      {
+         entry->local = false;
+      }
+   }
+
+   for (std::string symbol : extern_list)
+   {
+      STentry *entry = get_symbol(symbol);
+      if (!entry)
+      {
+         logger->logWarning("Symbol '" + symbol + "' which is declared as extern is not used");
+      }
+      else
+      {
+         if(entry->is_defined){
+            logger->logError("Symbol '" + symbol + "' which is declared as extern is defined");
+         }
+         entry->local = false;
       }
    }
 

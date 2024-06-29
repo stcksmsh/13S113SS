@@ -9,6 +9,7 @@
 .equ terminal_out, 0xFFFFFF00
 .equ terminal_in, 0xFFFFFF04
 .equ character_offset, 0x02000000
+.global terminal_out
 .global isr_terminal
 isr_terminal:
     push %r1
