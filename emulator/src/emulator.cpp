@@ -344,68 +344,122 @@ int Emulator::execute(instruction instr){
             return 0;
         }case Opcode::POP:{
             logger->logInfo("POP");
+            if(instr.fields.RegA == 0){
+                instructionError(instructionErrorType::ZERO_WRITE, instr);
+                return 0;
+            }
             registers[instr.fields.RegA] = pop();
             return 0;
         }case Opcode::XCHG:{
             logger->logInfo("XCHG");
+            if(instr.fields.RegA == 0 || instr.fields.RegB == 0){
+                instructionError(instructionErrorType::ZERO_WRITE, instr);
+                return 0;
+            }
             uint32_t temp = registers[instr.fields.RegA];
             registers[instr.fields.RegA] = registers[instr.fields.RegB];
             registers[instr.fields.RegB] = temp;
             return 0;
         }case Opcode::ADD:{
             logger->logInfo("ADD");
+            if(instr.fields.RegB == 0){
+                instructionError(instructionErrorType::ZERO_WRITE, instr);
+                return 0;
+            }
             registers[instr.fields.RegB] = registers[instr.fields.RegB] + registers[instr.fields.RegA];
             return 0;
         }case Opcode::SUB:{
             logger->logInfo("SUB");
+            if(instr.fields.RegB == 0){
+                instructionError(instructionErrorType::ZERO_WRITE, instr);
+                return 0;
+            }
             registers[instr.fields.RegB] = registers[instr.fields.RegB] - registers[instr.fields.RegA];
             return 0;
         }case Opcode::MUL:{
             logger->logInfo("MUL");
+            if(instr.fields.RegB == 0){
+                instructionError(instructionErrorType::ZERO_WRITE, instr);
+                return 0;
+            }
             registers[instr.fields.RegB] = registers[instr.fields.RegB] * registers[instr.fields.RegA];
             return 0;
         }case Opcode::DIV:{
             logger->logInfo("DIV");
-            registers[instr.fields.RegB] = registers[instr.fields.RegB] / registers[instr.fields.RegA];
+            if(instr.fields.RegB == 0){
+                instructionError(instructionErrorType::ZERO_WRITE, instr);
+            }else if(registers[instr.fields.RegA] == 0){
+                instructionError(instructionErrorType::DIVIDE_BY_ZERO, instr);
+            }else{
+                registers[instr.fields.RegB] = registers[instr.fields.RegB] / registers[instr.fields.RegA];
+            }
             return 0;
         }case Opcode::NOT:{
             logger->logInfo("NOT");
+            if(instr.fields.RegA == 0){
+                instructionError(instructionErrorType::ZERO_WRITE, instr);
+                return 0;
+            }
             uint32_t result = ~registers[instr.fields.RegA];
             /// And finally we put the lower 32 bits into the destination register
             registers[instr.fields.RegA] = result & 0xffffffff;
             return 0;
         }case Opcode::AND:{
             logger->logInfo("AND");
+            if(instr.fields.RegB == 0){
+                instructionError(instructionErrorType::ZERO_WRITE, instr);
+                return 0;
+            }
             uint32_t result = registers[instr.fields.RegA] & registers[instr.fields.RegB];
             /// And finally we put the lower 32 bits into the destination register
             registers[instr.fields.RegB] = result;
             return 0;
         }case Opcode::OR:{
             logger->logInfo("OR");
+            if(instr.fields.RegB == 0){
+                instructionError(instructionErrorType::ZERO_WRITE, instr);
+                return 0;
+            }
             uint32_t result = registers[instr.fields.RegA] | registers[instr.fields.RegB];
             /// And finally we put the lower 32 bits into the destination register
             registers[instr.fields.RegB] = result;
             return 0;
         }case Opcode::XOR:{
             logger->logInfo("XOR");
+            if(instr.fields.RegB == 0){
+                instructionError(instructionErrorType::ZERO_WRITE, instr);
+                return 0;
+            }
             uint32_t result = registers[instr.fields.RegA] ^ registers[instr.fields.RegB];
             /// And finally we put the lower 32 bits into the destination register
             registers[instr.fields.RegB] = result;
             return 0;
         }case Opcode::SHL:{
             logger->logInfo("SHL");
+            if(instr.fields.RegB == 0){
+                instructionError(instructionErrorType::ZERO_WRITE, instr);
+                return 0;
+            }
             uint32_t result = registers[instr.fields.RegB] << registers[instr.fields.RegA];
             /// And finally we put the lower 32 bits into the destination register
             registers[instr.fields.RegB] = result;
             return 0;
         }case Opcode::SHR:{
             logger->logInfo("SHR");
+            if(instr.fields.RegB == 0){
+                instructionError(instructionErrorType::ZERO_WRITE, instr);
+                return 0;
+            }
             uint32_t result = registers[instr.fields.RegB] >> registers[instr.fields.RegA];
             /// And finally we put the lower 32 bits into the destination register
             registers[instr.fields.RegB] = result;
             return 0;
         }case Opcode::LD:{
             logger->logInfo("LD");
+            if(instr.fields.RegA == 0){
+                instructionError(instructionErrorType::ZERO_WRITE, instr);
+                return 0;
+            }
             registers[instr.fields.RegA] = calculateOperand(instr);
             return 0;
         }case Opcode::ST:{
@@ -415,6 +469,11 @@ int Emulator::execute(instruction instr){
             return 0;
         }case Opcode::CSRRD:{
             logger->logInfo("CSRRD");
+            if(instr.fields.RegB == 0){
+                instructionError(instructionErrorType::ZERO_WRITE, instr);
+                return 0;
+            }
+            
             if(instr.fields.RegA == csr_type::STATUS){
                 registers[instr.fields.RegB] = registers.SR().raw;
             }
@@ -423,6 +482,8 @@ int Emulator::execute(instruction instr){
             }
             if(instr.fields.RegA == csr_type::CAUSE){
                 registers[instr.fields.RegB] = registers.CS();
+            }else{
+                instructionError(instructionErrorType::INVALID_CSR, instr);
             }
             return 0;
         }case Opcode::CSRWR:{
@@ -436,12 +497,15 @@ int Emulator::execute(instruction instr){
             }else if(instr.fields.RegB == csr_type::CAUSE){
                 logger->logDebug("Setting cause to " + std::format("{:x}", registers[instr.fields.RegA]));
                 registers.CS() = registers[instr.fields.RegA];
+            }else{
+                instructionError(instructionErrorType::INVALID_CSR, instr);
             }
+            return 0;
+        }default:{
+            instructionError(instructionErrorType::UNKNOWN_INSTRUCTION, instr);
             return 0;
         }
     }
-    logger->logError("Invalid opcode '" + std::format("{:03b}", (uint8_t)instr.fields.OC) + "' at PC " + std::format("{:x}", registers.PC() - 4));
-    return 1;
 }
 
 int32_t Emulator::calculateOperand(instruction instr){
@@ -492,9 +556,10 @@ int32_t Emulator::calculateOperand(instruction instr){
         case Modifier::REG_SYM_IND:
             logger->logDebug("REG_SYM_IND");
             return getMemory(unsignedDisplacement + registers[instr.fields.RegC]);
+        default:
+            instructionError(instructionErrorType::UNKNOWN_MODIFIER, instr);
+            return 0;
     }
-    logger->logError("Invalid operand modifier '" + std::format("{:03b}", (uint8_t)instr.fields.MOD) + "' for instruction '" + std::format("{:03b}", (uint8_t)instr.fields.OC) + "' at PC " + std::format("{:x}", registers.PC() - 4));
-    throw std::runtime_error("Invalid operand modifier");
 }
 
 uint32_t Emulator::calculateAddress(instruction instr){
@@ -506,8 +571,8 @@ uint32_t Emulator::calculateAddress(instruction instr){
     uint32_t unsignedDisplacement = displacement;
     switch(instr.fields.MOD){
         case Modifier::LIT_DIR:
-            logger->logError("LIT_DIR not allowed for store instructions");
-            return unsignedDisplacement;
+            instructionError(instructionErrorType::INVALID_MODIFIER, instr);
+            return 0;
         case Modifier::LIT_IND:
             logger->logDebug("LIT_IND");
             unsignedDisplacement = getMemory(registers.PC());
@@ -516,8 +581,8 @@ uint32_t Emulator::calculateAddress(instruction instr){
             registers.PC() += 4;
             return unsignedDisplacement;
         case Modifier::SYM_DIR:
-            logger->logError("SYM_DIR not allowed for store instructions");
-            registers.PC() += 4;
+            instructionError(instructionErrorType::INVALID_MODIFIER, instr);
+            return 0;
             return unsignedDisplacement;
         case Modifier::SYM_IND:
             logger->logDebug("SYM_IND");
@@ -527,8 +592,8 @@ uint32_t Emulator::calculateAddress(instruction instr){
             registers.PC() += 4;
             return unsignedDisplacement;
         case Modifier::REG_DIR:
-            logger->logError("REG_DIR not allowed for store instructions");
-            return unsignedDisplacement;
+            instructionError(instructionErrorType::INVALID_MODIFIER, instr);
+            return 0;
         case Modifier::REG_IND:
             logger->logDebug("REG_IND");
             return registers[instr.fields.RegC];
@@ -538,10 +603,44 @@ uint32_t Emulator::calculateAddress(instruction instr){
         case Modifier::REG_SYM_IND:
             logger->logDebug("REG_SYM_IND");
             return unsignedDisplacement + registers[instr.fields.RegC];
+        default:
+            instructionError(instructionErrorType::INVALID_MODIFIER, instr);
+            return 0;
     }
-    logger->logError("Invalid operand modifier '" + std::format("{:03b}", (uint8_t)instr.fields.MOD) + "' for instruction '" + std::format("{:03b}", (uint8_t)instr.fields.OC) + "' at PC " + std::format("{:x}", registers.PC() - 4));
-    throw std::runtime_error("Invalid operand modifier");
+}
 
+void Emulator::instructionError(instructionErrorType error, instruction instr){
+    switch(error){
+        case instructionErrorType::UNKNOWN_INSTRUCTION:
+            logger->logWarning("Invalid opcode '" + std::format("{:03b}", (uint8_t)instr.fields.OC) + "' at PC " + std::format("{:x}", registers.PC() - 4));
+            break;
+        case instructionErrorType::UNKNOWN_MODIFIER:
+            logger->logWarning("Invalid modifier '" + std::format("{:03b}", (uint8_t)instr.fields.MOD) + "' for instruction '" + std::format("{:03b}", (uint8_t)instr.fields.OC) + "' at PC " + std::format("{:x}", registers.PC() - 4));
+            break;
+        case instructionErrorType::DIVIDE_BY_ZERO:
+            logger->logWarning("Divide by zero at PC " + std::format("{:x}", registers.PC() - 4));
+            break;
+        case instructionErrorType::ZERO_WRITE:
+            logger->logWarning("Write to register 0 at PC " + std::format("{:x}", registers.PC() - 4));
+            break;
+        case instructionErrorType::INVALID_ADDRESS:
+            logger->logWarning("Invalid address at PC " + std::format("{:x}", registers.PC() - 4));
+            break;
+        case instructionErrorType::INVALID_CSR:
+            logger->logWarning("Invalid CSR at PC " + std::format("{:x}", registers.PC() - 4));
+            break;
+        case instructionErrorType::INVALID_MODIFIER:
+            logger->logWarning("Invalid operand modifier '" + std::format("{:03b}", (uint8_t)instr.fields.MOD) + "' for instruction '" + std::format("{:03b}", (uint8_t)instr.fields.OC) + "' at PC " + std::format("{:x}", registers.PC() - 4));
+            break;
+        default:
+            logger->logError("Unknown error at PC " + std::format("{:x}", registers.PC() - 4));
+            break;
+    }
+    push(registers.PC());
+    registers.PC() = registers.HR();
+    push(registers.SR().raw);
+    registers.SR().raw &= ~0x1;
+    registers.CS() = 1;
 }
 
 void Emulator::push(uint32_t value){
@@ -581,7 +680,7 @@ uint32_t Emulator::getMemory(uint32_t address)
                 return mmreg.readFunction();
             }
         }
-        logger->logError("Memory-mapped register at address " + std::format("{:x}", address) + " not found");
+        instructionError(instructionErrorType::INVALID_ADDRESS, {0});
         return 0;
     }
     std::size_t i = 0;
@@ -590,8 +689,8 @@ uint32_t Emulator::getMemory(uint32_t address)
         if(address < memory[i].end) break;
     }
     if(i == memory.size()){
-        logger->logError("Memory address " + std::format("{:x}", address) + " out of bounds");
-        throw std::runtime_error("Memory access out of bounds");
+        instructionError(instructionErrorType::INVALID_ADDRESS, {0});
+        return 0;
     }
     if(address + 4 > memory[i].end){
         // If the whole value is not in the segment, pad with 0s
@@ -622,7 +721,7 @@ void Emulator::setMemory(uint32_t address, uint32_t value)
                 return;
             }
         }
-        logger->logError("Memory-mapped register at address " + std::format("{:x}", address) + " not found");
+        instructionError(instructionErrorType::INVALID_ADDRESS, {0});
         return;
     }
     std::size_t i = 0;

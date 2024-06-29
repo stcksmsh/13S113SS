@@ -79,6 +79,20 @@ private:
     /// @brief Calculate the destination address of an instruction (used for store instructions)
     uint32_t calculateAddress(instruction instr);
 
+
+    enum instructionErrorType{
+        UNKNOWN_INSTRUCTION,    /// @brief The instruction is unknown
+        UNKNOWN_MODIFIER,       /// @brief The modifier is unknown
+        DIVIDE_BY_ZERO,         /// @brief The instruction tried to divide by zero
+        ZERO_WRITE,             /// @brief The instruction tried to write to register 0
+        INVALID_ADDRESS,        /// @brief The instruction tried to access an invalid address
+        INVALID_CSR,            /// @brief The instruction tried to access an invalid CSR
+        INVALID_MODIFIER,       /// @brief The instruction tried to use a modifier that is not allowed for that instruction
+    };
+
+    /// @brief Handle an instruction error
+    void instructionError(instructionErrorType error, instruction instr);
+
     /// @brief Pushes a value onto the stack
     /// @param value The value to push onto the stack
     void push(uint32_t value);
@@ -128,11 +142,7 @@ private:
         /// @param index The index of the register to get
         /// @return A reference to the register
         uint32_t &operator[](int index) { 
-            if(index == 0){
-                logger->logError("Register 0 is wired to 0");
-                throw std::runtime_error("Register 0 should not be accessed in this way, it is wired to 0");
-            }
-            if(index < 1 || index > 15){
+            if(index < 0 || index > 15){
                 logger->logError("Index out of bounds", __FILE__, __LINE__, __FUNCTION__);
                 return registers[0];
             }
