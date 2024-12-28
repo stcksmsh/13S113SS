@@ -11,10 +11,10 @@ EMULATOR_OBJ=${patsubst src/%.cpp,obj/%.o,${EMULATOR_SRC}}
 EMULATOR_EXE=emulator
 
 LIB_HEADERS= ../lib/inc
-LIBS= logger arguments
+LIBS= logger arguments formatter
 LIB_OBJS=$(foreach lib,$(subst $(space),$(newline),$(LIBS)),../lib/$(lib).o)
 
-CXXFLAGS+= -I${LIB_HEADERS}
+CXXFLAGS+= -I${LIB_HEADERS} -pthread
 
 build: clean ${EMULATOR_OBJ}
 	@echo -n "${INDENT}Linking emulator...  "

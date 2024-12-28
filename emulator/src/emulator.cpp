@@ -11,7 +11,7 @@
 
 #include "emulator.hpp"
 #include <fstream>
-#include <format>
+#include "formatter.hpp"
 #include "terminal.hpp"
 #include "timer.hpp"
 #include <cassert>
@@ -21,7 +21,7 @@ Terminal *terminal;
 Timer *timer;
 
 void blankWrite(uint32_t value){
-    std::cout << "Writing " << std::format("{:08x}", value) << " to memory-mapped register" << std::endl;
+    std::cout << "Writing " << Formatter::format("{:08x}", value) << " to memory-mapped register" << std::endl;
 }
 
 uint32_t blankRead(){return 0;}
@@ -103,14 +103,14 @@ void Emulator::loadFromDump(std::string filename)
         uint32_t address;
         /// The address is before the ':'
         address = std::stol(line.substr(0, line.find(':')), nullptr, 16);
-        logger->logDebug("Reading line at address " + std::format("{:x}", address));
+        logger->logDebug("Reading line at address " + Formatter::format("{:x}", address));
         if(currentData.size() == 0)
         {
             currentAddress = address;
             startAddress = address;
         }else if(address != currentAddress)
         {
-            logger->logDebug("Uninitialized memory found at address " + std::format("{:x}", address) + " from " + std::format("{:x}", currentAddress));
+            logger->logDebug("Uninitialized memory found at address " + Formatter::format("{:x}", address) + " from " + Formatter::format("{:x}", currentAddress));
             loadMemory(startAddress, startAddress + currentData.size(), currentData);
             currentData.clear();
             currentAddress = address;
@@ -125,7 +125,7 @@ void Emulator::loadFromDump(std::string filename)
                 /// If the first character is a '-' the data is not present at this address
                 if(currentData.size() != 0)
                 {
-                    logger->logDebug("Uninitialized memory found at address " + std::format("{:x}", address + i) + " from " + std::format("{:x}", currentAddress));
+                    logger->logDebug("Uninitialized memory found at address " + Formatter::format("{:x}", address + i) + " from " + Formatter::format("{:x}", currentAddress));
                     loadMemory(startAddress, startAddress + currentData.size(), currentData);
                     currentData.clear();
                 }
@@ -152,10 +152,10 @@ void Emulator::printMemory(){
     for(auto segment : memory)
     {
         /// Print the start and end of the segment (in hex)
-        logger->logInfo("Memory segment from " + std::format("{:x}", segment.start) + " to " + std::format("{:x}", segment.end));
+        logger->logInfo("Memory segment from " + Formatter::format("{:x}", segment.start) + " to " + Formatter::format("{:x}", segment.end));
         for(auto byte : segment.data)
         {
-            logger->logInfo(std::format("{:x}", byte));
+            logger->logInfo(Formatter::format("{:x}", byte));
         }
     }
 }
@@ -165,26 +165,26 @@ void Emulator::printRegisters(){
     for(int i = 0; i < 15;){
         if(i < 10) std::cout << ' ';
         if(i == 0){
-            std::cout << "R" << i << ": " << std::format("{:08x}", 0) << "\t";
+            std::cout << "R" << i << ": " << Formatter::format("{:08x}", 0) << "\t";
             i++;
         }else{
-            std::cout << "R" << i << ": " << std::format("{:08x}", registers[i]) << "\t";
+            std::cout << "R" << i << ": " << Formatter::format("{:08x}", registers[i]) << "\t";
             i++;
         }
         if(i < 10) std::cout << ' ';
-        std::cout << "R" << i << ": " << std::format("{:08x}", registers[i]) << "\t";
+        std::cout << "R" << i << ": " << Formatter::format("{:08x}", registers[i]) << "\t";
         i++;
         if(i < 10) std::cout << ' ';
-        std::cout << "R" << i << ": " << std::format("{:08x}", registers[i]) << "\t";
+        std::cout << "R" << i << ": " << Formatter::format("{:08x}", registers[i]) << "\t";
         i++;
         if(i < 10) std::cout << ' ';
-        std::cout << "R" << i << ": " << std::format("{:08x}", registers[i]) << std::endl;
+        std::cout << "R" << i << ": " << Formatter::format("{:08x}", registers[i]) << std::endl;
         i++;    
     }
 }
 
 void Emulator::run(uint32_t entry){
-    logger->logInfo("Starting emulator at entry point " + std::format("{:x}", entry));
+    logger->logInfo("Starting emulator at entry point " + Formatter::format("{:x}", entry));
     registers.PC() = entry;
     int retval;
     do{
@@ -195,7 +195,7 @@ void Emulator::run(uint32_t entry){
         std::cout << "Emulated processor executed halt instruction" << std::endl;
     }
     if(retval == 2){
-        std::cout << "Emulated processor encountered an error at PC " << std::format("{:x}", registers.PC()) << std::endl;
+        std::cout << "Emulated processor encountered an error at PC " << Formatter::format("{:x}", registers.PC()) << std::endl;
     }
 }
 
@@ -251,7 +251,7 @@ enum csr_type: char{
 };
 
 int Emulator::step(){
-    logger->logInfo("PC: " + std::format("{:x}", registers.PC()));
+    logger->logInfo("PC: " + Formatter::format("{:x}", registers.PC()));
     instruction instr;
     /// Fetch and decode the instruction
     instr.raw = getMemory(registers.PC());
@@ -259,7 +259,7 @@ int Emulator::step(){
         return 2;
     }
     instr.raw = __builtin_bswap32(instr.raw);
-    logger->logInfo("Instruction: " + std::format("{:08x}", instr.raw));
+    logger->logInfo("Instruction: " + Formatter::format("{:08x}", instr.raw));
     /// Automatically increment the PC
     registers.PC() += 4;
     
@@ -501,13 +501,13 @@ int Emulator::execute(instruction instr){
         }case Opcode::CSRWR:{
             logger->logInfo("CSRWR");
             if(instr.fields.RegB == csr_type::STATUS){
-                logger->logDebug("Setting status to " + std::format("{:x}", registers[instr.fields.RegA]));
+                logger->logDebug("Setting status to " + Formatter::format("{:x}", registers[instr.fields.RegA]));
                 registers.SR().raw = registers[instr.fields.RegA];
             }else if(instr.fields.RegB == csr_type::HANDLER){
-                logger->logDebug("Setting handler to " + std::format("{:x}", registers[instr.fields.RegA]));
+                logger->logDebug("Setting handler to " + Formatter::format("{:x}", registers[instr.fields.RegA]));
                 registers.HR() = registers[instr.fields.RegA];
             }else if(instr.fields.RegB == csr_type::CAUSE){
-                logger->logDebug("Setting cause to " + std::format("{:x}", registers[instr.fields.RegA]));
+                logger->logDebug("Setting cause to " + Formatter::format("{:x}", registers[instr.fields.RegA]));
                 registers.CS() = registers[instr.fields.RegA];
             }else{
                 instructionError(instructionErrorType::INVALID_CSR, instr);
@@ -532,28 +532,28 @@ int32_t Emulator::calculateOperand(instruction instr){
             logger->logDebug("LIT_DIR");
             unsignedDisplacement = getMemory(registers.PC());
             unsignedDisplacement = __builtin_bswap32(unsignedDisplacement);
-            logger->logDebug("Fetched extended literal " + std::format("{:08x}", unsignedDisplacement));
+            logger->logDebug("Fetched extended literal " + Formatter::format("{:08x}", unsignedDisplacement));
             registers.PC() += 4;
             return unsignedDisplacement;
         case Modifier::LIT_IND:
             logger->logDebug("LIT_IND");
             unsignedDisplacement = getMemory(registers.PC());
             unsignedDisplacement = __builtin_bswap32(unsignedDisplacement);
-            logger->logDebug("Fetched extended literal " + std::format("{:08x}", unsignedDisplacement));
+            logger->logDebug("Fetched extended literal " + Formatter::format("{:08x}", unsignedDisplacement));
             registers.PC() += 4;
             return getMemory(unsignedDisplacement);
         case Modifier::SYM_DIR:
             logger->logDebug("SYM_DIR");
             unsignedDisplacement = getMemory(registers.PC());
             unsignedDisplacement = __builtin_bswap32(unsignedDisplacement);
-            logger->logDebug("Fetched extended symbol " + std::format("{:08x}", unsignedDisplacement));
+            logger->logDebug("Fetched extended symbol " + Formatter::format("{:08x}", unsignedDisplacement));
             registers.PC() += 4;
             return unsignedDisplacement;
         case Modifier::SYM_IND:
             logger->logDebug("SYM_IND");
             unsignedDisplacement = getMemory(registers.PC());
             unsignedDisplacement = __builtin_bswap32(unsignedDisplacement);
-            logger->logDebug("Fetched extended symbol " + std::format("{:08x}", unsignedDisplacement));
+            logger->logDebug("Fetched extended symbol " + Formatter::format("{:08x}", unsignedDisplacement));
             registers.PC() += 4;
             return getMemory(unsignedDisplacement);
         case Modifier::REG_DIR:
@@ -589,7 +589,7 @@ uint32_t Emulator::calculateAddress(instruction instr){
             logger->logDebug("LIT_IND");
             unsignedDisplacement = getMemory(registers.PC());
             unsignedDisplacement = __builtin_bswap32(unsignedDisplacement);
-            logger->logDebug("Fetched extended literal " + std::format("{:08x}", unsignedDisplacement));
+            logger->logDebug("Fetched extended literal " + Formatter::format("{:08x}", unsignedDisplacement));
             registers.PC() += 4;
             return unsignedDisplacement;
         case Modifier::SYM_DIR:
@@ -600,7 +600,7 @@ uint32_t Emulator::calculateAddress(instruction instr){
             logger->logDebug("SYM_IND");
             unsignedDisplacement = getMemory(registers.PC());
             unsignedDisplacement = __builtin_bswap32(unsignedDisplacement);
-            logger->logDebug("Fetched extended symbol " + std::format("{:08x}", unsignedDisplacement));
+            logger->logDebug("Fetched extended symbol " + Formatter::format("{:08x}", unsignedDisplacement));
             registers.PC() += 4;
             return unsignedDisplacement;
         case Modifier::REG_DIR:
@@ -624,28 +624,28 @@ uint32_t Emulator::calculateAddress(instruction instr){
 void Emulator::instructionError(instructionErrorType error, instruction instr){
     switch(error){
         case instructionErrorType::UNKNOWN_INSTRUCTION:
-            logger->logWarning("Invalid opcode '" + std::format("{:03b}", (uint8_t)instr.fields.OC) + "' at PC " + std::format("{:x}", registers.PC() - 4));
+            logger->logWarning("Invalid opcode '" + Formatter::format("{:03b}", (uint8_t)instr.fields.OC) + "' at PC " + Formatter::format("{:x}", registers.PC() - 4));
             break;
         case instructionErrorType::UNKNOWN_MODIFIER:
-            logger->logWarning("Invalid modifier '" + std::format("{:03b}", (uint8_t)instr.fields.MOD) + "' for instruction '" + std::format("{:03b}", (uint8_t)instr.fields.OC) + "' at PC " + std::format("{:x}", registers.PC() - 4));
+            logger->logWarning("Invalid modifier '" + Formatter::format("{:03b}", (uint8_t)instr.fields.MOD) + "' for instruction '" + Formatter::format("{:03b}", (uint8_t)instr.fields.OC) + "' at PC " + Formatter::format("{:x}", registers.PC() - 4));
             break;
         case instructionErrorType::DIVIDE_BY_ZERO:
-            logger->logWarning("Divide by zero at PC " + std::format("{:x}", registers.PC() - 4));
+            logger->logWarning("Divide by zero at PC " + Formatter::format("{:x}", registers.PC() - 4));
             break;
         case instructionErrorType::ZERO_WRITE:
-            logger->logWarning("Write to register 0 at PC " + std::format("{:x}", registers.PC() - 4));
+            logger->logWarning("Write to register 0 at PC " + Formatter::format("{:x}", registers.PC() - 4));
             break;
         case instructionErrorType::INVALID_ADDRESS:
-            logger->logWarning("Invalid address at PC " + std::format("{:x}", registers.PC() - 4));
+            logger->logWarning("Invalid address at PC " + Formatter::format("{:x}", registers.PC() - 4));
             break;
         case instructionErrorType::INVALID_CSR:
-            logger->logWarning("Invalid CSR at PC " + std::format("{:x}", registers.PC() - 4));
+            logger->logWarning("Invalid CSR at PC " + Formatter::format("{:x}", registers.PC() - 4));
             break;
         case instructionErrorType::INVALID_MODIFIER:
-            logger->logWarning("Invalid operand modifier '" + std::format("{:03b}", (uint8_t)instr.fields.MOD) + "' for instruction '" + std::format("{:03b}", (uint8_t)instr.fields.OC) + "' at PC " + std::format("{:x}", registers.PC() - 4));
+            logger->logWarning("Invalid operand modifier '" + Formatter::format("{:03b}", (uint8_t)instr.fields.MOD) + "' for instruction '" + Formatter::format("{:03b}", (uint8_t)instr.fields.OC) + "' at PC " + Formatter::format("{:x}", registers.PC() - 4));
             break;
         default:
-            logger->logError("Unknown error at PC " + std::format("{:x}", registers.PC() - 4));
+            logger->logError("Unknown error at PC " + Formatter::format("{:x}", registers.PC() - 4));
             break;
     }
     push(registers.SR().raw);
@@ -670,7 +670,7 @@ uint32_t Emulator::pop(){
 
 void Emulator::loadMemory(uint32_t start, uint32_t end, std::vector<uint8_t> data)
 {
-    logger->logInfo("Loading memory from " + std::format("{:x}", start) + " to " + std::format("{:x}", end));
+    logger->logInfo("Loading memory from " + Formatter::format("{:x}", start) + " to " + Formatter::format("{:x}", end));
     memorySegment segment;
     segment.start = start;
     segment.end = end;
@@ -681,14 +681,14 @@ void Emulator::loadMemory(uint32_t start, uint32_t end, std::vector<uint8_t> dat
 
 uint32_t Emulator::getMemory(uint32_t address)
 {
-    logger->logDebug("Getting memory at address " + std::format("{:08x}", address));
+    logger->logDebug("Getting memory at address " + Formatter::format("{:08x}", address));
     if(address >= 0xffffff00)
     {
         for(auto mmreg : memoryMappedRegisters)
         {
             if(address == mmreg.address)
             {
-                logger->logDebug("Reading from memory-mapped register at address " + std::format("{:x}", address));
+                logger->logDebug("Reading from memory-mapped register at address " + Formatter::format("{:x}", address));
                 return mmreg.readFunction();
             }
         }
@@ -697,7 +697,7 @@ uint32_t Emulator::getMemory(uint32_t address)
     }
     std::size_t i = 0;
     for(;i < memory.size(); i++){
-        logger->logDebug("Checking memory segment from " + std::format("{:x}", memory[i].start) + " to " + std::format("{:x}", memory[i].end));
+        logger->logDebug("Checking memory segment from " + Formatter::format("{:x}", memory[i].start) + " to " + Formatter::format("{:x}", memory[i].end));
         if(address < memory[i].end) break;
     }
     if(i == memory.size() || address < memory[i].start){
@@ -715,20 +715,20 @@ uint32_t Emulator::getMemory(uint32_t address)
         return value;
     }
     uint32_t value = (uint32_t)memory[i].data[address - memory[i].start] << 24 | (uint32_t)memory[i].data[address - memory[i].start + 1] << 16 | (uint32_t)memory[i].data[address - memory[i].start + 2] << 8 | (uint32_t)memory[i].data[address - memory[i].start + 3];
-    logger->logDebug("Found value " + std::format("{:08x}", value));
+    logger->logDebug("Found value " + Formatter::format("{:08x}", value));
     return value;
 }
 
 void Emulator::setMemory(uint32_t address, uint32_t value)
 {
-    logger->logDebug("Setting memory at address " + std::format("{:x}", address) + " to " + std::format("{:x}", value));
+    logger->logDebug("Setting memory at address " + Formatter::format("{:x}", address) + " to " + Formatter::format("{:x}", value));
     if(address >= 0xffffff00)
     {
         for(auto &mmreg : memoryMappedRegisters)
         {
             if(address == mmreg.address)
             {
-                logger->logDebug("Writing to memory-mapped register at address " + std::format("{:x}", address));
+                logger->logDebug("Writing to memory-mapped register at address " + Formatter::format("{:x}", address));
                 mmreg.writeFunction(value);
                 return;
             }
@@ -747,7 +747,7 @@ void Emulator::setMemory(uint32_t address, uint32_t value)
         segment.end = address + 4;
         segment.data = {(uint8_t)(value >> 24), (uint8_t)(value >> 16), (uint8_t)(value >> 8), (uint8_t)(value)};
         memory.push_back(segment);
-        logger->logDebug("Created new memory segment from " + std::format("{:x}", segment.start) + " to " + std::format("{:x}", segment.end));
+        logger->logDebug("Created new memory segment from " + Formatter::format("{:x}", segment.start) + " to " + Formatter::format("{:x}", segment.end));
         return;
     }
     if(address < memory[i].start){
@@ -758,14 +758,14 @@ void Emulator::setMemory(uint32_t address, uint32_t value)
             segment.end = address + 4;
             segment.data = {(uint8_t)(value >> 24), (uint8_t)(value >> 16), (uint8_t)(value >> 8), (uint8_t)(value)};
             memory.insert(memory.begin() + i, segment);
-            logger->logDebug("Created new memory segment from " + std::format("{:x}", segment.start) + " to " + std::format("{:x}", segment.end));
+            logger->logDebug("Created new memory segment from " + Formatter::format("{:x}", segment.start) + " to " + Formatter::format("{:x}", segment.end));
         }else{
             /// If the value is partly in the segment, push_front the bytes
             int byte = 0;
             for(; address + byte < memory[i].start && byte < 4; byte++){
                 memory[i].data.insert(memory[i].data.begin()+byte, (uint8_t)(value >> (24 - byte * 8)));
             }
-            logger->logDebug("Left extended memory segment from " + std::format("{:x}", memory[i].start) + " to " + std::format("{:x}", memory[i].end) + " by " + std::format("{:d}", byte) + " bytes");
+            logger->logDebug("Left extended memory segment from " + Formatter::format("{:x}", memory[i].start) + " to " + Formatter::format("{:x}", memory[i].end) + " by " + Formatter::format("{:d}", byte) + " bytes");
             memory[i].start -= byte;
             /// Then set the remaining bytes
             while(byte < 4){
@@ -782,7 +782,7 @@ void Emulator::setMemory(uint32_t address, uint32_t value)
         for(; address + byte < memory[i].end && byte < 4; byte++){
             memory[i].data[address - memory[i].start + byte] = (uint8_t)(value >> (24 - byte * 8));
         }
-        logger->logDebug("Right extended memory segment from " + std::format("{:x}", memory[i].start) + " to " + std::format("{:x}", memory[i].end) + " by " + std::format("{:d}", 4-byte) + " bytes");
+        logger->logDebug("Right extended memory segment from " + Formatter::format("{:x}", memory[i].start) + " to " + Formatter::format("{:x}", memory[i].end) + " by " + Formatter::format("{:d}", 4-byte) + " bytes");
         /// Then append the remaining bytes
         while(byte < 4){
             memory[i].data.push_back((uint8_t)(value >> (24 - byte * 8)));

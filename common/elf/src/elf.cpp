@@ -11,7 +11,7 @@
 
 #include "elf.hpp"
 #include <string.h>
-#include <format>
+#include "formatter.hpp"
 #include <algorithm>
 
 std::istream &
@@ -101,7 +101,7 @@ ELF::readFromStream(std::istream &stream)
             sym_entry.is_extern = !sym_entry.is_local && sym.shndx == 0;
             sym_entry.section = section_names[sym.shndx];
             symbol_table.push_back(sym_entry);
-            logger->logDebug("Added symbol '" + name + "' from section '" + sym_entry.section + "' to the symbol table with value 0x" + std::format("{:x}", sym.value) + " and " + (sym_entry.is_local ? "local" : "global") + " binding");
+            logger->logDebug("Added symbol '" + name + "' from section '" + sym_entry.section + "' to the symbol table with value 0x" + Formatter::format("{:x}", sym.value) + " and " + (sym_entry.is_local ? "local" : "global") + " binding");
         }
         
         logger->logInfo("Creating the relocation table");
@@ -221,7 +221,7 @@ ELF::createShared(std::ostream &stream)
                 }
             }
 
-            logger->logDebug("Adding symbol '" + symbol_table[i].name + "' to symtab with value 0x" + std::format("{:x}", symbol_table[i].value) + " and " + (symbol_table[i].is_local ? "local" : "global") + " binding");
+            logger->logDebug("Adding symbol '" + symbol_table[i].name + "' to symtab with value 0x" + Formatter::format("{:x}", symbol_table[i].value) + " and " + (symbol_table[i].is_local ? "local" : "global") + " binding");
             symtab.push_back(sym);
         }
     }
@@ -255,7 +255,7 @@ ELF::createShared(std::ostream &stream)
             {
                 if (relocation_table[j].section == section_names[i])
                 {
-                    logger->logDebug("Relocation for symbol '" + relocation_table[j].name + "' in section '" + relocation_table[j].section + "' at offset 0x" + std::format("{:x}", relocation_table[j].offset));
+                    logger->logDebug("Relocation for symbol '" + relocation_table[j].name + "' in section '" + relocation_table[j].section + "' at offset 0x" + Formatter::format("{:x}", relocation_table[j].offset));
                     rel_tab_entry rel;
                     rel.offset = relocation_table[j].offset;
                     for (std::size_t k = 0; k < symbol_table.size(); k++)
@@ -266,7 +266,7 @@ ELF::createShared(std::ostream &stream)
                             break;
                         }
                     }
-                    logger->logDebug("Adding relocation entry for symbol '" + relocation_table[j].name + "' in section: '" + relocation_table[j].section + "' at offset 0x" + std::format("{:x}", relocation_table[j].offset), " referencing symbol at index " + std::to_string(rel.info));
+                    logger->logDebug("Adding relocation entry for symbol '" + relocation_table[j].name + "' in section: '" + relocation_table[j].section + "' at offset 0x" + Formatter::format("{:x}", relocation_table[j].offset), " referencing symbol at index " + std::to_string(rel.info));
                     rel.info = rel_tab_entry_info(rel.info, rel_tab_types::R_386_32);
                     rel.addend = relocation_table[j].addend;
                     rel_section_data.push_back(rel);
@@ -505,7 +505,7 @@ ELF::memDump(std::ostream &stream){
             if(section_headers[index].addr < current_address){
                 logger->logError("Section " + section_names[index] + " overlaps with section " + section_names[set_section_indices[0]]);
             }
-            logger->logDebug("Section " + section_names[index] + " has been set to address 0x" + std::format("{:x}", section_headers[index].addr) + " by user");
+            logger->logDebug("Section " + section_names[index] + " has been set to address 0x" + Formatter::format("{:x}", section_headers[index].addr) + " by user");
             current_address = section_headers[index].addr + section_headers[index].size;
         }
         if(logger->errorExists()){
@@ -517,7 +517,7 @@ ELF::memDump(std::ostream &stream){
                 section_headers[i].addr = current_address;
                 current_address += section_headers[i].size;
                 set_section_indices.push_back(i);
-                logger->logDebug("Section " + section_names[i] + " has been set to address 0x" + std::format("{:x}", section_headers[i].addr) + " by the system");
+                logger->logDebug("Section " + section_names[i] + " has been set to address 0x" + Formatter::format("{:x}", section_headers[i].addr) + " by the system");
             }
         }
     }
@@ -537,7 +537,7 @@ ELF::memDump(std::ostream &stream){
             for(std::size_t j = 0; j < section_headers.size(); j ++){
                 if(section_names[j] == symbol_table[i].section){
                     symbol_table[i].value += section_headers[j].addr;
-                    logger->logDebug("Updating symbol '" + symbol_table[i].name + "' to address 0x" + std::format("{:x}", symbol_table[i].value));
+                    logger->logDebug("Updating symbol '" + symbol_table[i].name + "' to address 0x" + Formatter::format("{:x}", symbol_table[i].value));
                 }
             }
         }
@@ -551,15 +551,15 @@ ELF::memDump(std::ostream &stream){
             uint32_t offset = relocation_table[i].offset; /// The offset in the section where the relocation is
             uint32_t addend = relocation_table[i].addend; /// The addend to add to the symbol value
             int32_t value = 0; /// The value of the symbol
-            logger->logDebug("Applying relocation for symbol '" + source + "' in section '" + section + "' at offset 0x" + std::format("{:x}", offset) + " with addend 0x" + std::format("{:x}", addend));
+            logger->logDebug("Applying relocation for symbol '" + source + "' in section '" + section + "' at offset 0x" + Formatter::format("{:x}", offset) + " with addend 0x" + Formatter::format("{:x}", addend));
             for(std::size_t j = 0; j < symbol_table.size(); j++){
                 if(symbol_table[j].name == source){
                     if(symbol_table[j].is_const){
-                        logger->logDebug("Symbol '" + source + "' found in symbol table with value 0x" + std::format("{:x}", symbol_table[j].value));
+                        logger->logDebug("Symbol '" + source + "' found in symbol table with value 0x" + Formatter::format("{:x}", symbol_table[j].value));
                         value = symbol_table[j].value;
                         break;
                     }else{
-                        logger->logDebug("Symbol '" + source + "' found in symbol table with value 0x" + std::format("{:x}", symbol_table[j].value) + " adding addend 0x" + std::format("{:x}", addend));
+                        logger->logDebug("Symbol '" + source + "' found in symbol table with value 0x" + Formatter::format("{:x}", symbol_table[j].value) + " adding addend 0x" + Formatter::format("{:x}", addend));
                         value = symbol_table[j].value + addend;
                         break;
                     }
@@ -584,11 +584,11 @@ ELF::memDump(std::ostream &stream){
                         /// If the signed value does not fit in 12 bits, we need to log an error
                         value = value - (section_headers[j].addr  + offset);
                         if(value > 0x7ff)
-                            logger->logError("Relocation for symbol '" + source + "' in section '" + section + "' at offset 0x" + std::format("{:x}", offset) + " cannot be applied, because the value 0x" + std::format("{:03x}", value) + " is too large");
+                            logger->logError("Relocation for symbol '" + source + "' in section '" + section + "' at offset 0x" + Formatter::format("{:x}", offset) + " cannot be applied, because the value 0x" + Formatter::format("{:03x}", value) + " is too large");
                         else if(value < -0x800)
-                            logger->logError("Relocation for symbol '" + source + "' in section '" + section + "' at offset 0x" + std::format("{:x}", offset) + " cannot be applied, because the value 0x" + std::format("{:03x}", value) + " is too small");
+                            logger->logError("Relocation for symbol '" + source + "' in section '" + section + "' at offset 0x" + Formatter::format("{:x}", offset) + " cannot be applied, because the value 0x" + Formatter::format("{:03x}", value) + " is too small");
                         else{
-                            logger->logDebug("Relocating symbol '" + source + "' in section '" + section + "'( offset 0x" + std::format("{:x}", section_headers[j].addr) + ") at offset 0x" + std::format("{:x}", offset) + " to value 0x" + std::format("{:03x}", value));
+                            logger->logDebug("Relocating symbol '" + source + "' in section '" + section + "'( offset 0x" + Formatter::format("{:x}", section_headers[j].addr) + ") at offset 0x" + Formatter::format("{:x}", offset) + " to value 0x" + Formatter::format("{:03x}", value));
                             /// Now convert it to a signed 12 bit value
                             *ptr = *ptr & 0xfffff000;
                             *ptr = *ptr | (value & 0xfff);
@@ -612,14 +612,14 @@ ELF::memDump(std::ostream &stream){
         uint32_t current_address = section_headers[set_section_indices[0]].addr;
         // /// First if the start address is not aligned to 8 bytes, we need to print the first line
         if(current_address % 8 != 0){
-            stream << std::format("{:04x}:  ", current_address & 0xfffffff8);
+            stream << Formatter::format("{:04x}:  ", current_address & 0xfffffff8);
         }
         for(int i = current_address % 8; i > 0; i--){
             stream << "-- ";
         }
         for (int index : set_section_indices)
         {
-            logger->logDebug("Writing section " + section_names[index] + " to the stream from address 0x" + std::format("{:x}", section_headers[index].addr) + " to 0x" + std::format("{:x}", section_headers[index].addr + section_headers[index].size));
+            logger->logDebug("Writing section " + section_names[index] + " to the stream from address 0x" + Formatter::format("{:x}", section_headers[index].addr) + " to 0x" + Formatter::format("{:x}", section_headers[index].addr + section_headers[index].size));
             uint32_t addr = section_headers[index].addr;
             uint32_t size = section_headers[index].size;
             uint32_t bin_dat_offset = section_headers[index].offset - sizeof(ELF_Header);
@@ -632,7 +632,7 @@ ELF::memDump(std::ostream &stream){
                     if(section_names[index] == ".bss"){
                         stream << "00 ";
                     }else{
-                        stream << std::format("{:02x} ", (uint8_t)binary_data[bin_dat_offset + byte]);
+                        stream << Formatter::format("{:02x} ", (uint8_t)binary_data[bin_dat_offset + byte]);
                     }
                     byte++;
                 }
@@ -647,7 +647,7 @@ ELF::memDump(std::ostream &stream){
                     if(current_address > section_headers[set_section_indices[0]].addr){
                         stream << "\n";
                     }
-                    stream << std::format("{:04x}:  ", current_address);
+                    stream << Formatter::format("{:04x}:  ", current_address);
                 }
                 if(current_address < addr){
                     stream << "-- ";
@@ -655,7 +655,7 @@ ELF::memDump(std::ostream &stream){
                     if(section_names[index] == ".bss"){
                         stream << "00 ";
                     }else{
-                        stream << std::format("{:02x} ", (uint8_t)binary_data[bin_dat_offset + byte]);
+                        stream << Formatter::format("{:02x} ", (uint8_t)binary_data[bin_dat_offset + byte]);
                     }
                     byte++;
                 }
@@ -679,7 +679,7 @@ ELF::memDump(std::ostream &stream){
 
 void
 ELF::setSectionAddress(const std::string section_name, const uint32_t address){
-    logger->logInfo("Setting the address of section " + section_name + " to 0x" + std::format("{:x}", address));
+    logger->logInfo("Setting the address of section " + section_name + " to 0x" + Formatter::format("{:x}", address));
     Section_Header *sh = nullptr;
     for(std::size_t i = 0; i < section_names.size(); i++){
         if(section_names[i] == section_name){
@@ -711,7 +711,7 @@ void ELF::add_section(const std::string name, const std::vector<char> data,
     sh.offset = sizeof(ELF_Header) + program_headers.size() * sizeof(Program_Header) + binary_data.size();
     sh.size = data.size();
 
-    logger->logDebug("Section '" + name + "' has offset 0x" + std::format("{:x}", sh.offset) + " and size " + std::to_string(sh.size));
+    logger->logDebug("Section '" + name + "' has offset 0x" + Formatter::format("{:x}", sh.offset) + " and size " + std::to_string(sh.size));
 
     section_names.push_back(name);
     section_headers.push_back(sh);
@@ -723,7 +723,7 @@ void ELF::add_section(const std::string name, const std::vector<char> data,
 
 void ELF::add_symbol(const std::string name, const std::string section, const uint32_t value, bool is_local, bool is_section, bool is_const, bool is_extern)
 {
-    logger->logDebug("Adding symbol '" + name + "' to section '" + section + "' with value 0x" + std::format("{:x}", value));
+    logger->logDebug("Adding symbol '" + name + "' to section '" + section + "' with value 0x" + Formatter::format("{:x}", value));
     ELF::Symbol_Table_Entry sym;
     sym.name = name;
     sym.section = section;
@@ -737,7 +737,7 @@ void ELF::add_symbol(const std::string name, const std::string section, const ui
 
 void ELF::add_relocation(const std::string name, const std::string section, const uint32_t offset, const uint32_t addend)
 {
-    logger->logDebug("Adding relocation for symbol '" + name + "' in section '" + section + "' at offset 0x" + std::format("{:x}", offset));
+    logger->logDebug("Adding relocation for symbol '" + name + "' in section '" + section + "' at offset 0x" + Formatter::format("{:x}", offset));
     Relocation_Entry rel;
     rel.section = section;
     rel.name = name;

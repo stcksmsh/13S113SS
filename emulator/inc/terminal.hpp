@@ -16,6 +16,7 @@
 #include "emulator.hpp"
 #include <thread>
 #include <cstdint>
+#include <unistd.h>
 
 class Terminal{
 public:

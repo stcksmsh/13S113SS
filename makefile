@@ -9,20 +9,20 @@ build: ${ASSEMBLER} ${LINKER} ${EMULATOR}
 ${ASSEMBLER}: FORCE ${COMMON} | ${BIN_DIR}
 	@echo "Building assembler..."
 	@${MAKE} --no-print-directory -C ${ASSEMBLER} build
-	@cp ${ASSEMBLER}/${ASSEMBLER} ${BIN_DIR}/${ASSEMBLER}
+	@mv ${ASSEMBLER}/${ASSEMBLER} ${BIN_DIR}/${ASSEMBLER}
 	@export INDENT=""
 	@echo "Done building assembler."
 
 ${LINKER}: FORCE ${COMMON} | ${BIN_DIR}
 	@echo "Building linker..."
 	@${MAKE} --no-print-directory -C ${LINKER} build
-	@cp ${LINKER}/${LINKER} ${BIN_DIR}/${LINKER}
+	@mv ${LINKER}/${LINKER} ${BIN_DIR}/${LINKER}
 	@echo "Done building linker."
 
 ${EMULATOR}: FORCE ${COMMON} | ${BIN_DIR}
 	@echo "Building emulator..."
 	@${MAKE} --no-print-directory -C ${EMULATOR} build
-	@cp ${EMULATOR}/${EMULATOR} ${BIN_DIR}/${EMULATOR}
+	@mv ${EMULATOR}/${EMULATOR} ${BIN_DIR}/${EMULATOR}
 	@echo "Done building emulator."
 
 ${COMMON}: FORCE ${BIN_DIR}

@@ -15,7 +15,7 @@ SCANNER_FILE=src/scanner.l
 
 
 LIB_HEADERS= ../lib/inc
-LIBS= elf logger arguments
+LIBS= elf logger arguments formatter
 LIB_OBJS=$(foreach lib,$(subst $(space),$(newline),$(LIBS)),../lib/$(lib).o)
 
 CXXFLAGS+= -I${LIB_HEADERS}

@@ -6,3 +6,4 @@
 *.hex
 *.zip
 tests/
+bin/

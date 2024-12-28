@@ -28,5 +28,5 @@ handle_terminal:
 handle_software:
     call isr_software
     jmp finish
-    
+
 .end

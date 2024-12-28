@@ -18,7 +18,7 @@
 #include "elf.hpp"
 
 #include "colors.h"
-#include <format>
+#include "formatter.hpp"
 #include "../../linker/inc/linker.hpp"
 #include <string.h>
 
@@ -135,7 +135,7 @@ void Assembler::Driver::parse_helper(std::istream &stream)
       symbol->offset = value;
       symbol->is_defined = true;
       symbol->is_const = true;
-      logger->logDebug("Resolved EQU symbol '" + equ.first + "' to 0x" + std::format("{:08x}", value), filename);
+      logger->logDebug("Resolved EQU symbol '" + equ.first + "' to 0x" + Formatter::format("{:08x}", value), filename);
       
       /// Now delete the EQU struct
       EquStruct *currentEqu = equ.second;
@@ -150,7 +150,7 @@ void Assembler::Driver::parse_helper(std::istream &stream)
       symbol->forward_refs = nullptr;
       while (currentRef)
       {
-         logger->logDebug("Resolving forward reference in section '" + currentRef->section + "' at offset 0x" + std::format("{:x}", currentRef->offset), filename);
+         logger->logDebug("Resolving forward reference in section '" + currentRef->section + "' at offset 0x" + Formatter::format("{:x}", currentRef->offset), filename);
          add_relocation(equ.first, currentRef->section, currentRef->offset);
          STentry::STforward_ref *next = currentRef->next;
          delete currentRef;
@@ -215,7 +215,7 @@ Assembler::Driver::insert_symbol(const std::string name, const bool is_defined, 
          /// If it is defined, throw an error
          if (symbol_table[i].is_defined)
          {
-            logger->logError("Symbol '" + name + "' is already defined in section '" + symbol_table[i].section + "' at offset 0x" + std::format("{:x}", symbol_table[i].offset), filename, scanner->lineno());
+            logger->logError("Symbol '" + name + "' is already defined in section '" + symbol_table[i].section + "' at offset 0x" + Formatter::format("{:x}", symbol_table[i].offset), filename, scanner->lineno());
          }
          /// Otherwise complete the entry
          symbol_table[i].section = section;
@@ -229,7 +229,7 @@ Assembler::Driver::insert_symbol(const std::string name, const bool is_defined, 
             symbol_table[i].forward_refs = nullptr;
             while (current)
             {
-               logger->logDebug("Resolving forward reference in section '" + current->section + "' at offset 0x" + std::format("{:x}", current->offset), filename);
+               logger->logDebug("Resolving forward reference in section '" + current->section + "' at offset 0x" + Formatter::format("{:x}", current->offset), filename);
                add_relocation(name, current->section, current->offset);
                STentry::STforward_ref *next = current->next;
                delete current;
@@ -268,7 +268,7 @@ void Assembler::Driver::update_symbol(std::string name, std::string section){
          for(std::size_t j = 0; j < relocation_list.size(); j++){
             if (relocation_list[j].src_section == symbol_table[i].section && relocation_list[j].src_offset == symbol_table[i].offset)
             {
-               logger->logDebug("Updating relocation in section '" + relocation_list[j].dst_section + "' at offset 0x" + std::format("{:x}", relocation_list[j].dst_offset) + " to point to section '" + section + "' at offset 0x" + std::format("{:x}", symbol_table[i].offset), filename, scanner->lineno());
+               logger->logDebug("Updating relocation in section '" + relocation_list[j].dst_section + "' at offset 0x" + Formatter::format("{:x}", relocation_list[j].dst_offset) + " to point to section '" + section + "' at offset 0x" + Formatter::format("{:x}", symbol_table[i].offset), filename, scanner->lineno());
                relocation_list[j].src_section = section;
                relocation_list[j].src_offset = new_offset;
             }
@@ -289,7 +289,7 @@ Assembler::Driver::get_symbol(const std::string name)
    {
       if (symbol_table[i].name == name)
       {
-         logger->logDebug("Found symbol '" + name + "' in section '" + symbol_table[i].section + "' at offset 0x" + std::format("{:x}", symbol_table[i].offset));
+         logger->logDebug("Found symbol '" + name + "' in section '" + symbol_table[i].section + "' at offset 0x" + Formatter::format("{:x}", symbol_table[i].offset));
          return &symbol_table[i];
       }
    }
@@ -307,7 +307,7 @@ void Assembler::Driver::forward_reference(const std::string name)
    {
       if (symbol_table[i].name == name)
       {
-         logger->logDebug("Symbol '" + name + "' found in section '" + symbol_table[i].section + "' at offset 0x" + std::format("{:x}", symbol_table[i].offset));
+         logger->logDebug("Symbol '" + name + "' found in section '" + symbol_table[i].section + "' at offset 0x" + Formatter::format("{:x}", symbol_table[i].offset));
          STentry::STforward_ref *current = symbol_table[i].forward_refs;
          symbol_table[i].forward_refs = new STentry::STforward_ref;
          symbol_table[i].forward_refs->section = section;
@@ -335,7 +335,7 @@ void Assembler::Driver::add_relocation(const std::string symbol, const std::stri
 {
    if(section == ""){
       /// This means that the method was invoked from the parser, when it found a defined symbol
-      logger->logDebug("Adding relocation for symbol '" + symbol + "' in section '" + section + "' at offset 0x" + std::format("{:x}", offset), filename, scanner->lineno());
+      logger->logDebug("Adding relocation for symbol '" + symbol + "' in section '" + section + "' at offset 0x" + Formatter::format("{:x}", offset), filename, scanner->lineno());
       std::string current_section = section_list.back().name;
       uint32_t current_offset = section_list.back().size;
       STentry *entry = get_symbol(symbol);
@@ -350,7 +350,7 @@ void Assembler::Driver::add_relocation(const std::string symbol, const std::stri
       relocation_list.push_back(new_relocation);
    }else{
       /// This means that the method was invoked when a symbols forward reference was resolved
-      logger->logDebug("Adding relocation for symbol '" + symbol + "' in section '" + section + "' at offset 0x" + std::format("{:x} while resolving its forward ref", offset), filename, scanner->lineno());
+      logger->logDebug("Adding relocation for symbol '" + symbol + "' in section '" + section + "' at offset 0x" + Formatter::format("{:x} while resolving its forward ref", offset), filename, scanner->lineno());
       Relocation new_relocation;
       STentry *entry = get_symbol(symbol);
       new_relocation.src_section = entry->section;

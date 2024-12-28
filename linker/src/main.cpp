@@ -3,7 +3,7 @@
 
 #include "linker.hpp"
 #include "arguments.hpp"
-#include <format>
+#include "formatter.hpp"
 
 uint32_t stringToAddress(std::string str){
     if(str.size() > 2 && str[0] == '0' && str[1] == 'x')
@@ -68,7 +68,7 @@ int main(int argc, const char **argv)
             section_addresses.push_back({arg[0], stringToAddress(arg[1])});
 
     for(auto section_address : section_addresses)
-        logger.logInfo("Section " + section_address.first + " placed at address 0x" + std::format("{:08x}", section_address.second));
+        logger.logInfo("Section " + section_address.first + " placed at address 0x" + Formatter::format("{:08x}", section_address.second));
 
 
 
