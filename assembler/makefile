@@ -48,7 +48,7 @@ scanner: ${SCANNER_FILE}
 ${OBJ_DIR}:
 	@mkdir -p ${OBJ_DIR}
 
-test: FORCE
+test: build
 	@echo "${INDENT}Running assembler tests..."
 	@source tests/start.sh
 	@echo "${INDENT}Done."

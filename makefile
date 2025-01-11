@@ -35,7 +35,7 @@ ${BIN_DIR}:
 
 test: mytests publictests
 
-mytests: build FORCE
+mytests: build
 	@echo "Running assembler tests..."
 	@${MAKE} --no-print-directory -C ${ASSEMBLER} test
 	@echo "Done running ${ASSEMBLER} tests."
@@ -46,7 +46,7 @@ mytests: build FORCE
 	@${MAKE} --no-print-directory -C ${EMULATOR} test
 	@echo "Done running ${EMULATOR} tests."
 
-publictests: build FORCE
+publictests: build
 	@echo "Running integration tests..."
 	@${MAKE} --no-print-directory -C ${TESTS}
 	@echo "Done running integration tests."

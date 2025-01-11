@@ -29,7 +29,7 @@ ${OBJ_DIR}/%.o: ${SRC_DIR}/%.cpp ${OBJ_DIR}
 ${OBJ_DIR}:
 	@mkdir -p ${OBJ_DIR}
 
-test: FORCE
+test: build
 	@echo "${INDENT}Running emulator tests..."
 	@source tests/start.sh
 	@echo "${INDENT}Done."

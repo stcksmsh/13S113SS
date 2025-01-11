@@ -30,7 +30,7 @@ ${OBJ_DIR}/%.o: ${SRC_DIR}/%.cpp ${OBJ_DIR}
 ${OBJ_DIR}:
 	@mkdir -p ${OBJ_DIR}
 
-test: FORCE
+test: build
 	@echo "${INDENT}Running linker tests..."
 	@cd tests; source start.sh
 	@echo "${INDENT}Done."

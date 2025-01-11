@@ -39,7 +39,7 @@ private:
         }
 
         // If no more placeholders, check for extra arguments
-        if constexpr (sizeof...(args) > 0) {
+        if (sizeof...(args) > 0) {
             throw std::invalid_argument("Too many arguments provided for format string.");
         }
 
